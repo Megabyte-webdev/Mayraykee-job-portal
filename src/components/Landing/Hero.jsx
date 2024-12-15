@@ -1,6 +1,6 @@
 import React from "react";
 import Btn from "./Btn";
-import logo from "../../assets/svgs/main-logo.svg";
+import logo from "../../assets/pngs/main-logo-icon.png";
 import bgImg from "../../assets/pngs/job-hero-img.png";
 import { FaSearch } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";

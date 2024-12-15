@@ -126,11 +126,11 @@ const Jobs = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-4 gap-y-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 place-items-center gap-y-10">
         {jobs.map((job) => (
           <div
             key={job?.id}
-            className="w-80 min-h-60 p-6 rounded-xl shadow-lg bg-white hover:shadow-2xl transform transition duration-300"
+            className="flex flex-col w-80 min-h-60 p-6 pb-3 rounded-xl shadow-lg bg-white hover:shadow-2xl transform transition duration-300"
           >
             <section className="flex justify-between gap-3">
               <div>

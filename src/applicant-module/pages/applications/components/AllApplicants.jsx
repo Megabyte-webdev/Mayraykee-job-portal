@@ -18,15 +18,15 @@ const AllApplicants = ({ app, index }) => {
   const getBorderColor = () => {
     switch (app?.status) {
       case stages[0].name:
-        return "text-lightorange border-lightorange";
+        return "text-orange-500 border-lightorange";
       case stages[1].name:
-        return "text-lightblue border-lightblue";
+        return "text-yellow-500 border-lightblue";
       case stages[2].name:
         return "text-darkblue border-darkblue";
       case stages[3].name.split("/")[0]:
         return "text-primaryColor border-primaryColor";
       case stages[3].name.split("/")[1]:
-        return "text-red-600 border-red-600";
+        return "text-[#8B0A1A] border-[#8B0A1A]";
     }
   };
 

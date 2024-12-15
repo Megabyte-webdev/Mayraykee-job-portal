@@ -48,7 +48,7 @@ function useRegistration(role) {
       await client.post(`/domesticStaff/register`, {
         ...staffsRegDetails,
         subcategory: subcategory.name,
-        staff_category: staff
+        staff_category: staff,
       });
       onSuccess();
     } catch (e) {
@@ -128,11 +128,31 @@ function useRegistration(role) {
     }
   };
 
+  //register exclusive
+  const registerExclusive = async (onSuccess, formdata) => {
+    setLoading(true);
+    try {
+      if (formdata.password !== formdata.re_enter_password)
+        throw Error("Password Mismatch");
+
+      const response = await client.post(`/employer/NewUser`, {
+        ...formdata,
+        role: "employer",
+        user_type: "exclusive",
+      });
+
+      onSuccess();
+    } catch (e) {
+      FormatError(e, setError, "Registration Error");
+    } finally {
+    }
+  };
+
   useEffect(() => {
     if (error.message && error.error) {
       onFailure(error);
     }
-  }, [error.message, error.error]);
+  }, [error]);
 
   useEffect(() => {
     setRegDetails({ ...regDetails, role: role });
@@ -148,6 +168,9 @@ function useRegistration(role) {
     registerStaff,
     verifyOtp,
     resendOtp,
+
+    // exclusive
+    registerExclusive,
   };
 }
 

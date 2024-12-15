@@ -43,14 +43,13 @@ const HelpCenter = () => {
           <img src={location} className="w-30 my-2" />
           <h3 className="font-semibold text-black text-xl">Address</h3>
           <p className="text-gray-500 font-bold text-sm">
-            6th Floor, NICON Plaza 242 Muhammadu Buhari Way, Central Business
-            District, Abuja.
+            6<sup>th</sup> floor, NICON Plaza 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja.
           </p>
         </div>
         <div className="flex flex-col items-center">
           <img src={telephone} className="w-30 my-2" />
           <h3 className="font-semibold text-black text-xl">Call Us</h3>
-          <p className="text-sm text-gray-500 font-bold">+234(0)80 788 74748</p>
+          <p className="text-sm text-gray-500 font-bold">+234(0)807 887 4748</p>
         </div>
         <div className="flex flex-col items-center">
           <img src={email} className="w-30 my-2" />

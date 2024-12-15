@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
-import MainIcon from "../../assets/svgs/main-logo.svg";
+import MainIcon from "../../assets/pngs/main-logo-icon.png";
 import Person from "../../assets/pngs/person.png";
 import PersonCircle from "../../assets/pngs/person-circle.png";
 import MessageOpen from "../../assets/pngs/message-open.png";
@@ -7,7 +7,7 @@ import Card from "../../assets/pngs/card-icon.png";
 import Padlock from "../../assets/pngs/padlock.png";
 import { IoMdCheckbox } from "react-icons/io";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation  } from "react-router-dom";
 import FormButton from "../../components/FormButton";
 import useRegistration from "../../hooks/useRegistration";
 import { onSuccess } from "../../utils/notifications/OnSuccess";
@@ -31,6 +31,8 @@ const genders = [
 ];
 
 function RegistrationFormTwo({ state, dispatch, role, setRole }) {
+  const location = useLocation();
+  const { id } = location?.state || {};
   const [isTrained, setIsTrained] = useState(false);
   const [gender, setGender] = useState(genders[0]);
   const client = axiosClient();
@@ -52,6 +54,12 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
 
   const toogleIsTrained = () => setIsTrained(!isTrained);
 
+  useEffect(() => {
+    if (id) {
+      setRole(id);
+    }
+  }, [id]);
+  
   const handleOnSubmit = (e) => {
     e.preventDefault();
 
@@ -113,18 +121,8 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
 
       <div className="flex flex-col items-center gap-[8px] w-full md:w-[60%]">
         <h1 className="font-semibold text-[25px]">Create Account</h1>
-        <Link to='/' className="cursor-pointer hover:underline text-gray-600 font-medium text-sm">Already have an account? <span className='text-green-400 font-bold'>Login</span></Link>
+        <Link to='/login' className="cursor-pointer hover:underline text-gray-600 font-medium text-sm">Already have an account? <span className='text-green-400 font-bold'>Login</span></Link>
         <div className="grid grid-cols-2 w-full mt-[3%] gap-[10px] text-sm font-semibold">
-          <button
-            onClick={() => setRole("candidate")}
-            className={`px-2 py-1 text-little ${
-              role === "candidate"
-                ? "scale-[103%] shadow-sm shadow-black md:text-primaryColor text-white  border bg-white/30 md:bg-primaryColor/30"
-                : "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
-            }`}
-          >
-            Corperate Candidate
-          </button>
           <button
             onClick={() => setRole("employer")}
             className={`px-2 py-1 text-little ${
@@ -135,6 +133,17 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
           >
             Corperate Employer
           </button>
+          <button
+            onClick={() => setRole("candidate")}
+            className={`px-2 py-1 text-little ${
+              role === "candidate"
+                ? "scale-[103%] shadow-sm shadow-black md:text-primaryColor text-white  border bg-gray-800/30 md:bg-primaryColor/30"
+                : "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
+            }`}
+          >
+            Corperate Candidate
+          </button>
+          
           <button
             onClick={() => setRole("artisan")}
             className={`px-2 py-1 text-little ${

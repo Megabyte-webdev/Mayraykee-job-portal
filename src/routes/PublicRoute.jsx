@@ -19,7 +19,7 @@ const TermsConditions = lazy(() => import("../pages/TermsConditions"));
 const ElearningPage = lazy(() => import("../pages/ElearningPage"));
 const BlogList = lazy(() => import("../pages/BlogList"));
 const BlogRead = lazy(() => import("../pages/BlogRead"));
-
+const JobSearchPage = lazy(() => import("../pages/JobSearchPage"));
 function PublicRoute() {
  
   return (
@@ -37,6 +37,7 @@ function PublicRoute() {
                                 element={<ContactForm />}
                               />
                               <Route path="/faq" element={<FAQ />} />
+                              <Route path="/find-jobs" element={<JobSearchPage />} />
                               <Route
                                 path="/terms&conditions"
                                 element={<TermsConditions />}

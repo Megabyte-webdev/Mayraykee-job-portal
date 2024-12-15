@@ -58,8 +58,11 @@ function SingleExclusive() {
               <span className="p-1">09035673994</span>
             </div>
 
-            <span className="text-green-500 cursor-pointer hover:underline">
-              Show More
+            <span
+              onClick={() => navigate("/admin-exclusives/profile")}
+              className="text-green-500 cursor-pointer hover:underline"
+            >
+              Show Profile
             </span>
           </div>
 
@@ -86,9 +89,7 @@ function SingleExclusive() {
               <span className="p-1 text-gray-500 bg-gray-100">Phone Numbr</span>
               <span className="p-1">09035673994</span>
             </div>
-            <span className="text-green-500 cursor-pointer hover:underline">
-              Show More
-            </span>
+
           </div>
 
           <div className="w-[45%]"></div>

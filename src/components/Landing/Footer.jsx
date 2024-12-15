@@ -11,9 +11,9 @@ const Footer = () => {
         {/* Logo and Company Info */}
         <div className="mb-6 md:mb-0 flex flex-col">
           <img src={logo} alt="logo" className="w-32 md:w-48 my-2" />
-          <p className="text-sm my-2">6th Flor NICON Plaza 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja</p>
+          <p className="text-sm my-2">6<sup>th</sup> floor, NICON Plaza 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja.</p>
           <a className="text-sm my-2" href="mailto:support@mayraykeeafrica.com">support@mayraykeeafrica.com</a>
-          <a className="text-sm my-2" href="tel:+2348078874748">+234(0)807 8874748</a>
+          <a className="text-sm my-2" href="tel:+2348078874748">+234(0)807 887 4748</a>
           
         </div>
 

@@ -1,11 +1,5 @@
 import { lazy, useContext, useEffect, useReducer, useState } from "react";
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
   adminExclusiveOptions,
   adminExclusiveUtil,
@@ -18,6 +12,7 @@ import AdminSideBar from "../admin-module/components/AdminSideBar";
 import AdminSideBarItem from "../admin-module/components/AdminSideBarItem";
 import AdminReducer from "../reducers/AdminReducer";
 import AdminExclusiveReducer from "../reducers/AdminExclusiveReducer";
+import { AdminExclusiveManagementContextProvider } from "../context/AdminExclusiveManagement";
 
 // Util Component
 const NavBar = lazy(() => import("../admin-module/components/NavBar"));
@@ -38,7 +33,13 @@ const SingleExclusive = lazy(() =>
 const JobType = lazy(() =>
   import("../admin-exclusive-module/pages/jobs/ViewJob")
 );
-const ViewApplicant = lazy(() => import('../admin-exclusive-module/pages/applicant/ViewApplicant'));
+const ViewApplicant = lazy(() =>
+  import("../admin-exclusive-module/pages/applicant/ViewApplicant")
+);
+
+const ViewProfile = lazy(() =>
+  import("../admin-exclusive-module/pages/profile/ViewProfile")
+);
 
 function useAdminRoute() {
   const path = useLocation().pathname;
@@ -81,66 +82,69 @@ function useAdminRoute() {
 
   return (
     <>
-      <main className="h-screen w-screen relative flex">
-        {/* Conditionally render the sidebar */}
-        {!shouldHideNavBar && (
-          <AdminSideBar
-            authDetails={authDetails}
-            toogleIsOpen={toogleIsOpen}
-            isMenuOpen={isOpen}
-          >
-            <ul className="flex flex-col gap-[10px]">
-              {adminExclusiveOptions.map((currentOption) => (
-                <AdminSideBarItem
-                  key={currentOption.type}
-                  data={currentOption}
-                  dispatch={dispatch}
-                  state={state}
-                />
-              ))}
-            </ul>
-
-            <ul className="flex flex-col gap-[10px]">
-              {adminExclusiveUtil.map((currentOption) => (
-                <AdminSideBarItem
-                  key={currentOption.type}
-                  data={currentOption}
-                  dispatch={dispatch}
-                  state={state}
-                />
-              ))}
-            </ul>
-          </AdminSideBar>
-        )}
-
-        {/* Routes and dashboard take up 80% of total width and 100% of height */}
-        <div
-          className={`relative flex divide-y-2 divide-secondaryColor bg-white flex-col h-full ${
-            !shouldHideNavBar ? "md:w-[82%] w-full" : "w-full"
-          }`}
-        >
+      <AdminExclusiveManagementContextProvider>
+        <main className="h-screen w-screen relative flex">
+          {/* Conditionally render the sidebar */}
           {!shouldHideNavBar && (
-            <NavBar
-              state={state}
+            <AdminSideBar
+              authDetails={authDetails}
               toogleIsOpen={toogleIsOpen}
               isMenuOpen={isOpen}
-            />
+            >
+              <ul className="flex flex-col gap-[10px]">
+                {adminExclusiveOptions.map((currentOption) => (
+                  <AdminSideBarItem
+                    key={currentOption.type}
+                    data={currentOption}
+                    dispatch={dispatch}
+                    state={state}
+                  />
+                ))}
+              </ul>
+
+              <ul className="flex flex-col gap-[10px]">
+                {adminExclusiveUtil.map((currentOption) => (
+                  <AdminSideBarItem
+                    key={currentOption.type}
+                    data={currentOption}
+                    dispatch={dispatch}
+                    state={state}
+                  />
+                ))}
+              </ul>
+            </AdminSideBar>
           )}
-          <div className="w-full h-[92%] overflow-y-auto">
-            <Routes>
-              <Route index element={<Dashboard />} />
 
-              <Route path="lists/*">
-                <Route index element={<Exclusives />} />
-                <Route path=":id" element={<SingleExclusive />} />
-              </Route>
+          {/* Routes and dashboard take up 80% of total width and 100% of height */}
+          <div
+            className={`relative flex divide-y-2 divide-secondaryColor bg-white flex-col h-full ${
+              !shouldHideNavBar ? "md:w-[82%] w-full" : "w-full"
+            }`}
+          >
+            {!shouldHideNavBar && (
+              <NavBar
+                state={state}
+                toogleIsOpen={toogleIsOpen}
+                isMenuOpen={isOpen}
+              />
+            )}
+            <div className="w-full h-[92%] overflow-y-auto">
+              <Routes>
+                <Route index element={<Dashboard />} />
 
-              <Route path="job/:id" element={<JobType />} />
-              <Route path="applicant/:id" element={<ViewApplicant />} />
-            </Routes>
+                <Route path="lists/*">
+                  <Route index element={<Exclusives />} />
+                  <Route path=":id" element={<SingleExclusive />} />
+                </Route>
+
+                <Route path="job/:id" element={<JobType />} />
+                <Route path="applicant/:id" element={<ViewApplicant />} />
+                <Route path="profile" element={<ViewProfile />} />
+              </Routes>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </AdminExclusiveManagementContextProvider>
     </>
   );
 }

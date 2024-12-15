@@ -45,7 +45,7 @@ const LandingPage = () => {
           <Jobs />
           <Banner
             title="insights and updates"
-            desc="stay informed with experts articles, industry news and tips to help you grow personally and professionally"
+            desc="Stay informed with experts articles, industry news and tips to help you grow personally and professionally"
           />
           <News />
           <Advert />

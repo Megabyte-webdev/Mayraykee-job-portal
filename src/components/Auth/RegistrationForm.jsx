@@ -1,5 +1,5 @@
 import React from "react";
-import MainLogo from "../../assets/svgs/main-logo.svg";
+import MainLogo from "../../assets/pngs/mayrahkee-logo-2.png";
 import Padlock from "../../assets/pngs/padlock.png";
 import Person from "../../assets/pngs/person.png";
 import { GiCircle, GiPlainCircle } from "react-icons/gi";

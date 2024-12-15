@@ -92,21 +92,25 @@ export const userCategory=[
     {
         id:1,
         title:"Coporate employers",
+        label:"employer",
         image:employer,
         desc:"Build your team and get unlimited access to qualified Candidates around the globe by registering your company with us.",
     },{
         id:2,
         title:"Coporate candidates",
+        label:"candidate",
         image:candidate, 
         desc:"Get job offers from reputable companies around the globe by signing up as a Candidate. We align your preference with the right job for you",
     },{
         id:3,
         title:"Artisans",
+        label:"artisan",
         image:artisan,
         desc:"Join a global network of skilled professionals and find top talent to grow business",
     },{
         id:4,
-        title:"Domestic Staffs",
+        title:"Domestic Staff",
+        label:"staff",
         image: domestic,
         desc:"Join a global network of skilled professionals and find top talent to grow business",
     }

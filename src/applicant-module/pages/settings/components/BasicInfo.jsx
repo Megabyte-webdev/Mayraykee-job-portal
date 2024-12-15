@@ -20,6 +20,11 @@ import { Country, State, City } from "country-state-city";
 
 const BasicInfo = ({ setIsOpen }) => {
   const { getCandidate, setGetCandidate } = useContext(ResourceContext);
+ 
+  const candidate = getCandidate.data?.details;
+  const countries = Country.getAllCountries();
+  const states = State.getAllStates();
+  const cities = City.getAllCities();
 
   const { authDetails, userUpdate, setUserUpdate } = useContext(AuthContext);
   const user = authDetails?.user;
@@ -27,19 +32,19 @@ const BasicInfo = ({ setIsOpen }) => {
   const [showMsg, setShowMsg] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectId, setSelectId] = useState(null);
-  const [selectStates, setSelectStates] = useState([]);
+  const [selectStates, setSelectStates] = useState(candidate?.country ? State.getStatesOfCountry(countries?.find(one=> one.name === candidate.country)?.isoCode):[]);
   const [selectState, setSelectState] = useState();
-  const [selectCity, setSelectCity] = useState();
+  const [selectCity, setSelectCity] = useState(candidate?.state ? City.getCitiesOfState(countries?.find(one=> one.name === candidate.country)?.isoCode, states?.find(one=> one.name === candidate.state)?.isoCode):[]);
   const [countryInfo, setCountryInfo] = useState();
   const [selectedLanguages, setSelectedLanguages] = useState([]);
 
-  const countries = Country.getAllCountries();
-  const states = State.getAllStates();
-  const cities = City.getAllCities();
   const [socialHandles, setSocialHandles] = useState([
     { network: "", url: "" },
   ]);
-
+  // useEffect(() => {
+  //   console.log(countryInfo)
+  //   console.log(details)
+  // },[countryInfo])
   useEffect(() => {
     setGetCandidate((prev) => {
       return {
@@ -49,8 +54,8 @@ const BasicInfo = ({ setIsOpen }) => {
     });
   }, []);
 
-  const candidate = getCandidate.data?.details;
 
+//console.log(candidate)
   const toggleAccept = () => {
     setDetails((prev) => {
       return {
@@ -113,6 +118,9 @@ const BasicInfo = ({ setIsOpen }) => {
     social_media_handle: [],
   });
 
+  useEffect(()=>{
+    console.log(details)
+  },[details])
   function updateFirstLetter(word) {
     if (word) {
       return setSelectId(word[0]?.toUpperCase() + word.slice(1));
@@ -145,23 +153,24 @@ const BasicInfo = ({ setIsOpen }) => {
       updateFirstLetter(value);
     }
     if (name === "country") {
-      const countryInfoDetails = Country.getCountryByCode(value);
+      const countryInfoDetails = Country.getCountryByCode(countries?.find(one=> one.name === value)?.isoCode);
       setCountryInfo(countryInfoDetails);
       const states = State.getStatesOfCountry(countryInfoDetails?.isoCode);
       setSelectStates(states);
-      setDetails((prev) => {
-        return {
-          ...prev,
-          [name]:
-            type === "checkbox"
-              ? checked
-              : type === "file"
-              ? files[0]
-              : countryInfoDetails?.name,
-          // [name]: name === 'cv' ? files[0] : value,
-        };
-      });
+      // setDetails((prev) => {
+      //   return {
+      //     ...prev,
+      //     [name]:
+      //       type === "checkbox"
+      //         ? checked
+      //         : type === "file"
+      //         ? files[0]
+      //         : countryInfoDetails?.name,
+      //     // [name]: name === 'cv' ? files[0] : value,
+      //   };
+      // });
     } else if (name == "state") {
+      console.log(countryInfo)
       const cities = City.getCitiesOfState(countryInfo.isoCode, value);
       setSelectCity(cities);
       const stateName = State.getStateByCode(value, countryInfo.isoCode);
@@ -240,6 +249,7 @@ const BasicInfo = ({ setIsOpen }) => {
   }, [socialHandles]);
 
   const handleSubmit = (e) => {
+    console.log(details)
     e.preventDefault();
     setErrorMsg(null);
     setLoading(true);
@@ -249,8 +259,8 @@ const BasicInfo = ({ setIsOpen }) => {
         isDataNeeded: false,
       };
     });
-    details.country = countryInfo?.name;
-    details.state = selectState;
+    // details.country = countryInfo?.name;
+    // details.state = selectState;
     axios
       .post(`${BASE_URL}/candidate/UpdateCandidate/${user.id}`, details, {
         headers: {
@@ -633,7 +643,7 @@ const BasicInfo = ({ setIsOpen }) => {
                                 "English",
                                 "Hausa",
                                 "French",
-                                "Yaruba",
+                                "Yoruba",
                                 "igbo",
                               ].map((current) => (
                                 <div className="flex items-center gap-1">
@@ -784,8 +794,9 @@ const BasicInfo = ({ setIsOpen }) => {
                               <option value="">-- select --</option>
                               {countries.map((country) => (
                                 <option
+                                selected={country?.name===details?.country}
                                   key={country.isoCode}
-                                  value={country.isoCode}
+                                  value={country.name}
                                 >
                                   {country.name}
                                 </option>
@@ -807,7 +818,7 @@ const BasicInfo = ({ setIsOpen }) => {
                               <option value="">-- select --</option>
 
                               {selectStates?.map((each) => (
-                                <option key={each.isoCode} value={each.isoCode}>
+                                <option  selected={each?.name===details?.state} key={each.isoCode} value={each.name}>
                                   {each.name}
                                 </option>
                               ))}
@@ -827,7 +838,7 @@ const BasicInfo = ({ setIsOpen }) => {
                             >
                               <option value="">-- select --</option>
                               {selectCity?.map((city) => (
-                                <option key={city.isoCode} value={city.isoCode}>
+                                <option key={city.isoCode} value={city.name}>
                                   {city.name}
                                 </option>
                               ))}

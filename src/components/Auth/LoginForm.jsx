@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import MainLogo from "../../assets/svgs/main-logo.svg";
+import MainLogo from "../../assets/pngs/mayrahkee-logo-2.png";
 import Padlock from "../../assets/pngs/padlock.png";
 import Person from "../../assets/pngs/person.png";
 import { GiCircle, GiPlainCircle } from "react-icons/gi";
@@ -8,7 +8,7 @@ import "../../utils/notifications/OnSuccess";
 import { onSuccess } from "../../utils/notifications/OnSuccess";
 import FormButton from "../FormButton";
 import useLogin from "../../hooks/useLogin";
-import mayrahkeeIcon from "../../assets/pngs/mayrakee-icon.png";
+import mayrahkeeIcon from "../../assets/pngs/mayrahkee-logo-2.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import HowItWorksSlider from "./HowItWorksSlider";
 import { AuthContext } from "../../context/AuthContex";

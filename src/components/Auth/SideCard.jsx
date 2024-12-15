@@ -12,7 +12,7 @@ function SideCard() {
       <img src={mainLogoTwo} className="w-[50%] h-[15%] object-contain" />
       <img
         src={mainSideImg}
-        className="w-[80%] max-w-[400px] h-[50%] mt-[2%] object-cover rounded-[30px] border shadow shadow-gray-800"
+        className="w-[80%] max-w-[400px] h-[50%] object-fit mt-[2%] rounded-[30px] border shadow shadow-gray-800"
       />
       <span className="text-lg mt-5 text-white font-bold">
         Find top candidates around the globe

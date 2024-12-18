@@ -1,6 +1,6 @@
 // Footer.jsx
 import React from "react";
-import logo from '../../assets/pngs/mayrakee-icon.png'
+import logo from '../../assets/pngs/mayrahkee-logo-2.png'
 import { TiSocialFacebookCircular, TiSocialInstagram } from 'react-icons/ti'
 import { RiLinkedinBoxLine } from 'react-icons/ri'
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ const Footer = () => {
         {/* Logo and Company Info */}
         <div className="mb-6 md:mb-0 flex flex-col">
           <img src={logo} alt="logo" className="w-32 md:w-48 my-2" />
-          <p className="text-sm my-2">6<sup>th</sup> floor, NICON Plaza 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja.</p>
+          <p className="text-sm my-2 capitalize">6<sup>th</sup> floor, NICON Plaza 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja.</p>
           <a className="text-sm my-2" href="mailto:support@mayraykeeafrica.com">support@mayraykeeafrica.com</a>
           <a className="text-sm my-2" href="tel:+2348078874748">+234(0)807 887 4748</a>
           

@@ -17,23 +17,21 @@ const ContactUs = () => {
               {/* Header Section */}
               <h1 className="text-center text-3xl font-bold py-5">Contact Us</h1>
               <p className="text-gray-600 mt-2 font-medium ext-sm">
-                Email, call, or complete the form to learn how Mayrahkeeafrica can solve your problem.
+                Email, call or complete the form to learn how Mayrahkee Africa can be of help to you.
               </p>
-              <p className="my-2"><a href="mailto:info@mayrahkee.com" className="text-gray-600 underline font-medium text-sm">info@mayrahkee.com</a></p>
-              <p className="my-2"><a href="tel:09155827610" className="text-gray-600 underline font-medium text-sm">09155827610</a></p>
-              <p className="my-2"><a className="underline font-medium text-purple-900 text-[16px] capitalize">Customer Support</a></p>
-              <div className="mt-6 grid grid-cols-responsive3 gap-2">
+              <div className="mt-6 flex flex-wrap gap-4">
                 <div>
-                  <h2 className="font-bold capitalize">Customer Support</h2>
-                  <p className="text-gray-600">Figma ipsum component variant many layer...</p>
+                  <h2 className="font-bold capitalize">General inquiries</h2>
+                  <a className="text-gray-600" href="mailto:Info@mayrahkeeafrica.com" >info@mayrahkeeafrica.com</a> <br/>
+                  <a className="text-gray-600" href="tel:08078874748" >0807 887 4748</a>
                 </div>
                 <div>
-                  <h2 className="font-bold capitalize">Feedback & Suggestions</h2>
-                  <p className="text-gray-600">Figma ipsum component variant many layer...</p>
+                  <h2 className="font-bold capitalize">technical support </h2>
+                  <p className="text-gray-600">support@mayrahkeeafrica.com</p>
                 </div>
                 <div>
-                  <h2 className="font-bold capitalize">Media Inquiries</h2>
-                  <p className="text-gray-600">Figma ipsum component variant many layer...</p>
+                  <h2 className="font-bold capitalize">feedback & suggestions</h2>
+                  <p className="text-gray-600">feedbacks@mayrahkeeafrica.com</p>
                 </div>
               </div>
             </div>

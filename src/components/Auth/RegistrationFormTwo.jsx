@@ -90,7 +90,7 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
           message: "Registration Successful",
           success: "Navigating to login",
         });
-        navigate("/");
+        navigate("/login");
       },
       role
     );
@@ -123,6 +123,16 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
         <h1 className="font-semibold text-[25px]">Create Account</h1>
         <Link to='/login' className="cursor-pointer hover:underline text-gray-600 font-medium text-sm">Already have an account? <span className='text-green-400 font-bold'>Login</span></Link>
         <div className="grid grid-cols-2 w-full mt-[3%] gap-[10px] text-sm font-semibold">
+        <button
+            onClick={() => setRole("candidate")}
+            className={`px-2 py-1 text-little ${
+              role === "candidate"
+                ? "scale-[103%] shadow-sm shadow-black md:text-primaryColor text-white  border bg-gray-800/30 md:bg-primaryColor/30"
+                : "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
+            }`}
+          >
+            Corporate Candidate
+          </button>
           <button
             onClick={() => setRole("employer")}
             className={`px-2 py-1 text-little ${
@@ -131,17 +141,7 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
                 : "md:text-white text-gray-500 bg-white md:bg-lightblue border-0"
             }`}
           >
-            Corperate Employer
-          </button>
-          <button
-            onClick={() => setRole("candidate")}
-            className={`px-2 py-1 text-little ${
-              role === "candidate"
-                ? "scale-[103%] shadow-sm shadow-black md:text-primaryColor text-white  border bg-gray-800/30 md:bg-primaryColor/30"
-                : "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
-            }`}
-          >
-            Corperate Candidate
+            Corporate Employer
           </button>
           
           <button
@@ -278,7 +278,7 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
             )}{" "}
             Accept terms and conditions?
           </p>
-          <FormButton loading={loading}>Submit</FormButton>
+          {<FormButton condition={!isTrained} loading={loading}>Register</FormButton>}
         </form>
       ) : (
         <form
@@ -327,7 +327,7 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
             <img src={Padlock} className="h-[20px]" />
             <input
               name="password"
-              type={showPassword ? "text" : "password"}
+              type={!showPassword ? "text" : "password"}
               value={staffsRegDetails.password}
               onChange={onTextChangeStaff}
               required
@@ -351,7 +351,7 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
             <img src={Padlock} className="h-[20px]" />
             <input
               name="re_enter_password"
-              type={showPasswordReenter ? "text" : "password"}
+              type={!showPasswordReenter ? "text" : "password"}
               value={staffsRegDetails.re_enter_password}
               onChange={onTextChangeStaff}
               required
@@ -393,7 +393,7 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
             )}{" "}
             Accept terms and conditions?
           </p>
-          <FormButton loading={loading}>Submit</FormButton>
+          <FormButton condition={!isTrained} loading={loading}>Register</FormButton>
         </form>
       )}
     </div>

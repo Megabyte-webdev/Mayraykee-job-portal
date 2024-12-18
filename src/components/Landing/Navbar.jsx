@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/pngs/main-logo-icon.png";
 import Btn from "./Btn";
 import { FaBars, FaTimes, FaCaretDown,FaCaretUp } from "react-icons/fa";
-const Navbar = () => {
+const Navbar = ({register="/registration", login="/login"}) => {
   const [menu, setMenu] = useState(true);
   const [drop, setDrop] = useState(false);
   return (
@@ -18,9 +18,9 @@ const Navbar = () => {
           } lg:flex lg:flex-row lg:static lg:bg-transparent lg:items-center lg:gap-4 my-3 mx-auto gap-2 font-bold text-sm order-1 w-full lg:w-auto lg:order-0 *:p-2 *:rounded-md *:cursor-pointer hover:*:hover:bg-slate-300`}
       >
 
-        <NavLink to="/">Home</NavLink>
+        <a href="https://mayraykee-app.vercel.app/">Home</a>
         {/* Dropdown */}
-        <div
+        {/* <div
           onClick={() => setDrop(!drop)}
           className="relative flex gap-1 items-center cursor-pointer p-2 hover:bg-gray-100 rounded"
         >
@@ -33,21 +33,22 @@ const Navbar = () => {
             
             </ul>
           )}
-        </div>
-        <NavLink to="/find-jobs">Find Artisans</NavLink>
-        <NavLink to="/find-jobs">Find Domestic Staff</NavLink>
+        </div> */}
+        <NavLink to="/find-jobs">Find Jobs</NavLink>
+        <NavLink to="/find-staff/artisan">Find Artisans</NavLink>
+        <NavLink to="/find-staff/domestic staff">Find Domestic Staff</NavLink>
         <NavLink to="/help">Help Center</NavLink>
-        <NavLink to="/news">Blog</NavLink>
+        <NavLink to="/blogs">Blog</NavLink>
 
         <div className="cursor-default flex md:hidden items-center gap-3 lg:order-2">
           <Btn
             title="Login"
-            loc="/login"
+            loc={login}
             styl="bg-gray-100 shadow-[1px_1px_0_2px] shadow-gray-400 hover:shadow-[-1px_-1px_0]"
           />
           <Btn
             title="Register"
-            loc="/registration"
+            loc={register}
             styl="bg-black shadow-[1px_1px_0] shadow-gray-400 hover:shadow-[-1px_-1px_0] text-white"
           />
         </div>
@@ -56,12 +57,12 @@ const Navbar = () => {
       <div className="hidden md:flex items-center justify-center gap-3 lg:order-2 ml-auto">
         <Btn
           title="Login"
-          loc="/login"
+          loc={login}
           styl="bg-gray-100 shadow-[1px_1px_0_2px] shadow-gray-400 hover:shadow-[-1px_-1px_0]"
         />
         <Btn
           title="Register"
-          loc="/registration"
+          loc={register}
           styl="bg-black shadow-[1px_1px_0] shadow-gray-400 hover:shadow-[-1px_-1px_0] text-white"
         />
       </div>

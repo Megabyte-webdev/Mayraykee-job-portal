@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 function RegistrationProgress({ state, dispatch, role }) {
 
-  const keys = Object.keys(registrationType(role));
+  const keys = Object?.keys(registrationType(role));
 
 
   const getSteps = () => {

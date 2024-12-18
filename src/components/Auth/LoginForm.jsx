@@ -67,7 +67,7 @@ function LoginForm() {
                 : "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
             }`}
           >
-            Corperate Candidate
+            Corporate Candidate
           </button>
           <button
             onClick={() => setRole("employer")}
@@ -77,7 +77,7 @@ function LoginForm() {
                 : "md:text-white text-gray-500 bg-white md:bg-lightblue border-0"
             }`}
           >
-            Corperate Employer
+            Corporate Employer
           </button>
           <button
             onClick={() => setRole("artisan")}

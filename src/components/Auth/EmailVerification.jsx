@@ -34,10 +34,10 @@ function EmailVerification({ state, dispatch }) {
       setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
 
-    dispatch({
-      type: registration_steps_keys.email_verification.title,
-      payload: registration_steps_keys.email_verification,
-    });
+    // dispatch({
+    //   type: registration_steps_keys?.email_verification?.title,
+    //   payload: registration_steps_keys?.email_verification,
+    // });
 
     return () => {
       clearInterval(intervalId);
@@ -82,7 +82,7 @@ function EmailVerification({ state, dispatch }) {
         <FormButton
           onClick={() => {
             verifyOtp(otp, () => {
-              navigate('/')
+              navigate('/login')
               onSuccess({
                 message: 'verification successful!',
                 success: 'Login to continue'

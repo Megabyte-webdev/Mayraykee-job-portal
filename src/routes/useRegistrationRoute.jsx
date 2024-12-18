@@ -35,7 +35,7 @@ function useRegistrationRoute() {
           />
           <Route
             path="email_verification"
-            element={<EmailVerification state={state} dispatch={dispatch} />}
+            element={<EmailVerification state={state} dispatch={dispatch} role={role} />}
           />
         </Routes>
       </main>

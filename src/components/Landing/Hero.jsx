@@ -5,10 +5,10 @@ import bgImg from "../../assets/pngs/job-hero-img.png";
 import { FaSearch } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 
-const Hero = () => {
+const Hero = ({shrink=false, title}) => {
   return (
 
-    <div className="relative rounded-xl my-4 text-white min-h-[550px] flex flex-col items-center justify-around gap-5 *:transition-all *:ease-in-out *:duration-500"
+    <div className={`${shrink ? "min-h-[300px]":"min-h-[550px]"} relative rounded-xl my-4 text-white flex flex-col items-center justify-around gap-5 *:transition-all *:ease-in-out *:duration-500`}
       style={{
         backgroundImage: `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.7)), url(${bgImg})`,
         backgroundPosition: '70%',
@@ -19,11 +19,12 @@ const Hero = () => {
       <section className="flex flex-col items-center gap-2 ">
         <small className="w-max flex items-center justify-center gap-2 bg-green-200/20 px-[2px] border border-gray-200 rounded-full text-[10px] text-gray-300"><img src={logo} className="h-5" /> makes everything easier</small>
         <h1 className="my-3 capitalize text-center max-w-[747px] w-[98%] text-3xl font-bold lg:text-5xl">
-          Discover your dream job & thrive with top organizations near you!
+          {title || "Discover your dream job & thrive with top organizations near you!"}
         </h1>
       </section>
 
-      <form className="mt-5 text-xs flex flex-col md:flex-row items-center justify-between gap-4 bg-green-200/20 border border-gray-200 rounded-3xl md:rounded-full max-w-[900px] w-[90%] min-h-14 p-2">
+      {!shrink &&
+        <form className="mt-5 text-xs flex flex-col md:flex-row items-center justify-between gap-4 bg-green-200/20 border border-gray-200 rounded-3xl md:rounded-full max-w-[900px] w-[90%] min-h-14 p-2">
   {/* Input Section */}
   <section className="flex flex-col md:flex-row w-[80%] py-3 md:py-0 md:w-full items-center justify-center gap-4 relative">
     {/* Job Title Input */}
@@ -55,7 +56,7 @@ const Hero = () => {
   <button className="font-bold min-w-28 bg-green-600 text-white rounded-full px-6 py-3">
     search
   </button>
-</form>
+</form>}
 
 
     </div>

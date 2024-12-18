@@ -42,7 +42,7 @@ const Help = () => {
           <div className="flex flex-col items-center" >
             <img src={location} className="w-30 my-2" />
             <h3 className="font-semibold text-black text-xl">Address</h3>
-            <p className="text-gray-500 font-bold text-sm">6<sup>th</sup> floor, NICON Plaza 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja.</p>
+            <p className="text-gray-500 font-bold text-sm capitalize">6<sup>th</sup> floor, NICON Plaza 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja.</p>
           </div>
           <div className="flex flex-col items-center">
             <img src={telephone} className="w-30 my-2" />

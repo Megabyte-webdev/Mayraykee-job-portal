@@ -95,7 +95,7 @@ const calculateReadingTime = (text) => {
                                     className="text-green-600 text-sm font-medium cursor-pointer"
                                     onClick={() => {
                                         scrollTo(0, 0);
-                                        navigate(`/news/${recent?.id}`);
+                                        navigate(`/blogs/${recent?.id}`);
                                     }}
                                 >
                                     Read More {">>"}
@@ -112,7 +112,7 @@ const calculateReadingTime = (text) => {
                             key={newsItem?.id}
                             onClick={() => {
                                 scrollTo(0, 0);
-                                navigate(`/news/${newsItem?.id}`);
+                                navigate(`/blogs/${newsItem?.id}`);
                             }}
                             className="flex justify-between items-stretch cursor-pointer"
                         >

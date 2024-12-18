@@ -18,7 +18,7 @@ function SideCard() {
         Find top candidates around the globe
       </span>
       <span className="text-sm w-80 text-center  mt-2 text-white ">
-        we connect employers and creative candidate with diverse multi-cultural backgrounds, qualifications and work experiences.
+        We connect employers and creative candidate with diverse multi-cultural backgrounds, qualifications and work experiences.
       </span>
     </div>
   );

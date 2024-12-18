@@ -1,6 +1,7 @@
 import { registration_steps_keys } from "../utils/constants";
 
 export function registrationType(type){
+  console.log(type)
   if(type){ 
     return registration_steps_keys[type]
   }else{return registration_steps_keys["candidate"]}

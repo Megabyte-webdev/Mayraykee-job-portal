@@ -51,6 +51,7 @@ function useLogin(role) {
       onSuccess();
       saveSession()
     } catch (e) {
+      console.log(e)
       FormatError(e, setError, "Registration Error");
     } finally {
       setLoading(false);
@@ -102,10 +103,11 @@ function useLogin(role) {
   
 
   useEffect(() => {
-    if (error.message && error.error) {
+    console.log(error)
+    if (error.message || error.error) {
       onFailure(error);
     }
-  }, [error.message, error.error]);
+  }, [error]);
 
   useEffect(() => {
     setLoginDetails({ ...loginDetails, role: role });

@@ -40,7 +40,7 @@ const Footer = () => {
       </div>
       <div className=" mt-6 border-t border-white pt-4 flex flex-wrap justify-center md:justify-between w-[95%] md:max-w-[1400px] mx-auto"
         style={{ borderImageSource: "linear-gradient(to left, rgba(102, 102, 102, 0.05), #FFFFFF, rgba(102, 102, 102, 0.05))", borderImageSlice: "1 0 1 0", borderImageRepeat: "stretch", borderTop: "2px solid" }}>
-        <p className="text-center text-sm">© 2024 Mayankee. All Rights Reserved.</p>
+        <p className="text-center text-sm">© 2024 Mayraykee. All Rights Reserved.</p>
         {/* Social Media Links */}
         <div className="mt-6 md:mt-0 flex gap-4 text-white">
           <a href="#facebook" className="hover:scale-110 transition">

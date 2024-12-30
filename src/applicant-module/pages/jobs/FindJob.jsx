@@ -113,7 +113,7 @@ function FindJob() {
               value={jobTitle}
               className="pl-[10px] focus:outline-none w-full"
             />
-            <span className="absolute text-primary top-0 left-0 p-2">
+            <span className="absolute text-primary top-0 left-0 pr-2 py-1">
               <CiSearch size={20} />
             </span>
           </div>
@@ -131,7 +131,7 @@ function FindJob() {
                 </option>
               ))}
             </select>
-            <span className="absolute text-primary top-0 left-0 p-2">
+            <span className="absolute text-primary top-0 left-0 pr-2 py-1">
               <GrLocation size={20} />
             </span>
           </div>

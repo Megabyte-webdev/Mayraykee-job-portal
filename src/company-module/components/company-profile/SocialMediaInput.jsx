@@ -2,10 +2,10 @@ import { useEffect } from "react";
 
 function SocialMediaInput({ data, socials, setSocials }) {
   const updateCurrentVal = (e) => {
-    const socialsUpdate = [...socials];
+    const socialsUpdate = Array.isArray(socials) ? [...socials] : ["", "", "", ""];
     const val = e.target.value;
 
-    switch (data.id) {
+    switch (data?.id) {
       case 1:
         socialsUpdate[0] = val;
         break;
@@ -18,39 +18,37 @@ function SocialMediaInput({ data, socials, setSocials }) {
       case 4:
         socialsUpdate[3] = val;
         break;
+      default:
+        break;
     }
 
-    setSocials((prev) => {
-      return { ...prev, social_media: socialsUpdate };
-    });
+    setSocials((prev) => ({
+      ...prev,
+      social_media: socialsUpdate,
+    }));
   };
 
   const defaultCurrentVal = () => {
-    let value = "";
-
-    switch (data.id) {
+    if (!Array.isArray(socials)) return "";
+    switch (data?.id) {
       case 1:
-        value = socials[0] ? socials[0] : "";
-        break;
+        return socials[0] || "";
       case 2:
-        value = socials[1] ? socials[1] : "";
-        break;
+        return socials[1] || "";
       case 3:
-        value = socials[2] ? socials[2] : "";
-        break;
+        return socials[2] || "";
       case 4:
-        value = socials[3] ? socials[3] : "";
-        break;
+        return socials[3] || "";
+      default:
+        return "";
     }
-
-    return value;
   };
 
   return (
     <div className="h-fit p-1 flex items-center justify-center gap-[5px] border">
       {data.icon}
       <input
-        defaultValue={defaultCurrentVal()}
+        value={defaultCurrentVal()}
         placeholder={data.placeholder}
         onChange={updateCurrentVal}
         className="w-[95%] focus:outline-none"

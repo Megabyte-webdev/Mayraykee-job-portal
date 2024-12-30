@@ -19,7 +19,7 @@ function useSubscription() {
   });
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+  // console.log(activePackage)
   const interviewPackages = packages.filter(
     (current) =>
       current.title.toLowerCase().includes("plus") ||
@@ -60,7 +60,7 @@ function useSubscription() {
         setActivePackage(null);
       }
     } catch (error) {
-      FormatError(error);
+      FormatError(error, setError, "Subscription Error");
       setActivePackage(2);
     } finally {
       setLoading(false);

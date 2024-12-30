@@ -4,7 +4,7 @@ function DeleteDialog({ title, isOpen, setIsOpen, handleDelete, loading }) {
   return (
     isOpen && (
       <div className="fixed bg-gray-600/30 w-full h-full left-0 top-0 flex items-center justify-center">
-        <div className="w-[30%] flex flex-col p-2 bg-white justify-between rounded-[10px] h-[20%]">
+        <div className="w-60 flex flex-col p-2 bg-white justify-between rounded-[10px] min-h-10">
           <div className="w-full flex text-red-600 justify-between items-center">
             <span className="text-sm  font-semibold">Delete item</span>
             <MdClose  onClick={() => setIsOpen(false)}className="h-[30px] place-self-end cursor-pointer" />

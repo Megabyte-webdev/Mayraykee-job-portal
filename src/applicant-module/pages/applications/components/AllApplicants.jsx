@@ -46,7 +46,7 @@ const AllApplicants = ({ app, index }) => {
     getJobById(app.job_id, setJob);
   }, []);
 
-  console.log("Job", job);
+  //console.log("Job", job);
 
   return (
     <div

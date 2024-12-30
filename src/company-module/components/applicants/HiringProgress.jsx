@@ -12,7 +12,7 @@ import SubscriptionModalSpecific from "../../../components/subscription/Subscrip
 function HiringProgress({ data, applicant, toogleInterview }) {
   const { setApplication } = useContext(ApplicationContext);
   const { authDetails } = useContext(AuthContext);
-  const { isInterviewPackge, interviewPackages } = useSubscription();
+  const { isInterviewPackge, interviewPackages, loading } = useSubscription();
   const [isOpen, setIsOpen] = useState(false);
 
   const toogleOpen = () => setIsOpen(!isOpen);
@@ -76,7 +76,7 @@ function HiringProgress({ data, applicant, toogleInterview }) {
       });
 
       setApplication(response.data.job_application);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   //With Inteview Subscription
@@ -105,27 +105,32 @@ function HiringProgress({ data, applicant, toogleInterview }) {
     <div className="flex flex-col w-full justify-between gap-[20px] items-start px-2">
       <SubscriptionModalSpecific specificPackages={interviewPackages} isOpen={isOpen} setIsOpen={setIsOpen} />
 
-      <div className="flex flex-col p-4 bg-red-50">
-        <span className="text-md text-red-400">
-          Your current subscription does not allow you access to our online
-          interview.
-        </span>
-        <button
-          onClick={toogleOpen}
-          className="border w-fit mt-3 hover:bg-primaryColor hover:text-white p-2 md:py-1 text-little px-2  border-primaryColor"
-        >
-          Upgrade Now!
-        </button>
-      </div>
+      {loading ?
+        <div className="flex justify-center items-center w-full min-h-24 bg-gray-100">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-600"></div>
+        </div>
+
+        : <div className="flex flex-col p-4 bg-red-50">
+          <span className="text-md text-red-400">
+            Your current subscription does not allow you access to our online
+            interview.
+          </span>
+          <button
+            onClick={toogleOpen}
+            className="border w-fit mt-3 hover:bg-primaryColor hover:text-white p-2 md:py-1 text-little px-2  border-primaryColor"
+          >
+            Upgrade Now!
+          </button>
+        </div>}
     </div>
   );
 
   const statusTexts = () => {
     switch (data.status) {
       case "pending":
-        return isInterviewPackge ? InView : InViewInactive;
+        return (isInterviewPackge || authDetails.user.role === 'super-admin') ? InView : InViewInactive;
       case stages[0].name:
-        return isInterviewPackge ? InView : InViewInactive;
+        return (isInterviewPackge || authDetails.user.role === 'super-admin') ? InView : InViewInactive;
       case stages[1].name:
         return <Shortlist data={data} />;
       case stages[2].name:
@@ -150,9 +155,9 @@ function HiringProgress({ data, applicant, toogleInterview }) {
       <h3 className="font-semibold text-sm px-2">Current Stage</h3>
 
       <ul className="w-full px-2 flex justify-between">
-        {stages.map((current) => (
+        {stages.map((current, index) => (
           <li
-            key={current?.id}
+            key={index}
             className={`min-w-[24%] flex uppercase items-center border font-semibold justify-center py-2 text-[11px] ${getbgcolor(
               current.name
             )}`}

@@ -76,6 +76,7 @@ function Dashboard() {
               subtitle="Corporate Candidates"
               smallText="2% Increase Ad-hoc staff at duty posts"
               smallTextIcon={<FaPlus />}
+              link={"/admin/candidates/all"}
             />
             <DashboardCard
               leftIcon={<FiUsers />}
@@ -83,6 +84,7 @@ function Dashboard() {
               subtitle="Corporate Employers"
               smallText="2 new Ad-hoc staff added"
               smallTextIcon={<FaPlus />}
+              link={"/admin/employers/all"}
             />
             <DashboardCard
               leftIcon={<BsStopwatch />}
@@ -90,6 +92,7 @@ function Dashboard() {
               subtitle="Artisans"
               smallText="-10% Less Duty Pst"
               smallTextIcon={<FaArrowTrendUp />}
+              link={"/admin/artisans/all"}
             />
             <DashboardCard
               leftIcon={<TbCalendarClock />}
@@ -97,6 +100,7 @@ function Dashboard() {
               subtitle="Domestic Staff"
               smallText="+2% Increase Ad-hoc staff at duty posts"
               smallTextIcon={<FaArrowTrendUp />}
+              link={"/admin/domestic-staff/all"}
             />
             {/* <DashboardCard
               leftIcon={<BsStopwatch />}
@@ -112,6 +116,7 @@ function Dashboard() {
               subtitle="Job Listing"
               smallText="10% Generated"
               smallTextIcon={<FaArrowTrendUp />}
+              link={"/admin/jobs"}
             />
           </div>
         </div>

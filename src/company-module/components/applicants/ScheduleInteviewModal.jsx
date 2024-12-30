@@ -1,10 +1,9 @@
 import { IoMdCloseCircle } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import BasicInput from "../company-profile/BasicInput";
 import { onTextChange } from "../../../utils/formmaters";
 import FormButton from "../../../components/FormButton";
 import Selector from "../../../components/Selector";
-import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContex";
 import useCompanyProfile from "../../../hooks/useCompanyProfile";
 import { useSafeMantineTheme } from "@mantine/core";
@@ -69,14 +68,14 @@ function ScheduleInterviewModal({
 }) {
   const companyUtil = useCompanyProfile();
   const {isInterviewPackge} = useSubscription()
-
+  const { authDetails } = useContext(AuthContext);
   const options = isInterviewPackge ? interviewOptions : [interviewOptions[1]]
-  const [selected, setSelected] = useState(options[0]);
+  const [selected, setSelected] = useState();
 
   const [meetingId, setMeetingId] = useState();
 
   const onClick = async () => {
-    const roomId = await createMeeting("");
+    const roomId = await createMeeting(authDetails?.token);
     setMeetingId(roomId);
   };
 
@@ -123,7 +122,7 @@ function ScheduleInterviewModal({
                 />
               </div>
 
-              {selected.name !== options[0].name && (
+              {selected?.name === "physical" && (
                 <BasicInput
                   data={fields[3]}
                   details={details}
@@ -132,7 +131,7 @@ function ScheduleInterviewModal({
                 />
               )}
 
-              {selected.name === options[1].name && (
+              {selected?.name === "online" && (
                 <div className="flex flex-col gap-[3px]">
                   <label className="text-sm font-semibold">Meeting Id</label>
                   <div className="flex justify-between border items-center p-2">

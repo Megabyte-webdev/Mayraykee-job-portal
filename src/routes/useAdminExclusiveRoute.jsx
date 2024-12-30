@@ -139,7 +139,7 @@ function useAdminRoute() {
 
                 <Route path="job/:id" element={<JobType />} />
                 <Route path="applicant/:id" element={<ViewApplicant />} />
-                <Route path="profile" element={<ViewProfile />} />
+                <Route path="profile/:id" element={<ViewProfile />} />
               </Routes>
             </div>
           </div>

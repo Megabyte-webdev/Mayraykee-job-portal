@@ -7,7 +7,7 @@ function QualificationsForm({ jobUtils }) {
   const addQualification = () => {
     if (currentQualification) {
       const newList = [
-        ...jobUtils.details.qualification,
+        ...(jobUtils.details?.qualification || []),
         currentQualification,
       ];
       jobUtils.setDetails({ ...jobUtils.details, qualification: newList });
@@ -16,14 +16,14 @@ function QualificationsForm({ jobUtils }) {
   };
 
   const removeQualification = (index) => {
-    const newList = [...jobUtils.details.qualification];
+    const newList = [...jobUtils.details?.qualification];
     newList.splice(index, 1);
     jobUtils.setDetails({ ...jobUtils.details, qualification: newList });
   };
 
   const qualificationList = jobUtils?.details?.qualification?.map((current, index) => {
     return (
-      <li className="relative border py-[3px] flex px-1 text-little text-white bg-primaryColor/80 truncate">
+      <li key={index} className="relative border py-[3px] flex px-1 text-little text-white bg-primaryColor/80 truncate">
         {current}
         <IoIosCloseCircleOutline onClick={() => removeQualification(index)} className="absolute top-1 right-1 text-lg cursor-pointer text-red-800" />
       </li>

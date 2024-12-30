@@ -9,13 +9,22 @@ import { ResourceContext } from "../../../context/ResourceContext";
 import { AuthContext } from "../../../context/AuthContex";
 import AllApplicants from "./components/AllApplicants";
 import AllShortlistedApplicants from "./components/AllShortlistedApplication";
-
+import {useLocation} from 'react-router-dom';
+const stages=[
+  { label: "All", key: "all" },
+  { label: "In Review", key: "in-review" },
+  { label: "Interviewed", key: "interviewed" },
+  { label: "Shortlisted", key: "shortlist" },
+  { label: "Declined", key: "declined" },
+  { label: "Hired", key: "hired" },
+]
 function Application() {
+  const location= useLocation();
   const { getAllApplications, setGetAllApplications } = useContext(ResourceContext);
   const { authDetails } = useContext(AuthContext);
 
   const [closeNote, setCloseNote] = useState(true);
-  const [view, setView] = useState("all");
+  const [view, setView] = useState();
   const [appFilter, setAppFilter] = useState("");
   const [randomizedApplications, setRandomizedApplications] = useState([]);
 
@@ -24,7 +33,15 @@ function Application() {
       ...prev,
       isDataNeeded: true,
     }));
+    
   }, []);
+  useEffect(() => {
+    if(stages.find(one=> one.key === location?.state?.id) ){
+      setView(location?.state?.id)
+    }else{
+      setView("all")
+    }
+  }, [location?.state]);
 
   // Clear randomized list on view change
   useEffect(() => {
@@ -111,14 +128,7 @@ function Application() {
             )}
           </div>
           <div className="flex border-b mb-6 min-w-full overflow-auto">
-            {[
-              { label: "All", key: "all" },
-              { label: "In Review", key: "in-review" },
-              { label: "Interviewed", key: "interviewed" },
-              { label: "Shortlisted", key: "shortlist" },
-              { label: "Declined", key: "declined" },
-              { label: "Hired", key: "hired" },
-            ].map(({ label, key }) => (
+            {stages?.map(({ label, key }) => (
               <button
                 key={key}
                 onClick={() => setView(key)}

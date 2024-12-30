@@ -5,7 +5,9 @@ function ListingRow({ data, applicants, isExclusive = false }) {
 
   const navigateJobTypeDetails = () => {
     if (isExclusive) {
-      navigate("/admin-exclusives/job/1");
+      navigate(`/admin-exclusives/job/${data.id}`, {
+        state: { data: data, applicants: applicants },
+      });
       return;
     } else {
       navigate(`/company/job-listing/type/${data.id}`, {
@@ -28,7 +30,7 @@ function ListingRow({ data, applicants, isExclusive = false }) {
       <td>
         <div className="flex w-full justify-center py-[10px] items-center">
           <button className="py-[2px] px-[5px] border w-[80%] text-little border-primaryColor rounded-[30px] text-center font-semibold">
-            Open
+            {(data?.status === "approved" || data?.status === "1") ? "Open" :"Closed"}
           </button>
         </div>
       </td>

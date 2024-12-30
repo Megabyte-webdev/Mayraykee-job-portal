@@ -12,14 +12,14 @@ function MessagedList({ chats, selectedChat, setSelectedChat, data }) {
   } = useContext(ChatContext);
 
   return (
-    <div className="h-full w-full md:w-1/4 p-2 border-r">
+    <div className="h-max w-full md:w-1/4 p-2 border-r">
       <input
         className="w-full border text-sm p-2 focus:outline-none"
         placeholder="Search messages"
 
       />
       {data && (
-        <ul className="min-h-20 h-full   w-full flex flex-row md:flex-col py-2 overflow-x-auto overflow-y-hidden md:overflow-y-auto">
+        <ul className="min-h-20 w-full flex flex-row md:flex-col py-2 overflow-x-auto overflow-y-hidden md:overflow-y-auto">
           {data?.map((current) => <MessageHead current={current} selectedChat={selectedChat} setSelectedChat={setSelectedChat}/>)
           }
         </ul>

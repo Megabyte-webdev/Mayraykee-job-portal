@@ -373,9 +373,9 @@ export const adminExclusiveOptions = [
 
 export const adminExclusiveUtil = [
   {
-    type: "LOG-OUT",
-    title: "Log Out",
-    route: "/admin/logout",
+    type: "Back to main",
+    title: "Back to main dasboard",
+    route: "/admin",
     icon: helpIcon,
     iconActive: helpIcon,
   },
@@ -449,6 +449,13 @@ export const adminOptions = [
     type: "Interviews",
     title: "Interviews",
     route: "/admin/interviews",
+    icon: policeIcon,
+    iconActive: policeIcon,
+  },
+  {
+    type: "Blogs",
+    title: "Blogs",
+    route: "/admin/blogs",
     icon: policeIcon,
     iconActive: policeIcon,
   },

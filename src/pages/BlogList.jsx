@@ -198,7 +198,7 @@ const calculateReadingTime = (text) => {
                                 <article
                                     onClick={() => {
                                         scrollTo(0, 0);
-                                        navigate(`/news/${blog.id}`);
+                                        navigate(`/blogs/${blog.id}`);
                                     }}
                                     key={blog.id}
                                     className="cursor-pointer bg-white rounded-lg shadow overflow-hidden"

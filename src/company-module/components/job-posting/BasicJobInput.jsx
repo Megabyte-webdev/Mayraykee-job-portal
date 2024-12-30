@@ -12,11 +12,14 @@ function BasicJobInput({ data, jobUtils }) {
           onChange={jobUtils.onTextChange}
           name={data.name}
           type={data.type}
-          className="text-sm border border-gray-400 focus:outline-none placeholder:text-gray-500 w-full p-2"
+          className="text-sm border border-gray-400 focus:outline-none placeholder:text-gray-500 w-full p-2 invalid:border-red-600"
           placeholder={data.placeholder}
+          min={data.type === "number" ? data?.min : 0} // Set minimum value for numbers
+          max={data.type === "number" ? data?.max : undefined} // Set maximum value for numbers
         />
+
         <span className="text-xs text-gray-400">
-          {data?.verification ? data?.verification: "At least 80 characters"}
+          {data?.verification ? data?.verification : "At least 80 characters"}
         </span>
       </div>
     </div>

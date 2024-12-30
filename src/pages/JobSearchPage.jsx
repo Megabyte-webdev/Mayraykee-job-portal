@@ -91,7 +91,7 @@ const JobSearchPage = () => {
     keyword: "",
     sector: "",
     type: "",
-    currency:"",
+    //currency:"",
     // minSalary: "",
     // maxSalary: "",
     // experience: "",
@@ -100,17 +100,17 @@ const JobSearchPage = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [employementList, setEmployementList] = useState([]);
-  const [currencyList, setCurrencyList] = useState([]);
+  //const [currencyList, setCurrencyList] = useState([]);
   
   const jobsPerPage = 5;
 
   useEffect(() => {
     const initData = async () => {
       const employementListResult = await getEmployentTypes();
-      const currencyResult = await getCurrencies();
-      console.log(employementListResult,currencyResult)
+      //const currencyResult = await getCurrencies();
+      console.log(employementListResult)
       setEmployementList(employementListResult);
-      setCurrencyList(currencyResult)
+      //setCurrencyList(currencyResult)
     };
 
     initData();
@@ -196,8 +196,7 @@ const JobSearchPage = () => {
                       {filterKey.replace(/([A-Z])/g, " $1").trim()}
                     </label>
                     {filterKey === "sector" ||
-                    filterKey === "type" ||
-                    filterKey === "currency"
+                    filterKey === "type"
                      ? (
                       <select
                         className="w-full border px-3 py-2 rounded-md focus:ring-2 focus:ring-indigo-500"
@@ -227,14 +226,14 @@ const JobSearchPage = () => {
                             
                           </>
                         )}
-                        {filterKey === "currency" && (
+                        {/*{filterKey === "currency" && (
                           <>
                          { currencyList?.map((item)=>(
                             <option key={item.id} value={item?.name} > {item?.name} </option>
                             
                           ))}                           
                           </>
-                        )}
+                        )}*/}
                         {/* {filterKey === "experience" && (
                           <>
                             <option value="Entry-level">Entry-level</option>

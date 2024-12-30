@@ -26,7 +26,7 @@ const calculateReadingTime = (text) => {
 
     useEffect(() => {
     if (getAllBlogPosts?.data) {
-        const fetchedBlogs = getAllBlogPosts.data.data;
+        const fetchedBlogs = getAllBlogPosts.data.data.filter(one=>one?.feature_post === "1");
 
         // Add reading time to each blog
         const blogsWithReadingTime = fetchedBlogs.map((blog) => ({
@@ -51,7 +51,7 @@ const calculateReadingTime = (text) => {
     return (
         <div className="bg-[#47aa4910]">
             <div className="flex justify-between items-center p-3">
-                <h2 className="text-sm font-semibold">LATEST NEWS</h2>
+                <h2 className="text-sm font-semibold">LATEST BLOGS</h2>
                 <button
                     className="text-green-600 border-[1px] border-green-600 px-6 py-1 rounded-full font-bold text-sm"
                     onClick={() => {
@@ -84,7 +84,7 @@ const calculateReadingTime = (text) => {
                                 {recent?.title}
                             </h4>
                             <p className="text-sm text-gray-500 mb-3">
-                                {recent?.description}
+                                {recent?.description?.slice(0,300)+"..."}
                             </p>
                             <article className="mt-2 flex justify-between gap-3">
                                 <small className="mt-2 text-sm text-gray-400 flex items-center">
@@ -133,7 +133,7 @@ const calculateReadingTime = (text) => {
                                     {newsItem?.title}
                                 </h4>
                                 <p className="text-sm text-gray-500 mb-1 md:mb-3">
-                                    {newsItem?.desc?.slice(0, 100)}...
+                                    {newsItem?.description?.slice(0, 100)}...
                                 </p>
                                 <article className="flex items-center justify-between gap-1 md:gap-3">
                                     <small className="text-xs mt-2 text-gray-400 flex items-center">

@@ -71,8 +71,9 @@ function Home() {
     return `${formattedStartDate} - ${formattedEndDate}.`;
   }
 
-  const navigateToApplications = () => {
-    navigate("/applicant/applications");
+  const navigateToApplications = (key) => {
+    
+      navigate("/applicant/applications",{state:{id: `${key}`}});
     setSideBar(3);
   };
 
@@ -177,7 +178,7 @@ function Home() {
               </div>
               <div className="pt-1 h-full md:w-full w-[45%]  md:h-1/2">
                 <div
-                  onClick={navigateToApplications}
+                  onClick={()=>navigateToApplications("interviewed")}
                   className="border bg-yellow-500 text-white transition duration-400 h-full cursor-pointer mb-4 p-3 pb-0 flex flex-col justify-between"
                 >
                   <p className="font-bold">Interviewed</p>
@@ -193,7 +194,8 @@ function Home() {
             <div className=" w-full md:w-[17%]  flex justify-between md:flex-col ">
               <div className="pt-1 h-full md:w-full w-[45%]  md:h-1/2">
                 <div
-                  onClick={navigateToApplications}
+                key="in-review"
+                  onClick={()=>navigateToApplications("in-review")}
                   className="border  bg-orange-500 text-white transition duration-400 h-full cursor-pointer mb-4 p-3 pb-0 flex flex-col justify-between"
                 >
                   <p className="font-bold">In-Review</p>
@@ -210,7 +212,7 @@ function Home() {
               </div>
               <div className="pt-1 h-full md:w-full w-[45%]  md:h-1/2">
                 <div
-                  onClick={navigateToApplications}
+                  onClick={()=>navigateToApplications("shortlist")}
                   className="border bg-lightblue text-white transition duration-400 h-full cursor-pointer mb-4 p-3 pb-0 flex flex-col justify-between"
                 >
                   <p className="font-bold">Shortlisted</p>
@@ -227,34 +229,17 @@ function Home() {
               </div>
             </div>
 
-            <div className="w-full flex items-center justify-center md:w-[25%] bg-primaryColor text-white border">
-              <div className=" p-3">
-                <p className="font-bold">Jobs Application Status</p>
-                <div className="my-5 flex items-center">
+            <div className="w-full flex flex-col items-center justify-center md:w-[25%] bg-primaryColor text-white border md:text-center lg:flex lg:flex-row lg:items-center lg:justify-between lg:w-auto">
+              <div className="p-3 w-full lg:w-1/2">
+                <p className="font-bold text-center lg:text-left">Jobs Application Status</p>
+                <div className="my-5 flex flex-col items-center lg:flex-row lg:items-center lg:justify-start">
                   <div className="">
                     <RoundChart />
                   </div>
-                  {/* <div className="w-2/5">
-                    <div className="flex items-center">
-                      <div className="size-3 rounded bg-[#0F5A02] mr-3"></div>
-                      <div className="mb-2">
-                        <p className="font-bold">60%</p>
-                        <p>Unsuitable</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="size-3 rounded bg-[#E9EBFD] mr-3"></div>
-                      <div className="mb-2">
-                        <p className="font-bold">40%</p>
-                        <p>Interviewed</p>
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
-                <div className="flex my-3  items-center font-bold cursor-pointer hover:opacity-90">
-                  <p onClick={()=>{scrollTo(0,0); navigate("/applicant/applications")}}>View All Applications</p>
+                <div className="flex my-3 items-center font-bold cursor-pointer hover:opacity-90 lg:justify-start">
+                  <p onClick={() => { scrollTo(0, 0); navigate("/applicant/applications") }}>View All Applications</p>
                   <span className="ml-2">
-                    {" "}
                     <FaArrowRightLong />
                   </span>
                 </div>
@@ -325,7 +310,7 @@ function Home() {
                 />
               ))}
               <div className="my-4 flex justify-center">
-                <div className="flex my-3 items-center cursor-pointer prime_text hover:opacity-90">
+                <div onClick={()=>navigate("/applicant/applications")} className="flex my-3 items-center cursor-pointer prime_text hover:opacity-90">
                   <p>View All Applications</p>
                   <span className="ml-2">
                     {" "}

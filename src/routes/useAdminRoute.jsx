@@ -61,7 +61,8 @@ const AllDomesticStaff = lazy(() => import("../admin-module/pages/domesticStaff/
 const DomesticStaffDetails = lazy(() => import("../admin-module/pages/domesticStaff/DomesticStaffDetails"));
 const Candidates = lazy(() => import("../admin-module/pages/candidate/Candidate"));
 const Interviews = lazy(() => import("../admin-module/pages/Interviews"));
-
+const Blogs = lazy(() => import("../admin-module/pages/blogs/ManageBlogs"));
+const CreateBlog = lazy(() => import("../admin-module/pages/blogs/CreateBlog"));
 
 
 
@@ -206,8 +207,10 @@ function useAdminRoute() {
                       <Route path="guarantors" element={<AllGuarantors />} />
                       <Route path="medical-histories" element={<AllMedicalHistories />} />
                       
-                      <Route path="police-reports" element={<AllPoliceReports />} />
 
+                      <Route path="police-reports" element={<AllPoliceReports />} />
+                      <Route path="blogs" element={<Blogs/>} />
+                      <Route path="create-blog" element={<CreateBlog/>} />
 
                     </Routes>
                   </PrimeReactProvider>

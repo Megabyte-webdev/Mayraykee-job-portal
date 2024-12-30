@@ -4,10 +4,11 @@ import Spinner from "../Spinner";
 import { PaystackConsumer } from "react-paystack";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { SubscriptionContext } from "../../context/SubscriptionContext";
+import useSubscription from "../../hooks/useSubscription";
 
 function SubscriptionCard({ data, setIsOpen }) {
   const [showPerks, setShowPerks] = useState(false);
-  const subUtils = useContext(SubscriptionContext);
+  const subUtils = useSubscription();
 
   const handleOnClick = (reference, data) => {
     console.log("Triggered");

@@ -17,7 +17,7 @@ const CompanyDetails = () => {
     const navigate = useNavigate();
     const postedDate = new Date(job.created_at);
     const keywordArr = job.search_keywords?.split(',');
-
+   
     return (
         <div className="h-full text-[#25324b] w-full">
             <div className='py-6 border-b mb-8'>

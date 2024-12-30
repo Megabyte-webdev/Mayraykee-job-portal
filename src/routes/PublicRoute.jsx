@@ -22,6 +22,7 @@ const BlogList = lazy(() => import("../pages/BlogList"));
 const BlogRead = lazy(() => import("../pages/BlogRead"));
 const JobSearchPage = lazy(() => import("../pages/JobSearchPage"));
 const FindStaff = lazy(() => import("../pages/FindStaff"));
+const Services = lazy(() => import("../pages/Services"));
 
 function PublicRoute() {
 
@@ -43,7 +44,7 @@ function PublicRoute() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/find-jobs" element={<JobSearchPage />} />
           <Route path="/find-staff/:id" element={<FindStaff />} />
-
+<Route path="/services" element={<Services />} />
           <Route
             path="/terms&conditions"
             element={<TermsConditions />}

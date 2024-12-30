@@ -2,15 +2,17 @@ import { useContext, useState } from "react";
 import { SubscriptionContext } from "../context/SubscriptionContext";
 import { IoGift } from "react-icons/io5";
 import SubscriptionModal from "./subscription/SubscriptionModal";
-
+import useSubscription from "../hooks/useSubscription";
+import { AuthContext } from "../context/AuthContex";
 function SubscriptionOffer() {
-  const { activePackage } = useContext(SubscriptionContext);
+  const { authDetails } = useContext(AuthContext);
+  const { activePackage } = useSubscription();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <SubscriptionModal isOpen={isOpen} setIsOpen={setIsOpen} />
-      {!activePackage && (
+      {(!activePackage && authDetails?.user?.user_type !== "exclusive") && (
         <div className="w-full  text-white h-[10vh] flex items-center justify-between px-5 bg-lightblue/50">
           <div className="flex flex-col *:animate-pulse ">
             <h1 className="font-semibold flex gap-2 items-center">

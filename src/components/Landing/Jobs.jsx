@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaLocationDot } from "react-icons/fa6";
 import { BiBriefcase } from "react-icons/bi";
 import approved from "../../assets/pngs/approved.png";
+import company from "../../assets/pngs/company-2-icon.png";
 import { ResourceContext } from "../../context/ResourceContext";
 import { IMAGE_URL } from "../../utils/base";
 
@@ -77,7 +78,7 @@ const Jobs = () => {
     if (getAllFeaturedJobs?.data) {
       const fetchedJobs = getAllFeaturedJobs?.data || [];
       const neededJobs = fetchedJobs.filter(
-        (one) => parseInt(one?.feature_jobs) === 0
+        (one) => parseInt(one?.feature_jobs) === 1
       );
       setJobs(neededJobs.slice(0, 6));
       setLoading(false);
@@ -136,12 +137,12 @@ const Jobs = () => {
               <div>
                 <h4 className="capitalize text-xl font-semibold my-2 text-gray-800">{job?.job_title}</h4>
                 <p className="font-semibold text-sm text-gray-500 flex gap-2 items-center">
-                  {job?.company || "Pinterest"}{" "}
+                  {job?.sector || ""}{" "}
                   <img src={approved} alt="approved" className="w-5" />
                 </p>
               </div>
               <img
-                src={`${IMAGE_URL}/${job?.featured_image}`}
+                src={job?.featured_image ? `${IMAGE_URL}/${job?.featured_image}` : company}
                 alt="img"
                 className="h-12 w-12 object-cover rounded-full"
               />

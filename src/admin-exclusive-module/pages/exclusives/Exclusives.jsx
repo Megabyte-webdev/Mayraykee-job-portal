@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import GridTableWrap from "../../components/GridTableWrap";
 import AddExclusiveModal from "../../components/modals/AddExclusiveModal";
+import { AdminExclusiveManagementContext } from "../../../context/AdminExclusiveManagement";
 
 function Exclusives() {
   const [isOpen, setIsOpen] = useState(false);
+  const {exclusives} = useContext(AdminExclusiveManagementContext)
 
   const toogleExclusiveModal = () => setIsOpen(!isOpen)
 

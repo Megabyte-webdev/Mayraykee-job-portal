@@ -5,6 +5,7 @@ import Footer from '../components/Landing/Footer';
 import SectionHeader from "../components/Landing/SectionHeader";
 import { BASE_URL } from '../utils/base';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const BlogRead = () => {
     const { id } = useParams(); // Get the blog ID from the URL
@@ -36,7 +37,7 @@ const BlogRead = () => {
                 setLoading(false);
             })
             .catch((error) => {
-                console.error("Error fetching blog:", error);
+                toast.error("Error fetching blog:", error?.message);
                 setLoading(false);
             });
     }, [id]); // Run the effect when `id` changes

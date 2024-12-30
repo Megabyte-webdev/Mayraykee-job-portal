@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import Header from "../../components/job-listing/Header";
 import Applicants from "../../components/job-listing/Applicants";
 import JobDetails from "../../components/job-listing/JobDetails";
-import Analytics from "../../components/job-listing/Analytics";
 import { useLocation, useParams } from "react-router-dom";
-import useJobManagement from "../../../hooks/useJobManagement";
-import DeleteDialog from "../../../components/DeleteDialog";
 import { JobContext } from "../../../context/JobContext";
 import { useContext } from "react";
 import { ApplicationContext } from "../../../context/ApplicationContext";
-import { applicants_dummy, job_dummy } from "../../../utils/dummies";
+import useJobManagement from "../../../hooks/useJobManagement";
 
 const options = [
   {
@@ -22,14 +19,14 @@ const options = [
   },
 ];
 
-function JobType({test = false}) {
+function JobType({test = false, resource = null}) {
   const [currentOption, setCurrentOption] = useState(options[0]);
-  const jobUtils = useContext(JobContext);
+  const jobUtils = useJobManagement();
   const { applicants } = useContext(ApplicationContext);
   const { id } = useParams();
-  const [currentJob, setCurrentJob] = useState(job_dummy);
+  const [currentJob, setCurrentJob] = useState([]);
   const location = useLocation();
-  const [allApplicants, setAllApplicants] = useState(applicants_dummy);
+  const [allApplicants, setAllApplicants] = useState([]);
 
   const getComponent = () => {
     switch (currentOption.id) {
@@ -44,9 +41,11 @@ function JobType({test = false}) {
  
   useEffect(() => {
     console.log(test)
+    console.log(location?.state)
     if(!test){
       if (location?.state?.data !== null) {
         setCurrentJob(location?.state?.data);
+        
       } else {
         console.log(jobUtils.jobList);
         jobUtils.getJobById(id, setCurrentJob);
@@ -54,6 +53,22 @@ function JobType({test = false}) {
   
       if (location?.state?.applicants) {
         setAllApplicants(location.state.applicants);
+      } else {
+        const currentApplicants = applicants.find(
+          (current) => current.job_id === Number(id)
+        );
+        setAllApplicants(currentApplicants);
+      }
+    } else{
+      if (resource?.data !== null) {
+        setCurrentJob(location?.state?.data);
+      } else {
+        console.log(jobUtils.jobList);
+        jobUtils.getJobById(id, setCurrentJob);
+      }
+  
+      if (resource?.applicants) {
+        setAllApplicants(resource.applicants);
       } else {
         const currentApplicants = applicants.find(
           (current) => current.job_id === Number(id)

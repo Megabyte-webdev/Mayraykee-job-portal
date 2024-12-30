@@ -1,7 +1,12 @@
+import { useContext } from "react";
 import SubscriptionCard from "../components/subscription/SubscriptionCard";
+import { SubscriptionContext } from "../context/SubscriptionContext";
+import useSubscription from "../hooks/useSubscription";
 
 function SubscriptionPlans({ packages, setIsOpen }) {
-  const style = packages.length > 4 ? 'md:grid-cols-3 w-[95%] ' : `md:grid-cols-2 w-[60%]` 
+  const subUtils = useSubscription();
+  const backUpPackages=subUtils.packages
+  const style = backUpPackages?.length > 4 ? 'md:grid-cols-3 w-[95%] ' : `md:grid-cols-2 w-[60%]` 
   return (
     <div className="h-full w-full justify-start  items-center gap-5 overflow-y-auto bg-white flex flex-col">
       <h2 className="font-semibold text-black text-3xl">Choose a plan</h2>
@@ -14,7 +19,7 @@ function SubscriptionPlans({ packages, setIsOpen }) {
       </p>
 
       <ul className={`h-[70%] grid grid-cols-1 ${style} gap-5 justi  `}>
-        {packages?.map((current) => (
+        {backUpPackages?.map((current) => (
           <SubscriptionCard
             setIsOpen={setIsOpen}
             key={current.id}

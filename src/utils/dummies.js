@@ -184,9 +184,16 @@ export const admin_exlusve_dummies = [
 export const exclusives_table_head_dummies = [
   "Full Name",
   "Email",
+  "Joined On",
+  "Action",
+];
+
+export const applcants_table_head_dummies = [
+  "Full Name",
+  "Email",
   "Status",
-  "Applied Date",
-  "Job Role",
+  "Applied On",
+  "Role",
   "Action",
 ];
 export const job_table_head_dummies = [

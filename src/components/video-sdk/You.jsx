@@ -15,15 +15,16 @@ import { axiosClient } from "../../services/axios-client";
 import { stages } from "../../utils/constants";
 import { onFailure } from "../../utils/notifications/OnFailure";
 import { LuLoader } from "react-icons/lu";
-import { ApplicationContext } from "../../context/ApplicationContext";
+// import { ApplicationContext } from "../../context/ApplicationContext";
 import { IMAGE_URL } from "../../utils/base";
+import useApplicationManagement from "../../hooks/useApplicationManagement";
 
 function You({ data, job, applicant }) {
 
   const micRef = useRef(null);
   const { authDetails } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { application, setApplication } = useContext(ApplicationContext);
+  const { application, setApplication } = useApplicationManagement()
   const {
     webcamStream,
     micStream,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { BsGrid, BsGridFill } from "react-icons/bs";
 import { TbLayoutList, TbLayoutListFilled } from "react-icons/tb";
 import TableWrap from "./TableWrap";
@@ -6,18 +6,22 @@ import TableRow from "./TableRow";
 import GridCard from "./GridCard";
 import { useNavigate } from "react-router-dom";
 import { exclusives_table_head_dummies } from "../../utils/dummies";
+import { AdminExclusiveManagementContext } from "../../context/AdminExclusiveManagement";
 
 function GridTableWrap() {
+  const { exclusives } = useContext(AdminExclusiveManagementContext);
   const [isGrid, setIsGrid] = useState(false);
   const navigate = useNavigate();
-  const navigateToSingle = (id) => {
-        navigate('/admin-exclusives/lists/1');
-  }
+  const navigateToSingle = (data) => {
+    navigate(`/admin-exclusives/lists/${data.id}`, {state: {data}});
+  };
 
   return (
     <div className="h-full w-full flex flex-col px-2 md:px-2 mt-5 py-2 gap-[15px]">
       <div className="w-full flex justify-between ">
-        <h2 className="font-semibold text-md">All Exclusives: 10</h2>
+        <h2 className="font-semibold text-md">
+          All Exclusives: {exclusives.length}
+        </h2>
 
         <div className=" px-2">
           <button
@@ -41,11 +45,15 @@ function GridTableWrap() {
 
       {!isGrid ? (
         <TableWrap rows={exclusives_table_head_dummies}>
-          <TableRow navigateToSingle={navigateToSingle}/>
+          {exclusives?.map((current) => (
+            <TableRow data={current} key={current} navigateToSingle={navigateToSingle} />
+          ))}
         </TableWrap>
       ) : (
-        <ul className="gap-3 grid grid-cols-3">
-          <GridCard navigateToSingle={navigateToSingle}/>
+        <ul className="gap-3 grid grid-cols-responsive">
+          {exclusives?.map((current) => (
+            <GridCard data={current} key={current}  navigateToSingle={navigateToSingle} />
+          ))}
         </ul>
       )}
     </div>

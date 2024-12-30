@@ -2,7 +2,7 @@ import { MdClose } from "react-icons/md";
 import JobPosting from "../../../company-module/pages/job-posting/JobPosting";
 import PopUpBox from "../../../components/PopUpBox";
 
-function AddJobModal({ toogleJobModal, isOpen }) {
+function AddJobModal({ toogleJobModal, isOpen, exclusive }) {
   return (
     <PopUpBox isOpen={isOpen}>
       <div className="bg-white w-[90%] h-[95%]  py-3">
@@ -13,7 +13,7 @@ function AddJobModal({ toogleJobModal, isOpen }) {
           <MdClose /> Close Form
         </button>
         <div className="overflow-y-auto h-[95%]">
-          <JobPosting />
+          <JobPosting exclusive={exclusive} />
         </div>
       </div>
     </PopUpBox>

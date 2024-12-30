@@ -111,7 +111,7 @@ function ChatComponent({ selectedChat, setSelectedChat, applicationUtils }) {
  <ul className="flex-1 flex w-full flex-col p-2 pb-2 overflow-y-auto">
           {messages &&
             messages.length !== 0 &&
-            messages?.map((current) => {
+            messages?.map((current, index) => {
               const getPositions = (sender) => {
                 switch (sender) {
                   case "employer":

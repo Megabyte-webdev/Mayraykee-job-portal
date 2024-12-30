@@ -2,14 +2,14 @@ import { Helmet } from "react-helmet";
 import ApplicantRow from "../../components/applicants/ApplicantRow";
 import useApplicationManagement from "../../../hooks/useApplicationManagement";
 import { useContext, useEffect, useState } from "react";
-import { ApplicationContext } from "../../../context/ApplicationContext";
+//import { ApplicationContext } from "../../../context/ApplicationContext";
 import { InterviewContext } from "../../../context/InterviewContext";
 import { BsGrid, BsGridFill } from "react-icons/bs";
 import { TbLayoutList, TbLayoutListFilled } from "react-icons/tb";
 import InterviewGridCard from "./InteviewGridCard";
 
 function Schedule() {
-  const applicationUtils = useContext(ApplicationContext);
+  const applicationUtils = useApplicationManagement();
   const interviewUtils = useContext(InterviewContext);
   const [isGrid, setIsGrid] = useState(false);
 
@@ -50,7 +50,7 @@ function Schedule() {
 
         <div className="overflow-x-auto ">
           {isGrid ? (
-            <ul className="grid grid-cols-3 gap-5 px-3">
+            <ul className="grid grid-cols-responsive gap-5 px-3">
               {applicationUtils?.applicants &&
                 applicationUtils?.applicants?.map((current) => (
                   <InterviewGridCard key={current.id} data={current} />
@@ -61,9 +61,9 @@ function Schedule() {
               <thead className="border bg-white text-gray-600 font-semibold">
                 <tr className="text-xs md:text-sm divide-gray-200">
                   <th className="px-2 md:px-4 py-1 text-center">Full Name</th>
-                  <th className="px-2 md:px-4 py-1 text-center">Email</th>
+                  <th className="px-2 md:px-4 py-1 text-center hidden md:block">Email</th>
                   <th className="px-2 md:px-4 py-1 text-center">Status</th>
-                  <th className="px-2 md:px-4 py-1 text-center">
+                  <th className="px-2 md:px-4 py-1 text-center hidden md:block">
                     Applied Date
                   </th>
                   <th className="px-2 md:px-4 py-1 text-center">Job Role</th>

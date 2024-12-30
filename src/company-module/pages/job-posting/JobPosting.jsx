@@ -5,7 +5,7 @@ import Descriptions from "../../components/job-posting/Descriptions";
 import useJobManagement from "../../../hooks/useJobManagement";
 import { onSuccess } from "../../../utils/notifications/OnSuccess";
 import { onFailure } from "../../../utils/notifications/OnFailure";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const fields={
   featured_image: null,
     // job_title: "",
@@ -45,16 +45,27 @@ const job_steps = [
   },
 ];
 
-function JobPosting() {
+function JobPosting({exclusive=null}) {
+  const location= useLocation();
   const [currentStep, setCurrentStep] = useState(job_steps[0]);
+  const [editJob, setEditJob] = useState(false);
   const jobUtils = useJobManagement();
   const navigate = useNavigate();
 
+
   const handleSuccess = () => {
+   if(editJob){
+    onSuccess({
+      message: 'Update Job',
+      success: 'Job Updated Successfully',
+    });
+   }else{
     onSuccess({
       message: 'New Job',
       success: 'Job Created Successfully',
     });
+   }
+  
     navigate('/company/job-listing');
   };
   const validateAndProceed = () => {
@@ -81,6 +92,14 @@ function JobPosting() {
     console.log("Details", jobUtils.details);
   }, [jobUtils.details]);
 
+  useEffect(()=>{
+    console.log(location.state?.details)
+    if(location.state?.details){
+      jobUtils.setDetails(location.state?.details)
+      setEditJob(true); 
+    }
+  },[location.state])
+
   return (
     <div className="py-2 px-5 md:px-8 lg:px-12 w-full h-full flex flex-col">
       <PostingHeader
@@ -95,6 +114,7 @@ function JobPosting() {
           data={job_steps}
           setCurrentStep={setCurrentStep}
           validateAndProceed={validateAndProceed}
+          editJob={editJob}
         />
       )}
 
@@ -104,6 +124,8 @@ function JobPosting() {
           data={job_steps}
           setCurrentStep={setCurrentStep}
           handleSuccess={handleSuccess}
+          exclusive={exclusive}
+          editJob={editJob}
         />
       )}
     </div>

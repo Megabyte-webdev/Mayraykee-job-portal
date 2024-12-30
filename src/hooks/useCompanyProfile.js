@@ -4,6 +4,7 @@ import { set, get, del, keys } from "idb-keyval";
 import { FormatError } from "../utils/formmaters";
 import { AuthContext } from "../context/AuthContex";
 import { onFailure } from "../utils/notifications/OnFailure";
+import { onSuccess } from "../utils/notifications/OnSuccess";
 
 export const COMPANY_PROFILE_Key = "Company Profile Database";
 
@@ -118,10 +119,21 @@ function useCompanyProfile() {
 
       //On success, save response data to index db
       await set(COMPANY_PROFILE_Key, response.data.employer);
+      onSuccess({"message": "Successful"});
       handleSuccess();
     } catch (error) {
       console.log(error);
       // FormatError(error, setError, "Update Error");
+      onFailure({
+        message: error?.message || "An error occurred",
+        error: 
+          typeof error?.response?.data?.message === "string"
+            ? error?.response?.data?.message
+            : Object.entries(error?.response?.data?.message || {})
+                .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(", ") : value}`)
+                .join("\n"),
+      });
+      
     } finally {
       setLoading(false);
     }

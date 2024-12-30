@@ -7,7 +7,7 @@ function JobUpdates({jobs, applicants}) {
         <h3>Jobs Updates</h3>
       </div>
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-3 px-8 mt-4 h-[85%] justify-start items-start gap-[15px] w-full max-w-[98%] ">
-        {jobs.map(current => <JobItem data={current} key={current.id}/>)}
+        {jobs.map(current => <JobItem data={current} applicants={applicants}/>)}
       </ul>
     </div>
   );

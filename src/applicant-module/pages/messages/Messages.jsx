@@ -44,10 +44,10 @@ function Messages() {
       <Helmet>
         <title>Company Dashboard | Messages</title>
       </Helmet>
-      <div className="h-full w-full flex p-2 justify-between  flex-col">
+      <div className="h-full w-full flex p-2 justify-between flex-col overflow-hidden">
         <h1 className="font-semibold text-md">Messages</h1>
 
-        <div className="flex border-2 h-[95%] w-full">
+        <div className="relative flex-1 flex flex-col md:flex-row border-2 w-full h-full">
           <MessagedList
             chats={chat_dummies}
             data={byCompany()}

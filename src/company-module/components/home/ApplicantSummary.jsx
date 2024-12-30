@@ -4,7 +4,7 @@ import { CompanyRouteContext } from "../../../context/CompanyRouteContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-function ApplicantSummary({ applicants, byCategory }) {
+function ApplicantSummary({ applicants, byCategory, jobs }) {
   const { setSideBar } = useContext(CompanyRouteContext);
   const navigate = useNavigate();
 
@@ -26,6 +26,9 @@ function ApplicantSummary({ applicants, byCategory }) {
           {byCategory &&
             Object.keys(byCategory)?.splice(0,3).map((current) => {
               const info = byCategory[current];
+              const jobApplicants = applicants?.filter(
+                  (currentApplicant) => currentApplicant.job_id === info[0].job_id
+                );
               return (
                 <>
                   <div
@@ -36,7 +39,7 @@ function ApplicantSummary({ applicants, byCategory }) {
                     <span
                       onClick={() => {
                         setSideBar(4);
-                        navigate(`/company/job-listing/type/${current}`);
+                        navigate(`/company/job-listing/type/${current}`,{ state: { data: jobs.find(one=> Number(one.id) === Number(info[0].job_id)), applicants: jobApplicants } });
                       }}
                       className=" font-semibold hover:underline cursor-pointer"
                     >

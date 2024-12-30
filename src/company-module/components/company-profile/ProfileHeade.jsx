@@ -22,8 +22,8 @@ function ProfileHeader({ children, isOpen, setIsOpen, details }) {
       {/* Profile Image Section */}
       <div className="w-full md:w-fit flex items-center justify-center relative p-4 md:my-2">
         <img
-          className="h-[80px] w-[80px] rounded-full object-cover"
-          src={details?.logo_image ? `${resourceUrl}/${details?.logo_image}` : wheelIcon}
+          className="h-[80px] w-[80px] rounded-full object-cover border-2"
+          src={details?.logo_image ? `${resourceUrl}${details?.logo_image}` : wheelIcon}
           alt="Profile"
         />
       </div>

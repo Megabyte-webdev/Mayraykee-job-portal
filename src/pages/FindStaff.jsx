@@ -50,8 +50,7 @@ function FindStaff() {
       );
       if (matchedCategory) {
         setSelectedCategory(matchedCategory.name);
-        handleSearchClick(); // Trigger search only when valid category is set
-      } else {
+        } else {
         navigate("/not-found");
       }
     }
@@ -78,27 +77,40 @@ function FindStaff() {
   };
 
   const handleSearchClick = async () => {
-    setLoading(true);
-    if (!selectedCategory) {
-      return;
-    }
+  setLoading(true);
+  if (!selectedCategory) {
+    return;
+  }
 
-    const queryParams = {
-      staff_category:
-        selectedCategory?.toLowerCase() === "domestic staff"
-          ? "staff"
-          : selectedCategory?.toLowerCase(),
-      ...(selectedSubcategory && { subcategory: selectedSubcategory }),
-      ...(searchInput && { search: searchInput }),
-      ...(ageRange && { age_range: ageRange }),
-      ...(gender && { gender }),
-      ...(educationalLevel && { education_level: educationalLevel }),
-    };
+  // Reset subcategory if it doesn't belong to the current category
+  const validSubcategories = categories.find(
+    (category) => category.name === selectedCategory
+  )?.subcategories.map((sub) => sub.name) || [];
 
-    await handleQuerySubmit(queryParams);
+  if (!validSubcategories.includes(selectedSubcategory)) {
+    setSelectedSubcategory("");
+  }
+
+  const queryParams = {
+    staff_category:
+      selectedCategory?.toLowerCase() === "domestic staff"
+        ? "staff"
+        : selectedCategory?.toLowerCase(),
+    ...(validSubcategories.includes(selectedSubcategory) && {
+      subcategory: selectedSubcategory,
+    }),
+    ...(ageRange && { age_range: ageRange }),
+    ...(gender && { gender }),
+    ...(educationalLevel && { education_level: educationalLevel }),
   };
 
+  await handleQuerySubmit(queryParams);
+};
+  
+
   useEffect(() => {
+    handleSearchClick(); // Trigger search only when valid category is set
+      
     const selectedCategoryData = categories?.find(
       (category) => category.name === selectedCategory
     );

@@ -3,12 +3,15 @@ import JobPosting from "../../../company-module/pages/job-posting/JobPosting";
 import PopUpBox from "../../../components/PopUpBox";
 import FormButton from "../../../components/FormButton";
 import useRegistration from "../../../hooks/useRegistration";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaSpinner } from "react-icons/fa6";
+import { AdminExclusiveManagementContext } from "../../../context/AdminExclusiveManagement";
 
 function AddExclusiveModal({ toogleExclusiveModal, isOpen }) {
   const { registerExclusive } = useRegistration();
   const [loading, setLoading] = useState(false);
+  const {exclusives, getAllExclusives} = useContext(AdminExclusiveManagementContext)
+
 
   const handleSubmit = async (e) => {
     setLoading(true);
@@ -22,7 +25,8 @@ function AddExclusiveModal({ toogleExclusiveModal, isOpen }) {
     };
 
     await registerExclusive(() => {}, data);
-
+    await getAllExclusives()
+    toogleExclusiveModal()
     setLoading(false);
   };
 

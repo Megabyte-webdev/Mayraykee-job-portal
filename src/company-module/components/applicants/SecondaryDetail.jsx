@@ -12,7 +12,7 @@ const options = [
 
 function SecondaryDetail(props) {
   const [currentOption, setCurrentOption] = useState(options[0]);
-  console.log(props)
+  //console.log(props)
   const getCurrentOption = () => {
     switch (currentOption) {
       case options[0]:

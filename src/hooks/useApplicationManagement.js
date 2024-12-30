@@ -28,21 +28,25 @@ function useApplicationManagement() {
   };
 
   const getApplicantsByEmployee = async () => {
-    setLoading(true);
+    if(authDetails?.token !== null){
+      setLoading(true);
     try {
       const response = await client(
         `getEmployerApply/${authDetails?.user?.id}`
       );
-      await set(APPLICANTS_KEY, response.data.job_application);
       setApplicants(response.data.job_application);
+      await set(APPLICANTS_KEY, response.data.job_application);
+     
     } catch (error) {
       FormatError(error, setError, "Applicants Error");
     } finally {
       setLoading(false);
     }
+    }
   };
   const getJobApplications = async () => {
-    setLoading(true);
+    if(authDetails?.token){
+      setLoading(true);
     try {
       const response = await client(`/getUserApply/${authDetails?.user?.id}`);
       setjobApplications(response.data.job_application);
@@ -50,6 +54,7 @@ function useApplicationManagement() {
       FormatError(error, setError, "Applicants Error");
     } finally {
       setLoading(false);
+    }
     }
   };
 
@@ -195,21 +200,23 @@ function useApplicationManagement() {
   }, [error.message, error.error]);
 
   useEffect(() => {
-    const initValue = async () => {
-      try {
-        const storedValue = await get(APPLICANTS_KEY);
-        if (storedValue !== undefined) {
-          setApplicants([...storedValue]);
-        } else {
-          await getApplicantsByEmployee();
-        }
-      } catch (error) {
-        FormatError(error, setError, "Index Error");
+    
+if(authDetails?.token){
+  const initValue = async () => {
+    try {
+      const storedValue = await get(APPLICANTS_KEY);
+      if (storedValue !== undefined) {
+        setApplicants([...storedValue]);
+      } else {
+        await getApplicantsByEmployee();
       }
-    };
-
-    initValue();
-  }, []);
+    } catch (error) {
+      FormatError(error, setError, "Index Error");
+    }
+  };
+  initValue();
+}
+  }, [authDetails?.token]);
 
   return {
     loading,

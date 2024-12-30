@@ -23,6 +23,7 @@ const PageSize = 3;
 function Companies() {
   const [isGrid, setIsGrid] = useState(true);
   const [industry, setIndustry] = useState("");
+  const [companies, setcompanies] = useState([]);
   const [companySize, setCompanySize] = useState("");
   const [companyName, setcompanyName] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -38,23 +39,30 @@ function Companies() {
       };
     });
   }, []);
+  useEffect(() => {
+    if(getAllCompanies.data){
+      setcompanies(getAllCompanies.data?.filter(one=>one.employer !==null))
+    }
+    
+  }, [getAllCompanies]);
+  
 
-  const filteredData = getAllCompanies.data?.filter((job) => {
-    const filteredSized = companySize ? job.company_size > companySize : true;
+  const filteredData = companies.filter(({employer}) => {
+    const filteredSized = companySize ? employer?.company_size > companySize : true;
     const filterIndustry = industry
-      ? job.sector?.toLowerCase().includes(industry?.toLowerCase())
+      ? employer?.sector?.toLowerCase().includes(industry?.toLowerCase())
       : true;
     const filterName = companyName
-      ? job.company_name.toLowerCase().includes(companyName?.toLowerCase())
+      ? employer?.company_name.toLowerCase().includes(companyName?.toLowerCase())
       : true;
     const filterLocation = selectedLocation
-      ? job.location.toLowerCase().includes(selectedLocation?.toLowerCase())
+      ? employer?.location.toLowerCase().includes(selectedLocation?.toLowerCase())
       : true;
 
     return filterIndustry && filteredSized && filterName && filterLocation;
   });
 
-  console.log(getAllCompanies.data)
+  // console.log(companies?.filter(one=>one.employer !==null))
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
@@ -127,7 +135,7 @@ function Companies() {
                 <h4 className="font-bold text-base">All Companies</h4>
                 <div className="flex justify-between mb-6">
                   <div>
-                    <p>Showing {getAllCompanies.data?.length} results</p>
+                    <p>Showing {companies?.length} results</p>
                   </div>
                   <div className="flex">
                     <div className="flex mr-3">
@@ -165,24 +173,24 @@ function Companies() {
                     </div>
                   </div>
                 </div>
-                {getAllCompanies.data && (
+                {companies && (
                   <div className="min-h-full overflow-y-auto thin_scroll_bar">
                     {isGrid ? (
                       <div className="grid grid-cols-responsive gap-4">
-                        {currentTableData?.map((company) => (
+                        {currentTableData?.map(({employer}) => (
                           <CompanyGridCard
-                            key={company.id}
-                            company={company}
+                            key={employer.id}
+                            company={employer}
                             newApplicant={newApplicant}
                           />
                         ))}
                       </div>
                     ) : (
                       <div>
-                        {currentTableData?.map((company) => (
+                        {currentTableData?.map(({employer}) => (
                           <CompanyCard
-                            key={company.id}
-                            company={company}
+                            key={employer.id}
+                            company={employer}
                             newApplicant={newApplicant}
                           />
                         ))}
@@ -191,7 +199,7 @@ function Companies() {
                   </div>
                 )}
               </div>
-              {getAllCompanies.data && (
+              {companies && (
                 <div className="mt-5">
                   <div>
                     <p>

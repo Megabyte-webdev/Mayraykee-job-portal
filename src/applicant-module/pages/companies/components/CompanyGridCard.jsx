@@ -6,7 +6,7 @@ const CompanyGridCard = ({ newApplicant, company}) => {
 
     return (
         <div
-            onClick={() => navigate("/applicant/browse-companies/id",  { state: { company: company} })}
+            onClick={() => {navigate("/applicant/browse-companies/id",  { state: { company: company} }); scrollTo(0,0)}}
             className="border cursor-pointer hover:shadow-inner">
             <div className="p-3 h-full transition-all hover:scale-105">
                 <div className="flex justify-between items-start my-3">

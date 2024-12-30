@@ -71,29 +71,29 @@ function ApplicateGridCard({ data }) {
   };
   return (
     <div className="flex flex-col rounded-md items-center border border-gray-400 p-5 gap-3">
-      <span className="font-semibold">{data.job_title}</span>
+      <span className="font-semibold text-green-800">{data.job_title}</span>
 
-      <div className="flex w-full justify-between px-3">
+      <div className="flex w-full justify-between px-3 gap-2">
         <span className="text-gray-600 font-semibold">Full Name</span>
         <span>{data.full_name}</span>
       </div>
 
-      <div className="flex w-full justify-between px-3">
+      <div className="flex w-full justify-between px-3 gap-2">
         <span className="text-gray-600 font-semibold">Email</span>
         <span>{data.email}</span>
       </div>
 
-      <div className="flex w-full justify-between px-3">
+      <div className="flex w-full justify-between px-3 gap-2">
         <span className="text-gray-600 font-semibold">Phone</span>
         <span>{data.phone_number}</span>
       </div>
 
-      <div className="flex w-full items-center justify-between px-3">
+      <div className="flex w-full items-center justify-between px-3 gap-2">
         <span className="text-gray-600 font-semibold">Status</span>
         <span>{getStatusComponent()}</span>
       </div>
 
-      <div className="flex w-full items-center justify-between px-3">
+      <div className="flex w-full items-center justify-between px-3 gap-2">
         <span className="text-gray-600 font-semibold">Action</span>
         <span onClick={navigateToApplicantDetails} className="hover:underline hover:text-primaryColor cursor-pointer">
           View Application

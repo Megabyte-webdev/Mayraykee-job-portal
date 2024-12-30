@@ -17,7 +17,7 @@ import "react-quill/dist/quill.snow.css";
 import FormButton from "../../../components/FormButton";
 import { resourceUrl } from "../../../services/axios-client";
 
-const basic_inputs = [
+export const basic_inputs = [
   {
     id: 1,
     name: "company_name",
@@ -114,7 +114,7 @@ const basic_inputs = [
   },
 ];
 
-const social_media_inputs = [
+export const social_media_inputs = [
   {
     id: 1,
     icon: <FaFacebook className="text-lg" />,
@@ -154,7 +154,7 @@ function UpdateCompanyProfileModal({
     updateCompanyProfile,
     retrievalState,
   } = companyHookProps;
-  const [campaignPhotos, setCampaignPhotos] = useState([...details?.company_campaign_photos]);
+  const [campaignPhotos, setCampaignPhotos] = useState([...details?.company_campaign_photos || []]);
 
   const getCampaingPhotoURL = (e) => {
     const { name } = e.target;
@@ -165,7 +165,7 @@ function UpdateCompanyProfileModal({
       const generatedUrl = URL.createObjectURL(file);
       if (campaignPhotos.length <= 0) return
       const list = [...campaignPhotos, { url: generatedUrl, file: file }];
-      const files = list.map((current) => current.file);
+      const files = list?.map((current) => current.file);
       if (list.length > 0) {
         setDetails({ ...details, [name]: files });
         setCampaignPhotos(list);
@@ -200,8 +200,8 @@ function UpdateCompanyProfileModal({
 
   return (
     isOpen && (
-      <div className="h-full z-10 w-full text-gray-400 text-little flex justify-center items-center bg-gray-600/70 fixed top-0 left-0">
-        <div className="w-[50%] h-[90%] p-2 flex flex-col  rounded-[10px]  bg-white border">
+      <div className="h-full z-10 w-full text-gray-600 text-little flex justify-center items-center bg-gray-600/70 fixed top-0 left-0">
+        <div className="w-[90%] sm:max-w-[600px] h-[90%] p-2 flex flex-col  rounded-[10px]  bg-white border">
           <IoMdCloseCircle
             onClick={() => setIsOpen(false)}
             className="text-lg place-self-end  cursor-pointer"
@@ -244,7 +244,7 @@ function UpdateCompanyProfileModal({
               </div>
 
               {/* Basic Form inputs */}
-              {basic_inputs.map((current) => (
+              {basic_inputs?.map((current) => (
                 <BasicInput
                   data={current}
                   details={details}
@@ -302,7 +302,7 @@ function UpdateCompanyProfileModal({
                   Social Media Links
                 </label>
                 <div className="w-full border border-dashed p-2 grid grid-cols-3 gap-[3px]">
-                  {social_media_inputs.map((current) => (
+                  {social_media_inputs?.map((current) => (
                     <SocialMediaInput
                     key={current?.id}
                       id={current?.id}

@@ -7,12 +7,14 @@ function AllEmployers() {
   const { loading, getEmployers } = UseAdminManagement();
   const [employers, setEmployers] = useState([]);
 
+ 
   useEffect(() => {
     (async () => {
       const data = await getEmployers();
+      console.log(data);  
       if (data) {
-        // Sort employers in descending order based on their IDs
-        const sortedData = data.sort((a, b) => b.id - a.id);
+        const employersArray = Object.values(data);  
+        const sortedData = employersArray.sort((a, b) => b.id - a.id);
         setEmployers(sortedData);
       } else {
         console.error("No data received");
@@ -20,15 +22,27 @@ function AllEmployers() {
     })();
   }, []);
 
+  // Table Headings
   const heading = ["ID", "Name", "Profile", "Image", "Status"];
-  
-  const data = employers.map(employer => ({
-    [heading[0].toLowerCase()]: employer.id,
-    [heading[1].toLowerCase()]: employer.company_name,
-    [heading[2].toLowerCase()]: employer.company_profile,
-    [heading[3].toLowerCase()]: <img src={"https://dash.mayrahkeeafrica.com/" + employer.logo_image} alt="Logo" className="h-10 w-10 rounded-full" />,
-    [heading[4].toLowerCase()]: employer.status,
-  }));
+
+ 
+  const data = employers.map(item => {
+    const employerDetails = item.employer || {};  
+    
+    return {
+      id: employerDetails.id,                                     
+      name: employerDetails.company_name,
+      profile: employerDetails.company_profile,
+      image: (
+        <img 
+          src={`https://dash.mayrahkeeafrica.com/${employerDetails.logo_image}`} 
+          alt="Logo" 
+          className="h-10 w-10 rounded-full" 
+        />
+      ),                                             
+      status: item.status
+    };
+  });
 
   return (
     <div className="mx-14 mt-10">

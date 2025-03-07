@@ -16,7 +16,7 @@ function JobStatistic({ applicants, byCategory }) {
       case "Declined Applicants":
         return applicants.filter((app) => app.status === "declined");
       case "Interviewed Applicants":
-        return applicants.filter((app) => app.status === "shortlist");
+        return applicants.filter((app) => app.status === "interview");
       case "Onboarded Applicants":
         return applicants.filter((app) => app.status === "hired");
       default:
@@ -28,7 +28,7 @@ function JobStatistic({ applicants, byCategory }) {
     const filteredApplicants = filterApplicants(active);
 
     if (active === "Overview") {
-      const applicantByStatus = { declined: [], shortlist: [], hired: [] };
+      const applicantByStatus = { declined: [], interview: [], hired: [] };
 
       Object.keys(byCategory).forEach((cat) => {
         const jobId = byCategory[cat][0].job_id;
@@ -40,10 +40,10 @@ function JobStatistic({ applicants, byCategory }) {
             (app) => app.job_id === jobId && app.status === "declined"
           ).length,
         });
-        applicantByStatus.shortlist.push({
+        applicantByStatus.interview.push({
           jobTitle,
           count: applicants.filter(
-            (app) => app.job_id === jobId && app.status === "shortlist"
+            (app) => app.job_id === jobId && app.status === "interview"
           ).length,
         });
         applicantByStatus.hired.push({
@@ -63,7 +63,7 @@ function JobStatistic({ applicants, byCategory }) {
           },
           {
             name: "Interviewed",
-            data: applicantByStatus.shortlist.map((item) => item.count),
+            data: applicantByStatus.interview.map((item) => item.count),
           },
           {
             name: "Onboarded",
@@ -205,8 +205,8 @@ function JobStatistic({ applicants, byCategory }) {
             </span>
           </div>
         </div>
-        <div className="flex gap-5 border-b">
-          {options.map((current, index) => (
+        <div className="flex gap-5 border-b overflow-x-auto">
+          {options?.map((current, index) => (
             <h3
               key={index}
               onClick={() => setActive(current)}

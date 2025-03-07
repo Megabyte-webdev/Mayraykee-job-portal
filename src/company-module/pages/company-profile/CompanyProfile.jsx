@@ -13,6 +13,7 @@ import {
   FaLinkedin,
   FaTwitter,
   FaInstagram,
+  FaSpinner,
 } from "react-icons/fa";
 import useExclusiveProfile from "../../../hooks/useExclusiveProfile";
 
@@ -22,11 +23,11 @@ function CompaniesProfile({ exclusiveId = null }) {
   const companyHookProps = exclusiveId
     ? useExclusiveProfile(exclusiveId)
     : useCompanyProfile();
-  const { details, retrievalState, getProfile } = companyHookProps;
+  const { details, retrievalState, getProfile, loading } = companyHookProps;
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const company_profile_attributes = details.social_media && [
+  const company_profile_attributes = details?.social_media && [
     {
       id: 1,
       icon: FaFacebook,
@@ -55,7 +56,6 @@ function CompaniesProfile({ exclusiveId = null }) {
 
   useEffect(() => {
     if (exclusiveId) {
-
       getProfile();
     }
   }, []);
@@ -65,16 +65,19 @@ function CompaniesProfile({ exclusiveId = null }) {
       <Helmet>
         <title> Company Dashboard | Companies Profile </title>
       </Helmet>
-      {!exclusiveId && 
       <UpdateCompanyProfileModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         onInit={details?.company_name ? false : true}
         companyHookProps={companyHookProps}
-      />}
-      {details.company_name &&
-      details.beenRetreived === retrievalState.retrieved ? (
-        <div className="h-full w-full flex flex-col px-2 md:px-12 py-2 justify-between">
+      />
+      {loading ? ( // Display FaSpinner as loader during data fetching
+        <div className="flex h-full items-center justify-center">
+          <FaSpinner className="text-4xl text-green-600 animate-spin" />
+        </div>
+      ) : details.company_name &&
+        details.beenRetreived === retrievalState.retrieved ? (
+        <div className="h-full w-full flex flex-col py-2 justify-between">
           <ProfileHeader
             isOpen={isOpen}
             setIsOpen={setIsOpen}

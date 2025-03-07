@@ -3,6 +3,7 @@ import { company_socials } from "../../../utils/constants";
 import linkedinIcon from "../../../assets/pngs/linkedin-icon.png";
 
 function PrimaryDetail({ data, applicant }) {
+  console.log(data)
   const getSocials = () => {
     const list = applicant?.social_media_handle.map((current, idx) => {
       if (current.network === "linkedIn") {
@@ -50,7 +51,7 @@ function PrimaryDetail({ data, applicant }) {
               {data?.job_title}
             </span>
             <span className="text-little">
-              Marketting - Full time
+              {data?.sector} - {data?.type}
             </span>
           </div>
         </div>

@@ -3,7 +3,7 @@ import FormButton from "../FormButton";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import { useState } from "react";
 
-function SearchComponent({ subCategories, handleQuerySubmit, title = "Subcategory" }) {
+function SearchComponent({ subCategories, handleQuerySubmit, title = "Subcategory", setSelectedCategory }) {
   const {
     register,
     handleSubmit,
@@ -39,7 +39,7 @@ function SearchComponent({ subCategories, handleQuerySubmit, title = "Subcategor
         <span className="text-sm md:text-md font-semibold">
           Select the queries you will want to search by
         </span>
-        <div className="flex flex-wrap items-stretch justify-start gap-3 border-b pb-2 text-gray-700 w-full mt-2">
+        <div className="flex flex-wrap items-stretch justify-start gap-3 border-b pb-2 text-gray-700 w-full mt-2 font-bold">
           <div className="flex items-center gap-2 text-sm md:text-xl leading-none cursor-pointer" onClick={toogleCategory}>
             {byCategory ? (
               <MdCheckBox className="flex-shrink-0" />
@@ -102,10 +102,11 @@ function SearchComponent({ subCategories, handleQuerySubmit, title = "Subcategor
             <select
               className="p-1 border focus:outline-none border-gray-900 rounded-md"
               {...register("subcategory")}
+              onChange={(e)=>setSelectedCategory(subCategories?.find(one=>one.name===e.target.value))}
             >
-              <option selected>-- Select {title} --</option>
-              {subCategories?.map((current) => (
-                <option key={current.id}>{current.name}</option>
+              <option key="" value="" selected="selected">-- Select {title} --</option>
+              {subCategories?.sort((a,b)=>a.name.localeCompare(b.name))?.map((current) => (
+                <option key={current.id} value={current.name}>{current.name}</option>
               ))}
             </select>
           </div>
@@ -174,12 +175,7 @@ function SearchComponent({ subCategories, handleQuerySubmit, title = "Subcategor
               <option selected>-- Select Religion --</option>
               {["Christianity",
                 "Islam",
-                "Bahai",
-                "Odinani",
-                "Ifa",
-                "Isho",
-                "Kwagh-hir",
-                "Malamism", "Not A Criteria"].map((current) => (
+                "Traditional"].map((current) => (
                   <option key={current}>{current}</option>
                 ))}
             </select>
@@ -216,7 +212,7 @@ function SearchComponent({ subCategories, handleQuerySubmit, title = "Subcategor
           <FormButton
             onClick={handleSubmit(async (data) => {
               setLoading(true);
-              console.log(data);
+              //console.log(data);
               let queryParams = "";
               if (data.age) {
                 queryParams += `age=${data.age}&`;

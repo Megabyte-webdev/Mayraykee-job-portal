@@ -1,5 +1,4 @@
 import { MdClose } from "react-icons/md";
-import JobPosting from "../../../company-module/pages/job-posting/JobPosting";
 import PopUpBox from "../../../components/PopUpBox";
 import FormButton from "../../../components/FormButton";
 import useRegistration from "../../../hooks/useRegistration";
@@ -10,8 +9,7 @@ import { AdminExclusiveManagementContext } from "../../../context/AdminExclusive
 function AddExclusiveModal({ toogleExclusiveModal, isOpen }) {
   const { registerExclusive } = useRegistration();
   const [loading, setLoading] = useState(false);
-  const {exclusives, getAllExclusives} = useContext(AdminExclusiveManagementContext)
-
+  const { exclusives, getAllExclusives } = useContext(AdminExclusiveManagementContext);
 
   const handleSubmit = async (e) => {
     setLoading(true);
@@ -25,22 +23,24 @@ function AddExclusiveModal({ toogleExclusiveModal, isOpen }) {
     };
 
     await registerExclusive(() => {}, data);
-    await getAllExclusives()
-    toogleExclusiveModal()
+    await getAllExclusives();
+    toogleExclusiveModal();
     setLoading(false);
+     // Reset form after successful submission
+     e.target.reset();
   };
 
   return (
     <PopUpBox isOpen={isOpen}>
-      <div className="bg-white w-[30%] min-h-[50%] flex flex-col gap-5  rounded-lg px-5 py-3">
+      <div className="bg-white min-w-96 sm:w-[80%] md:w-[60%] lg:w-[40%] min-h-[50%] flex flex-col gap-5 rounded-lg px-5 py-3">
         <button
           onClick={toogleExclusiveModal}
-          className="flex gap-1 w-fit border px-2 rounded-lg py-1 items-center"
+          className="flex gap-1 w-fit border px-2 rounded-lg py-1 items-center bg-red-600 text-white"
         >
-          <MdClose />
+          <MdClose strokeWidth={2} />
         </button>
 
-        <h3 className="text-center font-semibold text-lg">
+        <h3 className="text-center font-semibold text-lg sm:text-xl">
           Create an Exclusive Account
         </h3>
 
@@ -78,8 +78,8 @@ function AddExclusiveModal({ toogleExclusiveModal, isOpen }) {
 
           <button
             type="submit"
-            disabled-={loading}
-            className=" px-2 py-1 relative bg-primaryColor w-full font-semibold hover:scale-[102%] duration-75 rounded-md text-white"
+            disabled={loading}
+            className="px-2 py-1 relative bg-primaryColor w-full font-semibold hover:scale-[102%] duration-75 rounded-md text-white"
           >
             Add Exclusive
             {loading && (

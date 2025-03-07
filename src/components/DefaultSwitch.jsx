@@ -1,17 +1,31 @@
 import React from "react";
-import { Switch } from "@headlessui/react";
+import { FaSpinner } from "react-icons/fa";
 
-export default function DefaultSwitch({ enabled, setEnabled, onClick, disabled=false }) {
+function DefaultSwitch({ enabled, setEnabled, onClick, loading }) {
   return (
-    <Switch
-      checked={enabled}
-      onClick={onClick}
-      disabled={disabled}
-      className="flex-shrink-0 group rotate-180 relative flex h-7 w-14 p-1 cursor-pointer rounded-full bg-gray-500 border transition-colors duration-200 ease-in-out focus:outline-none data-[focus]:outline-1 data-[focus]:outline-white data-[checked]:bg-primaryColor">
-      <span
-        aria-hidden="true"
-        className="absolute top-0 bottom-0 my-auto pointer-events-none inline-block size-5 translate-x-[100%] rounded-full bg-white ring-0 shadow-lg transition duration-200 ease-in-out group-data-[checked]:translate-x-0"
-      />
-    </Switch>
+    <div
+      className={`flex items-center justify-center ${loading ? "cursor-wait" : "cursor-pointer"}`}
+      onClick={!loading ? onClick : undefined}
+    >
+      {loading ? (
+        <div className="flex justify-center items-center w-10 h-5 bg-gray-300 rounded-full">
+          <FaSpinner className="text-green-500 animate-spin" size="20" />
+        </div>
+      ) : (
+        <div
+          className={`relative w-10 h-5 bg-gray-300 rounded-full ${
+            enabled ? "bg-green-400" : "bg-gray-300"
+          }`}
+        >
+          <div
+            className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform ${
+              enabled ? "translate-x-5" : "translate-x-0"
+            } transition-transform`}
+          />
+        </div>
+      )}
+    </div>
   );
 }
+
+export default DefaultSwitch;

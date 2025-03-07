@@ -6,7 +6,7 @@ import ContactInfo from "../components/Landing/ContactInfo";
 import Footer from "../components/Landing/Footer";
 import termsImg from "../assets/pngs/terms.png";
 import termsData from "./terms.json"; // Import the JSON data
-
+import { Helmet } from "react-helmet";
 const TermsConditions = () => {
   const [terms, setTerms] = useState([]);
 
@@ -17,14 +17,17 @@ const TermsConditions = () => {
 
   return (
     <>
-    <SectionHeader
-            title="Terms & Conditions for MayrahkeeAfrica"
-            img={termsImg}
-          />
+      <Helmet>
+        <title>Mayrahkee | Terms & Conditions</title>
+      </Helmet>
+      <SectionHeader
+        title="Terms & Conditions for MayrahkeeAfrica"
+        img={termsImg}
+      />
       <div className="relative max-w-[1400px] w-full mx-auto">
         <Navbar />
         <div className="relative px-5 h-auto flex flex-col gap-3">
-          
+
           <div className="container mx-auto p-4 space-y-8">
             <p className="text-gray-500 text-sm">
               <strong>Last Updated:</strong> {termsData.lastUpdated}

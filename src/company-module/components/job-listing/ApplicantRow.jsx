@@ -1,46 +1,56 @@
 import { useNavigate } from "react-router-dom";
 import { resourceUrl } from "../../../services/axios-client";
 
-function ApplicantRow({data}) {
+function ApplicantRow({ data }) {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
-
-    const navigateToApplicantDetails = () =>
-      navigate(`/company/applicants/detail/${data.id}`, { state: { data } });
-  
+  const navigateToApplicantDetails = () =>
+    navigate(`/company/applicants/detail/${data.id}`, { state: { data } });
 
   return (
-    <tr className="border-b odd:bg-primaryColor/50 odd:bg-black odd:text-white hover:text-white duration-100  text-little">
-      <td className="text-center py-[5px]">
-        <div className="flex justify-center items-center gap-[5px]">
-          <span>{data?.full_name}</span>
-        </div>
-      </td>
-      <td>
-        <div className="flex w-full justify-center py-[10px] items-center">
-          {data?.email}
+    <tr className="border-b odd:bg-primaryColor/50 even:bg-white odd:text-white hover:bg-primaryColor/70 duration-100 text-sm">
+      {/* Full Name */}
+      <td className="text-center py-2 px-2 truncate">
+        <div className="flex justify-center items-center gap-2">
+          <span className="truncate">{data?.full_name}</span>
         </div>
       </td>
 
-      <td>
-        <div className="flex items-center justify-center">
-          <button className="py-[2px] uppercase text-[10px] px-[5px] border border-primaryColor rounded-[30px] text-center font-semibold">
+      {/* Email */}
+      <td className="text-center py-2 px-2 truncate">
+        <div className="flex justify-center items-center">
+          <span className="truncate">{data?.email}</span>
+        </div>
+      </td>
+
+      {/* Status */}
+      <td className="text-center py-2 px-2">
+        <div className="flex justify-center items-center">
+          <button className="py-1 px-3 uppercase text-xs border border-primaryColor rounded-full font-semibold truncate">
             {data?.status}
           </button>
         </div>
       </td>
 
-      <td>
-        <p className=" py-[5px] text-center font-semibold">{(new Date(data?.created_at)).toLocaleDateString()}</p>
+      {/* Date Created */}
+      <td className="text-center py-2 px-2 truncate">
+        <p className="font-semibold">
+          {new Date(data?.created_at).toLocaleDateString()}
+        </p>
       </td>
 
-      <td>
-        <p className=" py-[5px] text-center">{data?.job_title}</p>
+      {/* Job Title */}
+      <td className="text-center py-2 px-2 truncate">
+        <p>{data?.job_title}</p>
       </td>
 
-      <td>
-        <div className="w-full items-center flex justify-center py-[5px]">
-          <button onClick={navigateToApplicantDetails} className="text-xs font-semibold border-white bg-gray-800 text-white py-1 px-2 border ">
+      {/* Action Button */}
+      <td className="text-center py-2 px-2">
+        <div className="flex justify-center items-center">
+          <button
+            onClick={navigateToApplicantDetails}
+            className="text-xs font-semibold bg-gray-800 text-white py-1 px-3 border border-white hover:bg-primaryColor hover:border-primaryColor"
+          >
             See Application
           </button>
         </div>

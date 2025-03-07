@@ -45,6 +45,8 @@ function useRegistration(role) {
     try {
       if (regDetails.password !== regDetails.re_enter_password)
         throw Error("Password Mismatch");
+      if (!subcategory?.name)
+        throw Error("Please select a category");
       await client.post(`/domesticStaff/register`, {
         ...staffsRegDetails,
         subcategory: subcategory.name,
@@ -60,10 +62,13 @@ function useRegistration(role) {
 
   const registerUser = async (gender, onSuccess) => {
     setLoading(true);
+    
     try {
+      if (!gender?.name)
+        throw Error("Please select your gender");
       const detail =
         regDetails.role === "candidate"
-          ? { ...regDetails, gender: gender.name }
+          ? { ...regDetails, gender: gender?.name }
           : {
               name: `${regDetails.first_name} ${regDetails.last_name}`,
               gender: gender.name,
@@ -95,7 +100,7 @@ function useRegistration(role) {
       const dataCopy = JSON.parse(JSON.stringify(data));
 
       const response = await client.post(
-        `/${regSessionDetails.role}/verifyOtp`,
+        `/${regSessionDetails?.role || "domesticStaff"}/verifyOtp`,
         dataCopy
       );
       onSuccess();

@@ -4,8 +4,11 @@ import Footer from '../components/Landing/Footer';
 import { useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
 import { ResourceContext } from "../context/ResourceContext";
+import { Helmet } from 'react-helmet';
+import { resourceUrl } from '../services/axios-client';
+import { parseHtml } from '../utils/formmaters';
 
-const BlogList = () => {
+const BlogList = ({general=true, direct="/"}) => {
     const {
         setGetAllBlogPosts,
         getAllBlogPosts,
@@ -34,32 +37,32 @@ const BlogList = () => {
     }, []);
 
 
-const calculateReadingTime = (text) => {
-    const wordsPerMinute = 200; // Average reading speed
-    const words = text.split(/\s+/).length; // Count words
-    const minutes = Math.ceil(words / wordsPerMinute); // Round up
-    return minutes;
-};
+    const calculateReadingTime = (text) => {
+        const wordsPerMinute = 200; // Average reading speed
+        const words = text.split(/\s+/).length; // Count words
+        const minutes = Math.ceil(words / wordsPerMinute); // Round up
+        return minutes;
+    };
 
-  useEffect(() => {
-    if (getAllBlogPosts?.data) {
-        const fetchedBlogs = getAllBlogPosts.data.data;
+    useEffect(() => {
+        if (getAllBlogPosts?.data) {
+            const fetchedBlogs = getAllBlogPosts?.data?.data?.filter((one) => one?.feature_post === "1");
 
-        // Add reading time to each blog
-        const blogsWithReadingTime = fetchedBlogs.map((blog) => ({
-            ...blog,
-            readingTime: calculateReadingTime(blog.description || ""),
-        }));
+            // Add reading time to each blog
+            const blogsWithReadingTime = fetchedBlogs.map((blog) => ({
+                ...blog,
+                readingTime: calculateReadingTime(blog.description || ""),
+            }));
 
-        
 
-        // Set the most recent post
-        const sortedBlogs = blogsWithReadingTime.slice().sort(
-            (a, b) => new Date(b.time_posted) - new Date(a.time_posted)
-        );
-        setBlogs(sortedBlogs);
-    }
-}, [getAllBlogPosts]);
+
+            // Set the most recent post
+            const sortedBlogs = blogsWithReadingTime.slice().sort(
+                (a, b) => new Date(b.time_posted) - new Date(a.time_posted)
+            );
+            setBlogs(sortedBlogs);
+        }
+    }, [getAllBlogPosts]);
 
 
     // Process fetched categories
@@ -68,7 +71,7 @@ const calculateReadingTime = (text) => {
             const fetchedCategories = getAllBlogCategories.data.data || [];
             setCategories(fetchedCategories);
             setIsLoading(false);
-            console.log(categories)
+            //console.log(categories)
         }
     }, [getAllBlogCategories]);
 
@@ -76,13 +79,13 @@ const calculateReadingTime = (text) => {
     const handleSubcategorySelect = (subcategoryId, categoryId) => {
         setSelectedSubcategory(subcategoryId);  // Set selected subcategory
         setSelected(categoryId);  // Set the category associated with the subcategory
-        console.log(categoryId, subcategoryId)
+        //console.log(categoryId, subcategoryId)
     };
 
     // Filter blogs based on selected category, subcategory, and search query
     const filteredBlogs = useMemo(() => {
         let result = blogs;
-        
+
         // Filter by category
         if (selected !== "All") {
             result = result.filter((blog) => blog.blog_category_id === selected);
@@ -103,15 +106,18 @@ const calculateReadingTime = (text) => {
                     blog.description?.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
-        console.log(result)
+
         return result;
-        
+
     }, [selected, selectedSubcategory, searchQuery, blogs]);
 
     return (
         <>
-            <div className="relative max-w-[1400px] w-full mx-auto">
-                <Navbar />
+            <Helmet>
+                <title>Mayrahkee | Blogs</title>
+            </Helmet>
+            <div className={general ? "relative max-w-[1400px] w-full mx-auto" : "relative w-full"}>
+                <div className={general ? "block":"hidden"}><Navbar /></div>
                 <main className="relative my-24 px-5 h-auto flex flex-col gap-5">
                     {/* Search and Categories */}
                     <div className="flex flex-col md:flex-row md:gap-x-10 mt-3 md:items-end md:overflow-x-auto">
@@ -158,34 +164,34 @@ const calculateReadingTime = (text) => {
                         </div>
                     </div>
                     <div className="flex gap-3 my-6 overflow-x-auto w-full md:w-[80%] md:ml-auto">
-    {(
-        selected === "All"
-            ? categories.flatMap((category) =>
-                category.subcategories?.map((subcategory) => ({
-                    ...subcategory,
-                    categoryId: category.id, // Attach the category ID to each subcategory
-                }))
-            )
-            : categories
-                .filter((category) => category.id === selected)
-                .flatMap((category) => category.subcategories || [])
-    )
-        .reverse() // Reverse the array to achieve reverse order
-        .map((subcategory) => (
-            <button
-                key={subcategory?.id}
-                onClick={() =>
-                    handleSubcategorySelect(subcategory?.id, subcategory.blog_category_id)
-                }
-                className={`capitalize border-[2px] rounded-full border-gray-500 text-sm px-4 py-1 whitespace-nowrap ${selectedSubcategory === subcategory?.id
-                    ? "text-green-600 border-green-600"
-                    : "text-gray-700"
-                    } font-bold`}
-            >
-                {subcategory.name}
-            </button>
-        ))}
-</div>
+                        {(
+                            selected === "All"
+                                ? categories.flatMap((category) =>
+                                    category.subcategories?.map((subcategory) => ({
+                                        ...subcategory,
+                                        categoryId: category.id, // Attach the category ID to each subcategory
+                                    }))
+                                )
+                                : categories
+                                    .filter((category) => category.id === selected)
+                                    .flatMap((category) => category.subcategories || [])
+                        )
+                            .reverse() // Reverse the array to achieve reverse order
+                            .map((subcategory) => (
+                                <button
+                                    key={subcategory?.id}
+                                    onClick={() =>
+                                        handleSubcategorySelect(subcategory?.id, subcategory.blog_category_id)
+                                    }
+                                    className={`capitalize border-[2px] rounded-full border-gray-500 text-sm px-4 py-1 whitespace-nowrap ${selectedSubcategory === subcategory?.id
+                                        ? "text-green-600 border-green-600"
+                                        : "text-gray-700"
+                                        } font-bold`}
+                                >
+                                    {subcategory.name}
+                                </button>
+                            ))}
+                    </div>
 
                     {/* Blog Posts */}
                     {isLoading ? (
@@ -193,18 +199,18 @@ const calculateReadingTime = (text) => {
                             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-600"></div>
                         </div>
                     ) : filteredBlogs?.reverse()?.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 gap-y-10">
+                        <div className="w-full grid grid-cols-responsive gap-6 gap-y-10">
                             {filteredBlogs.map((blog) => (
                                 <article
                                     onClick={() => {
                                         scrollTo(0, 0);
-                                        navigate(`/blogs/${blog.id}`);
+                                        navigate(`${direct}blogs/${blog.id}`);
                                     }}
                                     key={blog.id}
                                     className="cursor-pointer bg-white rounded-lg shadow overflow-hidden"
                                 >
                                     <img
-                                        src={blog?.main_image || "https://via.placeholder.com/150/000000/FFFFFF?text=Image+Not+Found"}
+                                        src={blog?.main_image ? `${resourceUrl}${blog?.main_image}` : "https://via.placeholder.com/150/000000/FFFFFF?text=Image+Not+Found"}
                                         alt={blog.title || "Default Title"}
                                         className="w-full h-48 object-cover"
                                     />
@@ -217,7 +223,7 @@ const calculateReadingTime = (text) => {
                                             {blog.title}
                                         </h4>
                                         <p className="text-sm text-gray-500 mb-1 md:mb-3">
-                                            {blog.description?.slice(0, 100)}...
+                                        {parseHtml(`${blog?.description?.slice(0, 100)}...`)}
                                         </p>
                                         <article className="flex items-center justify-between gap-1 md:gap-3">
                                             <small className="mt-2 text-gray-400 flex items-center">
@@ -237,7 +243,7 @@ const calculateReadingTime = (text) => {
                     )}
                 </main>
             </div>
-            <Footer />
+            <div className={general ? "block":"hidden"}><Footer /></div>
         </>
     );
 };

@@ -8,7 +8,7 @@ import InfoSection from "../components/Landing/InfoSection";
 import Testimonial from "../components/Landing/Testimonial";
 import { ResourceContext } from "../context/ResourceContext";
 import study from "../assets/pngs/study.png";
-
+import { Helmet } from "react-helmet";
 const ElearningPage = () => {
     const { setGetAllCourses, getAllCourses } = useContext(ResourceContext);
     const [loading, setLoading] = useState(false);
@@ -32,16 +32,21 @@ const ElearningPage = () => {
     // Handle fetched data
     useEffect(() => {
         if (getAllCourses?.data) {
-            setCourses(getAllCourses.data);
+            setCourses(
+  getAllCourses.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+);
             setLoading(false);
         }
     }, [getAllCourses]);
 
     return (
         <>
+            <Helmet>
+                <title>Mayrahkee | E-Learning</title>
+            </Helmet>
             <LearningHeroSection />
             <div className="relative max-w-[1400px] w-full mx-auto">
-                <Navbar register="https://mayraykee-app.vercel.app/registration" login="https://mayraykee-app.vercel.app/login" />
+                <Navbar register="https://mayrahkeeafrica.vercel.app/registration" login="https://mayrahkeeafrica.vercel.app/login" />
                 <main className="relative px-5 h-auto flex flex-col gap-5">
                     <div className="my-2">
                         {loading ? (

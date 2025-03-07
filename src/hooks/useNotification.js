@@ -3,6 +3,7 @@ import { axiosClient } from "../services/axios-client";
 import { FormatError } from "../utils/formmaters";
 import { onFailure } from "../utils/notifications/OnFailure";
 import { AuthContext } from "../context/AuthContex";
+import { getDatabase, ref, get } from "firebase/database";
 
 function useNotification(role) {
   const [details, setDetails] = useState({
@@ -93,6 +94,23 @@ function useNotification(role) {
   }, [error.message, error.error]);
 
  
+async function getDataIfExists(path) {
+    const db = getDatabase();
+    const dataRef = ref(db, path);
+
+    try {
+        const snapshot = await get(dataRef);
+        if (snapshot.exists()) {
+            return snapshot.val(); // ✅ Returns the data
+        } else {
+            return null; // No data found
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return null;
+    }
+}
+
   return {
     details,
     loading,
@@ -102,6 +120,7 @@ function useNotification(role) {
     updateNotificationSetting,
     getNotifications,
     getNotificationSetting,
+    getDataIfExists
   };
 }
 

@@ -18,70 +18,65 @@ function TableRow({ data, isMarket = false, handleAddToCart }) {
     data?.employment_type === "-- Select Employment Type --"
       ? "Nothing to display"
       : data?.employment_type;
+
   return (
-    <tr className="border-b cursor-pointer hover:bg-gray-50 py-5 text-gray-700  text-little">
-      <td className="text-center">
-        <div className="flex justify-start pl-5 py-3 font-semibold items-center gap-3">
+    <tr className="border-b cursor-pointer hover:bg-gray-50 text-gray-700 text-sm">
+      {/* Profile Image and Name */}
+      <td className="text-left py-3 px-2 w-1/5">
+        <div className="flex items-center gap-3">
           <img
-            className="h-[50px] w-[50px] rounded-full"
+            className="h-12 w-12 rounded-full object-cover"
             src={
               data.profile_image
                 ? `${resourceUrl}/${data.profile_image}`
                 : "/placeholder2.png"
             }
+            alt="Profile"
           />
-          <span>
-            {data?.first_name} {data?.surname}
-          </span>
+          <span className="truncate">{data?.first_name} {data?.surname}</span>
         </div>
       </td>
 
-      <td>
-        <div className="flex w-full py-[10px] justify-start items-center">
-          <button className="py-[2px] px-4 text-little text-center font-semibold">
-            {data?.subcategory}
-          </button>
-        </div>
+      {/* Subcategory */}
+      <td className="text-left py-3 px-2 w-1/5">
+        <span className="truncate">{data?.subcategory}</span>
       </td>
 
-      <td>
-        <div className="flex w-full justify-start px-4 py-[10px] items-center">
-          <span className="text-little font-semibold">{data?.email}</span>
-        </div>
+      {/* Email */}
+      <td className="text-left py-3 px-2 w-1/5">
+        <span className="truncate">{data?.email}</span>
       </td>
 
-      <td>
-        <div className="flex w-full justify-start px-4 py-[10px] items-center">
-          <span className="text-little font-semibold">{employmentType}</span>
-        </div>
+      {/* Employment Type */}
+      <td className="text-left py-3 px-2 w-1/5">
+        <span className="truncate">{employmentType}</span>
       </td>
 
-      <td>
-        <div className="flex w-full justify-start px-4 py-[10px] items-center">
-          <button className="py-[2px] px-[5px] text-little  text-center font-semibold">
-            {FormatPrice(2000)}
-          </button>
-        </div>
+      {/* Price */}
+      <td className="text-left py-3 px-2 w-1/5">
+        <span className="truncate">{FormatPrice(parseFloat(data?.expected_salary))}</span>
       </td>
 
+      {/* Start Date (conditionally rendered) */}
       {!isMarket && (
-        <td>
-          <div className="flex w-full justify-start px-4 py-[10px] items-center">
-            <span className="text-little font-semibold">{data.start_date}</span>
-          </div>
+        <td className="text-left py-3 px-2 w-1/5">
+          <span className="truncate">{data.start_date}</span>
         </td>
       )}
-      <td>
+
+      {/* Action Buttons */}
+      <td className="text-left py-3 px-2 w-1/5">
         {isMarket ? (
-          <button 
-          onClick={() => handleAddToCart(data)}
-          className="p-2 hover:underline text-primaryColor">
+          <button
+            onClick={() => handleAddToCart(data)}
+            className="text-primaryColor hover:underline"
+          >
             Add to cart
           </button>
         ) : (
           <button
             onClick={navigateToStaff}
-            className="p-2 hover:underline text-yellow-500"
+            className="text-yellow-500 hover:underline"
           >
             View Details
           </button>

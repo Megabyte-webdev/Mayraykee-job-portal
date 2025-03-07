@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-
-const TextEditor = ({setBlog, blog}) => {
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+const TextEditor = ({ setBlog, blog }) => {
 
   const handleTextChange = (e) => {
     const { name, value } = e.target;
@@ -15,7 +16,7 @@ const TextEditor = ({setBlog, blog}) => {
       {/* Title Section */}
       <h3 className="text-lg font-semibold mb-4">Add Title</h3>
       <input
-      type="text"
+        type="text"
         name="title"
         value={blog?.title} // Bind to the title property
         onChange={handleTextChange}
@@ -25,13 +26,18 @@ const TextEditor = ({setBlog, blog}) => {
 
       {/* Content Section */}
       <h3 className="text-lg font-semibold mb-4 mt-6">Add Content</h3>
-      <textarea
-        name="description"
-        value={blog?.description} // Bind to the content property
-        onChange={handleTextChange}
+      
+      <ReactQuill
         placeholder="Write your content here..."
-        className="w-full h-40 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
-      />
+        value={blog?.description}
+        className="custom-quill-editor" // Custom class for styling
+        onChange = {(text) => {
+        setBlog((prev) => ({
+          ...prev,
+          description: text, // Properly update the specific field in the object
+        }));}
+        }
+          />
     </div>
   );
 };

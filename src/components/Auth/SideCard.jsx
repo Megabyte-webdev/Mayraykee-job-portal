@@ -9,7 +9,7 @@ import mainLogoTwo from "../../assets/pngs/mayrahkee-logo-2.png";
 function SideCard() {
   return (
     <div className="h-full w-[50%] hidden md:flex flex-col justify-start items-center  bg-primaryColor pt-[5%]">
-      <img src={mainLogoTwo} className="w-[50%] h-[15%] object-contain" />
+      <a href="https://mayrahkeeafrica.vercel.app/" className="w-[50%] h-[15%]"><img src={mainLogoTwo} className="object-contain" /></a>
       <img
         src={mainSideImg}
         className="w-[80%] max-w-[400px] h-[50%] object-fit mt-[2%] rounded-[30px] border shadow shadow-gray-800"

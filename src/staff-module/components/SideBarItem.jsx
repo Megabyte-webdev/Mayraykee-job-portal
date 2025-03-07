@@ -2,17 +2,18 @@ import { clear } from "idb-keyval";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-function SideBarItem({ data, dispatch, state }) {
+function SideBarItem({ data, dispatch, state, setIsOpen }) {
   const navigate = useNavigate();
 
   const navigateToPage = () => {
     if (data.type === "LOG-OUT") {
-      localStorage.clear();
-      clear()
+      sessionStorage.clear()
       navigate(data.route, { replace: true });
     } else {
       dispatch({ ...data });
-      navigate(data.route);
+      navigate(data.route)
+      setIsOpen(false);
+      
     }
   };
 

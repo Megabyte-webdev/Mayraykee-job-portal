@@ -32,8 +32,8 @@ function PublicProfile() {
       <Helmet>
         <title>Dashboard | Public Profile</title>
       </Helmet>
-      <div className="h-full w-full p-4 sm:p-8">
-        <div className="flex flex-wrap md:flex-nowrap">
+      <div className="h-full w-full">
+        <div className="flex flex-wrap lg:flex-nowrap">
           <div className="w-full lg:w-2/3 mb-4 lg:mb-0">
             <div className="border rounded-lg overflow-hidden">
               <div
@@ -44,7 +44,7 @@ function PublicProfile() {
                   {/* <button className="p-1 border border-white hover:text-gray-200"><FaRegEdit /></button> */}
                 </div>
               </div>
-              <div className="p-4 flex flex-col md: flex-row">
+              <div className="p-4 flex flex-col md:flex-row">
                 <div className="flex-shrink-0 mt-[-70px]">
                   <img
                     src={
@@ -146,7 +146,7 @@ function PublicProfile() {
                 <IoLanguageOutline className="mr-2" />
                 <div>
                   <p>Language</p>
-                  <p>{candidate?.languages}</p>
+                  <p className="capitalize">{candidate?.languages}</p>
                 </div>
               </div>
             </div>

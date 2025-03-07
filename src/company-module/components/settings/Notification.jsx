@@ -67,7 +67,7 @@ function Notification() {
             });
           })
         }
-        width="w-[20%] mt-[10px] bg-primaryColor text-white text-sm"
+        width="w-full md:w-max mt-[10px] bg-primaryColor text-white text-sm px-2"
       >
         Save Changes
       </FormButton>

@@ -1,7 +1,7 @@
 import { IoMdCloseCircle } from "react-icons/io";
 import { useEffect, useState, useContext } from "react";
 import BasicInput from "../company-profile/BasicInput";
-import { onTextChange } from "../../../utils/formmaters";
+//import { onTextChange } from "../../../utils/formmaters";
 import FormButton from "../../../components/FormButton";
 import Selector from "../../../components/Selector";
 import { AuthContext } from "../../../context/AuthContex";
@@ -9,7 +9,9 @@ import useCompanyProfile from "../../../hooks/useCompanyProfile";
 import { useSafeMantineTheme } from "@mantine/core";
 import { createMeeting } from "../../../components/video-sdk/Api";
 import useSubscription from "../../../hooks/useSubscription";
-
+import { FaSpinner } from "react-icons/fa";
+//import SubscriptionCard from "../components/subscription/SubscriptionCard";
+import { SubscriptionContext } from "../../../context/SubscriptionContext";
 const fields = [
   {
     id: 4,
@@ -17,7 +19,7 @@ const fields = [
     label: "Interview Name",
     required: true,
     type: "text",
-    placeholder: "Add inteview name",
+    placeholder: "Add interview name",
   },
   {
     id: 1,
@@ -25,7 +27,7 @@ const fields = [
     label: "Interview Date",
     required: true,
     type: "date",
-    placeholder: "Select inteview date",
+    placeholder: "Select interview date",
   },
   {
     id: 6,
@@ -33,7 +35,7 @@ const fields = [
     label: "Interview Time",
     required: true,
     type: "time",
-    placeholder: "Select inteview date",
+    placeholder: "Select interview time",
   },
   {
     id: 2,
@@ -65,20 +67,41 @@ function ScheduleInterviewModal({
   onTextChange,
   loading,
   handleOnSubmit,
+  edit = false
 }) {
+  
   const companyUtil = useCompanyProfile();
-  const {isInterviewPackge} = useSubscription()
+  const { isInterviewPackge } = useContext(SubscriptionContext);
   const { authDetails } = useContext(AuthContext);
-  const options = isInterviewPackge ? interviewOptions : [interviewOptions[1]]
-  const [selected, setSelected] = useState();
+ 
+  const options = isInterviewPackge ? interviewOptions : [interviewOptions[1]];
+  //const options = interviewOptions ;
 
-  const [meetingId, setMeetingId] = useState();
+  const [selected, setSelected] = useState(details?.meeting_id ? interviewOptions[0] : interviewOptions[1]);
 
+  const [meetingId, setMeetingId] = useState(details?.meeting_id);
+  const [loadingMeetingId, setLoadingMeetingId] = useState(false); // Loading state for meeting ID
+  // console.log(edit, details)
   const onClick = async () => {
-    const roomId = await createMeeting(authDetails?.token);
-    setMeetingId(roomId);
+    setLoadingMeetingId(true); // Set loading state to true
+    try {
+      const roomId = await createMeeting(authDetails?.token);
+      setMeetingId(roomId);
+    } catch (error) {
+      console.error("Error generating meeting ID:", error);
+    } finally {
+      setLoadingMeetingId(false); // Reset loading state after fetching
+    }
   };
-
+useEffect(()=>{
+  console.log(details?.meeting_id)
+ if(details?.meeting_id && details?.meeting_id !== ""){
+  setMeetingId(details?.meeting_id)
+  setSelected(interviewOptions[0])
+ }else{
+  setSelected(interviewOptions[1])
+ }
+},[details?.meeting_id ])
   return (
     isOpen && (
       <div className="h-full z-10 w-full text-gray-600 text-little flex justify-center items-center bg-gray-600/70 fixed top-0 left-0">
@@ -113,8 +136,14 @@ function ScheduleInterviewModal({
                 onTextChange={onTextChange}
               />
 
+              <BasicInput
+                data={fields[4]}
+                details={details}
+                onTextChange={onTextChange}
+              />
+
               <div className="flex flex-col">
-                <label className="text-sm font-semibold">Inteview Type</label>
+                <label className="text-sm font-semibold">Interview Type</label>
                 <Selector
                   data={options}
                   selected={selected}
@@ -127,7 +156,7 @@ function ScheduleInterviewModal({
                   data={fields[3]}
                   details={details}
                   onTextChange={onTextChange}
-                  value={companyUtil.details.address}
+                  value={companyUtil?.details.address}
                 />
               )}
 
@@ -139,15 +168,18 @@ function ScheduleInterviewModal({
                     <button
                       type="button"
                       onClick={onClick}
-                      className="w-fit px-2 py-1 bg-primaryColor rounded-[5px] text-white text-little font-semibold"
+                      className="w-fit px-2 py-1 bg-primaryColor rounded-[5px] text-white text-little font-semibold flex items-center"
                     >
-                      Generate Meeting Id
+                      <span>Generate Meeting Id</span>
+                      {loadingMeetingId && (
+                        <FaSpinner className="ml-2 animate-spin" /> // Add Tailwind's animate-spin class
+                      )}
                     </button>
                   </div>
                 </div>
               )}
 
-              <FormButton loading={loading}>Schedule</FormButton>
+              <FormButton loading={loading}>{edit ? "Reschedule" : "Schedule"}</FormButton>
             </form>
           </div>
         </div>

@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import useLogin from "../hooks/useLogin";
 import FormButton from "../components/FormButton";
 import OTPInput from "react-otp-input";
-// import MainLogo from "../assets/svgs/main-logo.svg";
+import MainLogo from "../assets/pngs/main-logo-icon.png";
+import MainLogo2 from "../assets/pngs/mayrahkee-logo-2.png";
+
 // import Person from "../assets/pngs/person.png";
 
 function ForgotPassword() {
@@ -15,15 +17,15 @@ function ForgotPassword() {
 
   return (
     <main className="flex h-screen w-full ">
-      <div className="w-[60%] flex px-[5%] flex-col items-center justify-start gap-[5%] ">
-        <img className="h-[15%]" src="" />
-        <div className="grid grid-cols-2 w-[60%]  gap-[10px] text-sm font-semibold">
+      <div className="md:w-[60%] flex px-[5%] flex-col items-center justify-center gap-[5%] ">
+        <img className="w-[60%] block md:hidden" src={MainLogo} />
+        <div className="grid grid-cols-2 md:w-[60%] gap-[10px] text-sm font-semibold">
           <button
             onClick={() => setRole("candidate")}
             className={`px-2 py-1 text-little ${
               role === "candidate"
                 ? "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
-                : "md:text-primaryColor text-white  border bg-white/30 md:bg-primaryColor/30"
+                : "md:text-primaryColor text-gray-300  border bg-white/30 md:bg-primaryColor/30"
             }`}
           >
             Corperate Candidate
@@ -33,7 +35,7 @@ function ForgotPassword() {
             className={`px-2 py-1 text-little ${
               role === "employer"
                 ? "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
-                : "md:text-primaryColor text-white  border bg-white/30 md:bg-primaryColor/30"
+                : "md:text-primaryColor text-gray-300  border bg-white/30 md:bg-primaryColor/30"
             }`}
           >
             Corperate Employer
@@ -43,7 +45,7 @@ function ForgotPassword() {
             className={`px-2 py-1 text-little ${
               role === "artisan"
                 ? "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
-                : "md:text-primaryColor text-white  border bg-white/30 md:bg-primaryColor/30"
+                : "md:text-primaryColor text-gray-300  border bg-white/30 md:bg-primaryColor/30"
             }`}
           >
             Artisan
@@ -53,7 +55,7 @@ function ForgotPassword() {
             className={`px-2 py-1 text-little ${
               role === "staff"
                 ? "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
-                : "md:text-primaryColor text-white  border bg-white/30 md:bg-primaryColor/30"
+                : "md:text-primaryColor text-gray-300  border bg-white/30 md:bg-primaryColor/30"
             }`}
           >
             Domestic Staff
@@ -84,10 +86,22 @@ function ForgotPassword() {
             <FormButton
               loading={loading}
               onClick={() => {
-                forgotPassword(email, role).then(() => {
-                  setShowResetPassword(true);
-                });
-              }}
+  forgotPassword(email, role)
+    .then((response) => {
+      // Assuming the API response has a success indicator, e.g., `response.success`
+      if (response) {
+        setShowResetPassword(true);
+      } else {
+        // Handle the error case if the response indicates failure
+        console.error("Password reset failed", response?.message || "Unknown error");
+      }
+    })
+    .catch((error) => {
+      // Handle network or other unexpected errors
+      console.error("Error during forgot password request", error);
+    });
+}}
+
             >
               Verify
             </FormButton>
@@ -143,7 +157,9 @@ function ForgotPassword() {
         {/* Reset Password */}
       </div>
 
-      <div className="bg-primaryColor w-[40%] bg-[length:100%_110%]" />
+      <div className="hidden md:flex bg-primaryColor w-[40%] bg-[length:100%_110%] items-center justify-center" >
+      <img className="h-[15%] hidden md:block" src={MainLogo2} />
+      </div>
     </main>
   );
 }

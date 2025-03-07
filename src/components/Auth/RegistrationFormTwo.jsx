@@ -17,10 +17,6 @@ import { axiosClient } from "../../services/axios-client";
 
 const genders = [
   {
-    id: 2000,
-    name: "--select a gender--",
-  },
-  {
     id: 1,
     name: "Male",
   },
@@ -34,7 +30,7 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
   const location = useLocation();
   const { id } = location?.state || {};
   const [isTrained, setIsTrained] = useState(false);
-  const [gender, setGender] = useState(genders[0]);
+  const [gender, setGender] = useState();
   const client = axiosClient();
  
   const [showPassword, setShowPassword] = useState(true);
@@ -88,9 +84,18 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
       () => {
         onSuccess({
           message: "Registration Successful",
-          success: "Navigating to login",
+          success: "An OTP has been sent to your email ",
         });
-        navigate("/login");
+        localStorage.setItem(
+          "__reg_info",
+          JSON.stringify({
+            ...staffsRegDetails,
+            //role: role,
+            password: "__",
+            re_enter_password: "__",
+          })
+        );
+        navigate("/registration/email_verification");
       },
       role
     );
@@ -99,19 +104,20 @@ function RegistrationFormTwo({ state, dispatch, role, setRole }) {
   useEffect(() => {
     console.log(role)
     const getSubCategories = async () => {
-      if (role == "artisan") {
-        const { data } = await client.get("/staff-categories/1");
+      if (role == "artisan") { 
+        const { data } = await client.get("/staff-categories");
         console.log(data.data);
-        setSubCategories(data.data.subcategories);
-        setSubCategory(data.data.subcategories[0]);
+        setSubCategories(data.data?.filter(one=>one.name.toLowerCase().includes("artisan"))[0]?.subcategories);
+        //setSubCategory();
       } else if (role == "staff") {
-        const { data } = await client.get("/staff-categories/2");
-        setSubCategories(data.data.subcategories);
-        setSubCategory(data.data.subcategories[0]);
+        const { data } = await client.get("/staff-categories");
+        setSubCategories(data.data?.filter(one=>one.name.toLowerCase().includes("staff"))[0]?.subcategories);
+        //setSubCategory(data.data.subcategories[0]);
       }
     };
 
     getSubCategories();
+    setSubCategory(null)
   }, [role]);
 
 

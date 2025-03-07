@@ -13,7 +13,7 @@ import {useLocation} from 'react-router-dom';
 const stages=[
   { label: "All", key: "all" },
   { label: "In Review", key: "in-review" },
-  { label: "Interviewed", key: "interviewed" },
+  { label: "Interviewed", key: "interview" },
   { label: "Shortlisted", key: "shortlist" },
   { label: "Declined", key: "declined" },
   { label: "Hired", key: "hired" },
@@ -42,7 +42,7 @@ function Application() {
       setView("all")
     }
   }, [location?.state]);
-
+console.log(getAllApplications)
   // Clear randomized list on view change
   useEffect(() => {
     setRandomizedApplications([]);
@@ -88,7 +88,7 @@ function Application() {
       <Helmet>
         <title>Dashboard | My Application </title>
       </Helmet>
-      <div className="h-full p-8 px-5 md:px-8 w-full text-sm text-primary">
+      <div className="h-full py-8 w-full text-sm text-primary">
         <div className="text-sm">
           <div className="flex justify-between align-center">
             <div>
@@ -132,7 +132,7 @@ function Application() {
               <button
                 key={key}
                 onClick={() => setView(key)}
-                className={`mx-2 p-2 hover:text-gray-500 ${
+                className={`w-max mx-2 p-2 hover:text-gray-500 ${
                   view === key ? "sticky left-0 bg-gray-200 border-b-2 border-green-600 font-medium" : ""
                 }`}
               >
@@ -163,12 +163,8 @@ function Application() {
               </button>
             </div>
           </div>
-          <div className="my-3 flex flex-col items-stretch min-w-full overflow-x-auto">
-            {view === "shortlist"
-              ? filteredApplications.map((app, index) => (
-                  <AllShortlistedApplicants key={app.id} app={app} index={index} />
-                ))
-              : filteredApplications.map((app, index) => (
+          <div className="w-full my-3 flex flex-col items-stretch overflow-x-auto">
+            {filteredApplications.map((app, index) => (
                   <AllApplicants key={app.id} app={app} index={index} />
                 ))}
           </div>

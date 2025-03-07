@@ -84,21 +84,21 @@ const PreviousWorkExperienceDialog = ({ fetchData }) => {
       View Previous work Experience
       {isLoading && <ClipLoader size={20} color={"#ffffff"} loading={isLoading} className="ml-2" />}
       </div>
-      <Dialog header="Previous Work Experience Report" visible={visible} style={{ width: '90vw', maxWidth: '600px' }} onHide={() => setVisible(false)} modal>
+      <Dialog header="Previous Work Experience Report" visible={visible} style={{ width: '90vw', maxWidth: '600px', overflowY:"auto", height:"max-content", maxHeight:"90%" }} onHide={() => setVisible(false)} modal>
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
             <ClipLoader size={50} color={"#000"} loading={isLoading} />
           </div>
         ) : (
-          workExperience.length > 0 ? workExperience.map((experience, index) => (
+          workExperience?.length > 0 ? workExperience?.map((experience, index) => (
             <div key={index} className="p-3 border-b-2 border-gray-200 space-y-5">
-              <p><strong>Company Name:</strong> {experience.company_name}</p>
-              <p><strong>Job Title:</strong> {experience.job_title}</p>
-              <p><strong>Start Date:</strong> {experience.start_date}</p>
-              <p><strong>End Date:</strong> {experience.end_date}</p>
-              <p><strong>Work Description:</strong> {experience.work_description}</p>
-              <p><strong>Reason for Leaving:</strong> {experience.reason_for_leaving}</p>
-              <p><strong>Status:</strong> {experience.status}</p>
+              <p><strong>Company Name:</strong> {experience?.company_name}</p>
+              <p><strong>Job Title:</strong> {experience?.job_title}</p>
+              <p><strong>Start Date:</strong> {(experience?.start_date?.match(/(\d{4})-(\d{1,2})-(\d{1,2})/) || [])?.slice(1).reverse().join("-")}</p>
+              <p><strong>End Date:</strong> {(experience?.end_date?.match(/(\d{4})-(\d{1,2})-(\d{1,2})/) || [])?.slice(1).reverse().join("-")}</p>
+              <p><strong>Work Description:</strong> {experience?.work_description}</p>
+              <p><strong>Reason for Leaving:</strong> {experience?.reason_for_leaving}</p>
+              <p><strong>Status:</strong> {experience?.status}</p>
               <button
                 type="button"
                 className="flex items-center gap-2 bg-green-500 px-4 py-2 rounded"

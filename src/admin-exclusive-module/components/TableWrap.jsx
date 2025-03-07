@@ -4,7 +4,7 @@ function TableWrap({ children, rows }) {
       <thead className="border bg-white  text-gray-800 font-semibold  ">
         <tr className=" text-little  divide-gray-200 ">
           {rows.map((current, index) => (
-            <th key={index} className={`${current === "Email" && "hidden md:block"} px-4 py-3 text-center`}>{current}</th>
+            <th key={index} className={`${(current === "Email" || current === "Applied On") && "hidden md:block"} px-4 py-3 text-center`}>{current}</th>
           ))}
         </tr>
       </thead>

@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useState } from "react";
 import { TbPhoto } from "react-icons/tb";
 import DynamicExperienceForm from "./DynamicExperienceForm";
@@ -17,12 +18,16 @@ import { ResourceContext } from "../../../../context/ResourceContext";
 import TextEditor from "./TextEditor";
 import { onSuccess } from "../../../../utils/notifications/OnSuccess";
 import { Country, State, City } from "country-state-city";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const BasicInfo = ({ setIsOpen }) => {
   const { getCandidate, setGetCandidate } = useContext(ResourceContext);
- 
+  const navigate = useNavigate();
+
   const candidate = getCandidate.data?.details;
-  const countries = Country.getAllCountries();
+  //const countries = Country.getAllCountries();
+  const countries = Country.getAllCountries()?.filter(country => ['NG', 'GH', 'CM', 'CD', 'GB', 'US'].includes(country.isoCode));
   const states = State.getAllStates();
   const cities = City.getAllCities();
 
@@ -32,9 +37,9 @@ const BasicInfo = ({ setIsOpen }) => {
   const [showMsg, setShowMsg] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectId, setSelectId] = useState(null);
-  const [selectStates, setSelectStates] = useState(candidate?.country ? State.getStatesOfCountry(countries?.find(one=> one.name === candidate.country)?.isoCode):[]);
+  const [selectStates, setSelectStates] = useState(candidate?.country ? State.getStatesOfCountry(countries?.find(one => one.name === candidate.country)?.isoCode) : []);
   const [selectState, setSelectState] = useState();
-  const [selectCity, setSelectCity] = useState(candidate?.state ? City.getCitiesOfState(countries?.find(one=> one.name === candidate.country)?.isoCode, states?.find(one=> one.name === candidate.state)?.isoCode):[]);
+  const [selectCity, setSelectCity] = useState(candidate?.state ? City.getCitiesOfState(countries?.find(one => one.name === candidate.country)?.isoCode, states?.find(one => one.name === candidate.state)?.isoCode) : []);
   const [countryInfo, setCountryInfo] = useState();
   const [selectedLanguages, setSelectedLanguages] = useState([]);
 
@@ -55,7 +60,7 @@ const BasicInfo = ({ setIsOpen }) => {
   }, []);
 
 
-//console.log(candidate)
+  //console.log(candidate)
   const toggleAccept = () => {
     setDetails((prev) => {
       return {
@@ -76,11 +81,11 @@ const BasicInfo = ({ setIsOpen }) => {
     candidate_id: user.id ? user.id : "",
     // full_name: user.full_name ? user.full_name : "",
     profile: candidate?.profile || null,
-    full_name: user?.first_name ? ` ${user.first_name} ${user.last_name}` : "",
+    full_name: candidate?.full_name ? (candidate?.full_name) : (user?.first_name ? ` ${user.first_name} ${user.last_name}` : "") ,
     date_of_birth: candidate?.date_of_birth ? candidate?.date_of_birth : "",
     gender: candidate?.gender ? candidate?.gender : "",
-    phone_number: candidate.phone_number ? candidate?.phone_number : "",
-    email: candidate.email ? candidate?.email : "",
+    phone_number: candidate?.phone_number ? candidate?.phone_number : "",
+    email: candidate?.email ? candidate?.email : "",
     background_profile: null,
     password: user?.password ? user.password : "",
     means_of_identification: candidate?.means_of_identification
@@ -99,28 +104,30 @@ const BasicInfo = ({ setIsOpen }) => {
     salary: candidate?.salary ? candidate?.salary : "",
     categories: candidate?.categories ? candidate?.categories : "",
     // show_my_profile: true,
-    preferred_job_role: candidate.preferred_job_role
+    preferred_job_role: candidate?.preferred_job_role
       ? candidate?.preferred_job_role
       : "",
-    personal_profile: candidate.personal_profile
+    personal_profile: candidate?.personal_profile
       ? candidate?.personal_profile
       : "",
-    network: candidate.network ? candidate?.network : "",
-    contact_address: candidate.contact_address
+    network: candidate?.network ? candidate?.network : "",
+    contact_address: candidate?.contact_address
       ? candidate?.contact_address
       : "",
-    country: candidate.country ? candidate?.country : "",
-    state: candidate.state ? candidate?.state : "",
-    local_gov: candidate.local_gov ? candidate?.local_gov : "",
-    address: candidate.address ? candidate?.address : "",
-    experience: candidate.experience ? candidate?.experience : "",
+    country: candidate?.country ? candidate?.country : "",
+    state: candidate?.state ? candidate?.state : "",
+    local_gov: candidate?.local_gov ? candidate?.local_gov : "",
+    address: candidate?.address ? candidate?.address : "",
+    experience: candidate?.experience ? candidate?.experience : "",
     introduction_video: null,
     social_media_handle: [],
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(details)
-  },[details])
+    updateFirstLetter(details?.means_of_identification)
+
+  }, [details])
   function updateFirstLetter(word) {
     if (word) {
       return setSelectId(word[0]?.toUpperCase() + word.slice(1));
@@ -146,33 +153,62 @@ const BasicInfo = ({ setIsOpen }) => {
   // };
 
   // console.log(getAllFaculty.data)
+
+  useEffect(() => {
+    if (details?.country) {
+      const selectedCountry = countries?.find(one => one.name === details?.country);
+      if (selectedCountry) {
+        const countryInfoDetails = Country.getCountryByCode(selectedCountry.isoCode);
+        setCountryInfo(countryInfoDetails);
+  
+        const states = State.getStatesOfCountry(selectedCountry.isoCode);
+        setSelectStates(states);
+        setSelectCity([]); // Reset cities when country changes
+      }
+    }
+  }, [details?.country, countries]);
+  
+  useEffect(() => {
+    if (details?.state && details?.country) {
+      const selectedCountry = countries?.find(one => one.name === details?.country);
+      if (selectedCountry) {
+        const states = State.getStatesOfCountry(selectedCountry.isoCode);
+        const selectedState = states?.find(one => one.name === details?.state);
+        
+        if (selectedState) {
+          const cities = City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode);
+          setSelectCity(cities);
+        }
+      }
+    }
+  }, [details?.state, details?.country, countries]);
+  
+
   const handleOnChange = (e) => {
     const { value, name, files, type, checked } = e.target;
-    // let countryInfo = {}
+    console.log(name, type, value)
+    // Define the dynamic file size limits for different files
+    const FILE_SIZE_LIMITS = {
+      'introduction_video': 2 * 1024 * 1024,  // 2 MB for introduction video
+      'nin_slip': 1 * 1024 * 1024,  // 1 MB for NIN slip
+      'background_profile': 3.8 * 1024 * 1024,  // 3.8 MB for background profile
+      // Add other files as needed
+    };
+
+
     if (name === "means_of_identification") {
       updateFirstLetter(value);
     }
+
     if (name === "country") {
-      const countryInfoDetails = Country.getCountryByCode(countries?.find(one=> one.name === value)?.isoCode);
+      const countryInfoDetails = Country.getCountryByCode(countries?.find(one => one.name === value)?.isoCode);
       setCountryInfo(countryInfoDetails);
       const states = State.getStatesOfCountry(countryInfoDetails?.isoCode);
       setSelectStates(states);
-      // setDetails((prev) => {
-      //   return {
-      //     ...prev,
-      //     [name]:
-      //       type === "checkbox"
-      //         ? checked
-      //         : type === "file"
-      //         ? files[0]
-      //         : countryInfoDetails?.name,
-      //     // [name]: name === 'cv' ? files[0] : value,
-      //   };
-      // });
-    } else if (name == "state") {
-      console.log(countryInfo)
-      const cities = City.getCitiesOfState(countryInfo.isoCode, value);
+    } else if (name === "state") { 
+      const cities = City.getCitiesOfState(countries?.find(one => one.name === countryInfo)?.isoCode, value);
       setSelectCity(cities);
+     
       const stateName = State.getStateByCode(value, countryInfo.isoCode);
       setSelectState(stateName);
       setDetails((prev) => {
@@ -182,34 +218,64 @@ const BasicInfo = ({ setIsOpen }) => {
             type === "checkbox"
               ? checked
               : type === "file"
-              ? files[0]
-              : cities.name,
-          // [name]: name === 'cv' ? files[0] : value,
+                ? files[0]
+                : cities.name,
         };
       });
     }
 
-    setDetails((prev) => {
-      return {
-        ...prev,
-        [name]:
-          type === "checkbox" ? checked : type === "file" ? files[0] : value,
-        // [name]: name === 'cv' ? files[0] : value,
-      };
-    });
+    // Handle file size validation with dynamic limits
+    if (type === "file" && files.length > 0) {
+      const file = files[0];
+      const fileSizeLimit = Object.keys(FILE_SIZE_LIMITS).find((key) => name.toLowerCase().includes(key))
+        ? FILE_SIZE_LIMITS[name]
+        : 1 * 1024 * 1024; // Default to 1 MB if no specific limit is found
+
+      if (file.size > fileSizeLimit) {
+        const maxSizeMB = (fileSizeLimit / (1024 * 1024)).toFixed(2); // Convert file size limit to MB
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2); // Convert uploaded file size to MB
+
+        // Truncate long file names to 20 characters for better UI readability
+        const truncatedFileName = file.name.length > 10 ? `${file.name.substring(0, 10)}...` : file.name;
+
+
+        toast.error(`File size of "${truncatedFileName}" exceeds the limit of ${maxSizeMB} MB. The uploaded file is ${fileSizeMB} MB. Please select a smaller file.`);
+        setDetails((prev) => {
+          // Reset the file input if it's too large
+          return {
+            ...prev,
+            [name]: null, // Prevent the file from being added to state
+          };
+        });
+        e.target.value = null
+        return; // Exit the function if the file is too large
+      } else {
+        setDetails((prev) => {
+          return {
+            ...prev,
+            [name]: file, // Add the file to state if the size is valid
+          };
+        });
+      }
+    } else {
+      setDetails((prev) => {
+        return {
+          ...prev,
+          [name]:
+            type === "checkbox" ? checked : type === "file" ? files[0] : value,
+        };
+      });
+    }
 
     if (name === "languages") {
       const selectedLanguageOptions = Array.from(
         e.target.selectedOptions,
         (option) => option.value
       );
-      // console.log(selectedLanguageOptions)
       if (!languageState(...selectedLanguageOptions)) {
         setDetails((prevDetails) => ({
           ...prevDetails,
-          languages: [...selectedLanguages, ...selectedLanguageOptions].join(
-            ","
-          ),
+          languages: [...selectedLanguages, ...selectedLanguageOptions].join(","),
         }));
         setSelectedLanguages([
           ...selectedLanguages,
@@ -222,8 +288,11 @@ const BasicInfo = ({ setIsOpen }) => {
         setSelectedLanguages([...newList]);
       }
     }
+
+    // Reset error message once everything is processed
     setErrorMsg(null);
   };
+
 
   const handleOutline = (event) => {
     setDetails((prev) => {
@@ -249,7 +318,6 @@ const BasicInfo = ({ setIsOpen }) => {
   }, [socialHandles]);
 
   const handleSubmit = (e) => {
-    console.log(details)
     e.preventDefault();
     setErrorMsg(null);
     setLoading(true);
@@ -259,10 +327,45 @@ const BasicInfo = ({ setIsOpen }) => {
         isDataNeeded: false,
       };
     });
-    // details.country = countryInfo?.name;
-    // details.state = selectState;
+
+    const formData = new FormData();
+
+    // Loop through the details object and append each field to formData only if it's not null, undefined, or empty string
+    for (let key in details) {
+      if (details.hasOwnProperty(key)) {
+        const value = details[key];
+
+        // Check for fields that must be files
+        if (key === 'profile') {
+          if (value instanceof File) {
+            formData.append(key, value); // Append the file if it's a file
+          }
+        }
+        else if (key === 'background_profile' || key === 'nin_slip' || key === 'introduction_video') {
+          // Check for file fields
+          if (value instanceof File) {
+            formData.append(key, value);
+          }
+        }
+        // Handle social_media_handle if it's an array
+        else if (key === 'social_media_handle' && Array.isArray(value)) {
+          value.forEach((item, index) => {
+            formData.append(`${key}[]`, item); // Append each item as an array element
+          });
+        }
+        // For other fields, append normally
+        else if (value !== null && value !== undefined && value !== '') {
+          formData.append(key, value);
+        }
+      }
+    }
+
+    // Additional fields like country and state can be appended if needed
+    // formData.append("country", countryInfo?.name);
+    // formData.append("state", selectState);
+
     axios
-      .post(`${BASE_URL}/candidate/UpdateCandidate/${user.id}`, details, {
+      .post(`${BASE_URL}/candidate/UpdateCandidate/${user.id}`, formData, {
         headers: {
           Authorization: `Bearer ${authDetails.token}`,
           "Content-Type": "multipart/form-data",
@@ -274,20 +377,20 @@ const BasicInfo = ({ setIsOpen }) => {
           message: "Profile",
           success: response.data.message,
         });
+        setIsOpen(false);
         localStorage.setItem(
           "userDetails",
           JSON.stringify(response.data.candidate)
         );
-        // setUserUpdate(updateData)
         setLoading(false);
-        setIsOpen(false);
+
+        navigate('/applicant/public-profile');
         setGetCandidate((prev) => {
           return {
             ...prev,
             isDataNeeded: true,
           };
         });
-        // toast.success("successful");
       })
       .catch((error) => {
         console.log(error);
@@ -296,17 +399,21 @@ const BasicInfo = ({ setIsOpen }) => {
           setShowMsg(true);
           setLoading(false);
         } else {
-          console.log(error);
           setErrorMsg({ network: error.message });
           setShowMsg(true);
           setLoading(false);
         }
       });
   };
+
   const getImageURL = (e) => {
     const { name } = e.target;
     const file = e.target.files[0]; //filelist is an object carrying all details of file, .files[0] collects the value from key 0 (not array), and stores it in file
-
+    if (file && file.size > 1 * 1024 * 1024) {
+      toast.error("File size exceeds the file size limit of 1MB.");
+      e.target.value = null
+      return
+    }
     if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
       // You can also perform additional actions with the valid file
       const generatedUrl = URL.createObjectURL(file);
@@ -344,75 +451,79 @@ const BasicInfo = ({ setIsOpen }) => {
   return (
     <div className="max-w-full text-[#515B6F] text-base overflow-x-hidden">
       <div className="my-4">
-        <div className="max-w-full flex flex-wrap gap-2 items-center pb-6 border-b">
-          <div className="max-w-full md:w-1/3 pr-5">
+        <div className="max-w-full flex flex-wrap lg:flex-nowrap gap-4 items-center pb-6 border-b">
+          {/* Left Section */}
+          <div className="w-full lg:w-1/3 pr-0 lg:pr-5 text-center lg:text-left">
             <p className="font-medium mb-2 text-slate-950">Profile Photo</p>
             <p>
-              This image will be shown publicly as your profile picture, it will
-              help recruiters recognize you!
+              This image will be shown publicly as your profile picture, it will help recruiters recognize you!
             </p>
           </div>
-          <div className="w-full flex justify-center items-center flex-wrap gap-2">
-            <div className="size-[100px]  ring-green-200 ring-4 rounded-full bg-gray-300 mx-5">
-              <div className="">
-                <img
-                  className="w-[100px] h-[100px] rounded-full"
-                  src={
-                    profileImageUrl
-                      ? profileImageUrl
-                      : `${IMAGE_URL}/${candidate.profile}`
-                  }
-                  alt=""
-                />
-              </div>
+
+          {/* Right Section */}
+          <div className="w-full flex flex-col lg:flex-row justify-center items-center flex-wrap gap-4">
+            {/* Profile Image */}
+            <div className="ring-green-200 ring-4 rounded-full bg-gray-300">
+              <img
+                className="w-[100px] h-[100px] rounded-full"
+                src={
+                  profileImageUrl
+                    ? profileImageUrl
+                    : `${IMAGE_URL}/${candidate?.profile}`
+                }
+                alt="Profile"
+              />
             </div>
+
+            {/* Upload Section */}
             <label
               htmlFor="image"
-              className="min-h-32 w-[90%] md:min-w-96 cursor-pointer bg-green-50 border-2 border-green-500 border-dashed p-3 md:p-5 rounded"
+              className="min-h-32 w-full lg:w-[90%] lg:min-w-[24rem] cursor-pointer bg-green-50 border-2 border-green-500 border-dashed p-3 lg:p-5 rounded"
             >
               <div className="text-center">
                 <div className="flex justify-center">
-                  <span className="text-green-500 mb-3">
+                  <span className="text-green-500 mb-3 text-2xl">
                     <TbPhoto />
                   </span>
                 </div>
                 <p>
                   <span className="text-green-500 font-medium">
-                    Click to replace{" "}
-                  </span>
+                    Click to replace
+                  </span>{" "}
                   or drag and drop
                 </p>
-                <p>SVG, PNG, JPG or GIF (max. 400 x 400px)</p>
+                <p>PNG, JPG (max. File size 1MB)</p>
                 <input
                   type="file"
                   accept=".jpeg, .png, .jpg,"
                   name="profile"
                   onChange={getImageURL}
                   id="image"
-                  className="invisible "
+                  className="hidden"
                 />
               </div>
             </label>
           </div>
         </div>
+
         <div className="update_form py-6">
           <div>
             <form onSubmit={handleSubmit}>
-              <div className=" md:w-">
+              <div className=" lg:w-">
                 <div className="border-b py-6">
-                  <div className="flex flex-col md:flex-row gap-2">
-                    <div className="font-medium w-full md:w-2/6 text-slate-900">
+                  <div className="flex flex-col lg:flex-row gap-2">
+                    <div className="font-medium w-full lg:w-2/6 text-slate-900">
                       <p>Personal Information</p>
                     </div>
-                    <div className="w-full md:w-4/6">
+                    <div className="w-full lg:w-4/6">
                       <div className="mb-4">
                         <label className="block">
-                          <span className="block text-sm font-medium text-slate-700">
-                            Full Name
+                          <span className="block text-sm font-medium text-slate-700 flex gap-1">
+                            Full Name <strong className="text-red-500">*</strong>
                           </span>
                           <input
                             type="text"
-                            value={details.full_name}
+                            value={details?.full_name}
                             name="full_name"
                             onChange={handleOnChange}
                             className="mt-1 block p-1 focus:outline-none w-full border"
@@ -422,12 +533,12 @@ const BasicInfo = ({ setIsOpen }) => {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="">
                           <label className="block">
-                            <span className="block text-sm font-medium text-slate-700">
-                              Phone Number
+                            <span className="text-sm font-medium text-slate-700 flex gap-1">
+                              Phone Number <strong className="text-red-500">*</strong>
                             </span>
                             <input
                               type="text"
-                              value={details.phone_number}
+                              value={details?.phone_number}
                               name="phone_number"
                               onChange={handleOnChange}
                               placeholder="+44 1245 572 135"
@@ -437,12 +548,12 @@ const BasicInfo = ({ setIsOpen }) => {
                         </div>
                         <div className="">
                           <label className="block">
-                            <span className="block text-sm font-medium text-slate-700">
-                              Email
+                            <span className="block text-sm font-medium text-slate-700 flex gap-1">
+                              Email <strong className="text-red-500">*</strong>
                             </span>
                             <input
                               type="email"
-                              value={details.email}
+                              value={details?.email}
                               name="email"
                               onChange={handleOnChange}
                               placeholder="Jakegyll@gmail.com"
@@ -457,7 +568,7 @@ const BasicInfo = ({ setIsOpen }) => {
                             </span>
                             <input
                               type="date"
-                              value={details.date_of_birth}
+                              value={details?.date_of_birth}
                               name="date_of_birth"
                               onChange={handleOnChange}
                               className="mt-1 block p-1 focus:outline-none w-full border"
@@ -470,7 +581,7 @@ const BasicInfo = ({ setIsOpen }) => {
                               Gender
                             </span>
                             <select
-                              value={details.gender}
+                              value={details?.gender}
                               name="gender"
                               onChange={handleOnChange}
                               id=""
@@ -483,11 +594,11 @@ const BasicInfo = ({ setIsOpen }) => {
                         </div>
                         <div className="">
                           <label className="block">
-                            <span className="block text-sm font-medium text-slate-700 mb-1">
-                              Select Type of ID
+                            <span className="block text-sm font-medium text-slate-700 mb-1 flex gap-1">
+                              Select Type of ID <strong className="text-red-500">*</strong>
                             </span>
                             <select
-                              value={details.means_of_identification}
+                              value={details?.means_of_identification}
                               name="means_of_identification"
                               onChange={handleOnChange}
                               id=""
@@ -513,7 +624,7 @@ const BasicInfo = ({ setIsOpen }) => {
                               </span>
                               <input
                                 type="text"
-                                value={details.nin}
+                                value={details?.nin}
                                 name="nin"
                                 onChange={handleOnChange}
                                 className="mt-1 block p-1 focus:outline-none w-full border"
@@ -525,15 +636,19 @@ const BasicInfo = ({ setIsOpen }) => {
                           <div className="">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Upload {selectId ? selectId : ""} NIN
+                                Upload {selectId ? selectId : ""}
                               </span>
                               <input
                                 type="file"
+                                accept=".jpeg, .png, .jpg,"
                                 name="nin_slip"
                                 onChange={handleOnChange}
                                 className="mt-1 block p-1 focus:outline-none w-full border"
                               />
                             </label>
+                            <small class="text-sm text-gray-500">
+                              File size should not exceed 1MB. Only accepts .jpeg, .png, .jpg.
+                            </small>
                           </div>
                         )}
                         <div className="">
@@ -549,17 +664,20 @@ const BasicInfo = ({ setIsOpen }) => {
                               className="mt-1 block p-1 focus:outline-none w-full border"
                             />
                           </label>
+                          <small class="text-sm text-gray-500">
+                            File size should not exceed 1MB. Only accepts .jpeg, .png, .jpg.
+                          </small>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="border-b py-6">
-                  <div className="flex flex-col md:flex-row gap-2">
-                    <div className="font-medium w-full md:w-2/6 text-slate-900">
+                  <div className="flex flex-col lg:flex-row gap-2">
+                    <div className="font-medium w-full lg:w-2/6 text-slate-900">
                       <p>Professional Details</p>
                     </div>
-                    <div className="w-full md:w-4/6">
+                    <div className="w-full lg:w-4/6">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="">
                           <label className="block">
@@ -567,7 +685,7 @@ const BasicInfo = ({ setIsOpen }) => {
                               Educational Qualification
                             </span>
                             <select
-                              value={details.educational_qualification}
+                              value={details?.educational_qualification}
                               name="educational_qualification"
                               onChange={handleOnChange}
                               id=""
@@ -576,7 +694,7 @@ const BasicInfo = ({ setIsOpen }) => {
                               <option value="">-- select --</option>
                               <option value="ond">OND</option>
                               <option value="hnd">HND</option>
-                              <option value="diploma">DILOMA</option>
+                              <option value="diploma">DIPLOMA</option>
                               <option value="bsc">Bachelor Degree</option>
                               <option value="msc">Master's Degree</option>
                             </select>
@@ -637,19 +755,19 @@ const BasicInfo = ({ setIsOpen }) => {
                               value={selectedLanguages}
                               name="languages"
                               onChange={handleOnChange}
-                              className="border grid grid-cols-2 w-full p-2 pb-1"
+                              className="border flex flex-wrap gap-2 w-full p-2 pb-1"
                             >
                               {[
                                 "English",
                                 "Hausa",
                                 "French",
                                 "Yoruba",
-                                "igbo",
+                                "Igbo",
                               ].map((current) => (
                                 <div className="flex items-center gap-1">
                                   {findLanguage(current.toLocaleLowerCase()) ? (
                                     <MdCheckBox
-                                      className="cursor-pointer"
+                                      className="cursor-pointer flex-shrink-0"
                                       onClick={() =>
                                         handleLanguageSelect(
                                           current.toLocaleLowerCase()
@@ -658,7 +776,7 @@ const BasicInfo = ({ setIsOpen }) => {
                                     />
                                   ) : (
                                     <MdCheckBoxOutlineBlank
-                                      className="cursor-pointer"
+                                      className="cursor-pointer flex-shrink-0"
                                       onClick={() =>
                                         handleLanguageSelect(
                                           current.toLocaleLowerCase()
@@ -734,7 +852,7 @@ const BasicInfo = ({ setIsOpen }) => {
                             value={details.personal_profile}
                             name="personal_profile"
                             onChange={handleOnChange}
-                            className="mt-1 min-h-[100px] block w-full focus:outline-green-400 border"
+                            className="mt-1 min-h-[100px] block w-full focus:outline-green-400 p-2 border"
                             id=""
                           ></textarea>
                         </div>
@@ -760,11 +878,11 @@ const BasicInfo = ({ setIsOpen }) => {
                                     </div> */}
                 </div>
                 <div className="w-full border-b mb-8 py-6">
-                  <div className="flex flex-col md:flex-row">
-                    <div className="font-medium w-full md:w-2/6 text-slate-900">
+                  <div className="flex flex-col lg:flex-row">
+                    <div className="font-medium w-full lg:w-2/6 text-slate-900">
                       <p>Contact Details</p>
                     </div>
-                    <div className="w-full md:w-4/6">
+                    <div className="w-full lg:w-4/6">
                       <div className="mb-4">
                         <label className="block">
                           <span className="block text-sm font-medium text-slate-700">
@@ -794,7 +912,7 @@ const BasicInfo = ({ setIsOpen }) => {
                               <option value="">-- select --</option>
                               {countries.map((country) => (
                                 <option
-                                selected={country?.name===details?.country}
+                                  selected={country?.name === details?.country}
                                   key={country.isoCode}
                                   value={country.name}
                                 >
@@ -818,7 +936,7 @@ const BasicInfo = ({ setIsOpen }) => {
                               <option value="">-- select --</option>
 
                               {selectStates?.map((each) => (
-                                <option  selected={each?.name===details?.state} key={each.isoCode} value={each.name}>
+                                <option selected={each?.name === details?.state} key={each.isoCode} value={each.name}>
                                   {each.name}
                                 </option>
                               ))}
@@ -867,36 +985,26 @@ const BasicInfo = ({ setIsOpen }) => {
                           />
                         </div>
 
-                        <div className="">
-                          <label className="block">
-                            <span className="block text-sm font-medium text-slate-700">
+                        <div className="col-span-2">
+                          <label class="block">
+                            <span class="block text-sm font-medium text-slate-700">
                               My introduction video
                             </span>
                             <input
                               type="file"
                               accept=".mp4"
                               name="introduction_video"
+                              value={details?.introduction_video}
+                              class="mt-1 block p-1 focus:outline-none w-full border"
                               onChange={handleOnChange}
-                              placeholder="Jakegyll@gmail.com"
-                              className="mt-1 block p-1 focus:outline-none w-full border"
                             />
+                            <small class="text-sm text-gray-500">
+                              File size should not exceed 2MB. Only MP4 files are allowed.
+                            </small>
                           </label>
                         </div>
-                        <div className="">
-                          <label className="block">
-                            <span className="block text-sm font-medium text-slate-700">
-                              Password
-                            </span>
-                            <input
-                              type="password"
-                              value={details.password}
-                              name="password"
-                              onChange={handleOnChange}
-                              placeholder="Jakegyll@gmail.com"
-                              className="mt-1 block p-1 focus:outline-none w-full border"
-                            />
-                          </label>
-                        </div>
+
+
                       </div>
                     </div>
                   </div>

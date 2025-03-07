@@ -1,5 +1,5 @@
 import { lazy, useContext, useEffect, useReducer, useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { staffOptions, staffUtilOptions } from "../utils/constants";
 import { AuthContext } from "../context/AuthContex";
 import { clear } from "idb-keyval";
@@ -8,6 +8,7 @@ import StaffReducer from "../reducers/StaffReducer";
 import { StaffRouteContextProvider } from "../context/StaffRouteContext";
 import { StaffManagementContextProvider } from "../context/StaffManagementModule";
 import StaffCard from "../components/staffs/StaffCard";
+import withApplicationStatus from "../hocs/withApplicationStatus";
 
 //Util Component
 const NavBar = lazy(() => import("../staff-module/components/NavBar"));
@@ -26,6 +27,8 @@ const Resume = lazy(() =>
 );
 const HelpCenter = lazy(() => import("../pages/HelpCenter"));
 const Settings = lazy(() => import("../company-module/pages/settings/Settings"));
+const BlogList = lazy(() => import("../pages/BlogList"));
+const BlogRead = lazy(() => import("../pages/BlogRead"));
 
 function useStaffRoute() {
   const [state, dispatch] = useReducer(StaffReducer, staffOptions[0]);
@@ -36,7 +39,17 @@ function useStaffRoute() {
   const navigate = useNavigate();
 
   const toogleIsOpen = () => setIsOpen(!isOpen);
-
+  const { pathname }=useLocation();
+  const options=[...staffOptions, ...staffUtilOptions]
+  useEffect(() => {
+    const matchedOption = options.find((opt) => pathname===opt?.route);
+    if (matchedOption) {
+      dispatch(matchedOption);
+    }else{
+dispatch(options[0]);
+    }
+  }, [pathname]);
+  
   const setSideBar = (index) => {
     const page = staffOptions[index];
     dispatch({ ...page });
@@ -77,6 +90,7 @@ function useStaffRoute() {
                       data={currentOption}
                       dispatch={dispatch}
                       state={state}
+                      setIsOpen={setIsOpen}
                     />
                   ))}
                 </ul>
@@ -87,6 +101,8 @@ function useStaffRoute() {
                       key={currentOption.type}
                       data={currentOption}
                       dispatch={dispatch}
+                      state={state}
+                      setIsOpen={setIsOpen}
                     />
                   ))}
                 </ul>
@@ -104,10 +120,12 @@ function useStaffRoute() {
                     <Route index element={<Dashboard />} />
                     {/* <Route path="*" element={<NotFound />} /> */}
                     <Route path="profile" element={<Home />} />
-                    <Route path="verifications" element={<Verifications />} />
-                    <Route path="resume" element={<Resume />} />
+                    <Route path="verifications" element={withApplicationStatus(Verifications)} />
+                    <Route path="resume" element={withApplicationStatus(Resume)} />
                     <Route path="settings" element={<Settings />} />
                     <Route path="help-center" element={<HelpCenter />} />
+                                    <Route path="/blogs" element={<BlogList general={false} direct="/staff/" />} />
+                <Route path="/blogs/:id" element={<BlogRead general={false} />} />
                   </Routes>
                 </div>
               </div>

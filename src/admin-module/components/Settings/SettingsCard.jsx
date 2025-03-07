@@ -31,7 +31,7 @@ const SettingsCard = ({
           </div>
         )}
         <div>
-          <h2 className="text-xl font-bold group-hover:text-white">{title}</h2>
+          <h2 className="text-xl font-bold group-hover:text-white capitalize">{title}</h2>
           <p className="mt-2 text-md font-bold text-slate-800 group-hover:text-white">
             {subtitle}
           </p>

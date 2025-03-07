@@ -67,11 +67,12 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
         user_type: authDetails.user.role,
         domestic_staff_id: data.id,
       });
+      await getCartItems();
       onSuccess({
         message: "User sucessfully added",
         success: "Domestic staff added to cart successfully",
       });
-      await getCartItems();
+      
     } catch (error) {
       onFailure({
         message: "Collection Failed",
@@ -91,11 +92,12 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
         user_type: authDetails.user.role,
         domestic_staff_id: data.id,
       });
+      await getCartItems();
       onSuccess({
         message: "User sucessfully removed",
         success: "Domestic staff removed from cart successfully",
       });
-      await getCartItems();
+      
     } catch (error) {
       onFailure({
         message: "Cart Failed",
@@ -175,8 +177,8 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
     const detail =
       allStatus.find((current) => current === status) || "Not Recorded";
     if (name === "garantor") {
-      console.log('Detail', detail);
-      console.log('Status', status);
+      // console.log('Detail', detail);
+      // console.log('Status', status);
     }
 
     switch (name) {
@@ -288,7 +290,7 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
         <div className="flex flex-col gap-2 py-2 mt-[50px]">
           <span className="flex items-center justify-between gap-2 text-md font-semibold">
             Name:
-            <span className="text-sm w-[60%] text-start font-normal text-gray-500">
+            <span className="text-sm w-[60%] text-start font-normal text-gray-500 capitalize">
               {getField("first_name")} {getField("surname")}
             </span>
           </span>
@@ -296,7 +298,7 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
           <span className="flex gap-2 items-center justify-between text-md font-semibold">
             Age Range:
             <span className="text-sm w-[60%] text-start font-normal text-gray-500">
-              {getField("age")} Years
+              {getField("age") ?? `${getField("age")} Years`}
             </span>
           </span>
 
@@ -338,8 +340,8 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
           <span className="flex gap-2 items-center justify-between text-md truncate font-semibold">
             Langages:
             <span className="text-sm w-[60%] flex text-start font-normal text-gray-500">
-              {getField("languages_spoken").map((current) => (
-                <span className="group">
+              {getField("languages_spoken") ?? getField("languages_spoken")?.map((current, idx) => (
+                <span key={idx} className="group">
                   {current}
                   <span className="group-last:hidden">, </span>
                 </span>
@@ -364,7 +366,7 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
           <span className="flex gap-2 items-center justify-between text-md truncate font-semibold">
             Years of Experience:
             <span className="text-sm w-[60%] text-start font-normal text-gray-500">
-              {getField("years_of_experience")} Years
+              {getField("years_of_experience") ?? `getField("years_of_experience") Years`} 
             </span>
           </span>
 
@@ -392,9 +394,7 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
 
         {!contract && (
           <div className="w-full flex flex-col gap-2">
-            {cartItems.find((current) => {
-              return data.id === current.domestic_staff_id;
-            }) ? (
+            {cartItems?.some((current) =>data.id === current.domestic_staff_id) ? (
               <FormButton
                 loading={cartloading}
                 onClick={removeFromCart}

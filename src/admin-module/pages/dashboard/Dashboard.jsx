@@ -51,7 +51,7 @@ function Dashboard() {
       setDomesticStaffCount(domesticStaff.length);
 
       const jobLearning = await getAllJobs();
-      setJobLearningCount(jobLearning.length);
+      setJobLearningCount(jobLearning?.length);
     })();
   }, []);
 
@@ -60,16 +60,16 @@ function Dashboard() {
       <Helmet>
         <title>Dashboard | Dashboard</title>
       </Helmet>
-      <div className="h-full p-6 w-full text-sm text-gray-800">
+      <div className="h-full py-6 w-full text-sm text-gray-800">
 
         <div className="text-sm">
           <button 
           onClick={() => navigate('/admin-exclusives')}
           className="ml-4 px-2 py-2 bg-primaryColor font-semibold hover:scale-[102%] duration-75 rounded-md text-white">
-            Manage Exlcusive Employers
+            Manage Exclusive Package Subscribers
           </button>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 py-4">
             <DashboardCard
               leftIcon={<BsStopwatch />}
               title={candidatesCount}

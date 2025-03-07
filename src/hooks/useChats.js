@@ -102,6 +102,7 @@ function useChats() {
 
 
   const getMessages = async (userId, onSuccess) => {
+    
     setLoading(true);
     try {
       let uri;
@@ -125,6 +126,7 @@ function useChats() {
   return {
     loading,
     messages,
+    setMessages,
     onTextChange,
     setDetails,
     sendMessage,

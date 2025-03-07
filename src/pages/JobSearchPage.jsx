@@ -6,86 +6,13 @@ import Navbar from "../components/Landing/Navbar";
 import Advert from "../components/Landing/Advert";
 import Footer from "../components/Landing/Footer";
 import useJobManagement from "../hooks/useJobManagement";
-
-
-const jobSectors = [
-  {
-    id: 1,
-    name: "Agriculture",
-    subsections: [
-      { id: 1.1, name: "Crop Production" },
-      { id: 1.2, name: "Animal Husbandry" },
-      { id: 1.3, name: "Agricultural Technology" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Oil and gas",
-    subsections: [
-      { id: 2.1, name: "Exploration" },
-      { id: 2.2, name: "Extraction" },
-      { id: 2.3, name: "Refining" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Manufacturing",
-    subsections: [
-      { id: 3.1, name: "Textiles" },
-      { id: 3.2, name: "Electronics" },
-      { id: 3.3, name: "Automobiles" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Information and communications",
-    subsections: [
-      { id: 4.1, name: "Software Development" },
-      { id: 4.2, name: "Network Administration" },
-      { id: 4.3, name: "Cybersecurity" },
-    ],
-  },
-  {
-    id: 5,
-    name: "Information Technology",
-    subsections: [
-      { id: 5.1, name: "Cloud Computing" },
-      { id: 5.2, name: "Data Science" },
-      { id: 5.3, name: "IT Support" },
-    ],
-  },
-  {
-    id: 6,
-    name: "Construction",
-    subsections: [
-      { id: 6.1, name: "Residential" },
-      { id: 6.2, name: "Commercial" },
-      { id: 6.3, name: "Infrastructure" },
-    ],
-  },
-  {
-    id: 7,
-    name: "Services",
-    subsections: [
-      { id: 7.1, name: "Hospitality" },
-      { id: 7.2, name: "Consulting" },
-      { id: 7.3, name: "Customer Support" },
-    ],
-  },
-  {
-    id: 8,
-    name: "HealthCare",
-    subsections: [
-      { id: 8.1, name: "Clinical Services" },
-      { id: 8.2, name: "Research" },
-      { id: 8.3, name: "Public Health" },
-    ],
-  },
-];
+import { Helmet } from "react-helmet";
+import { Link } from 'react-router-dom'
 
 const JobSearchPage = () => {
-  const { getEmployentTypes, getCurrencies } = useJobManagement();
+  const { getEmployentTypes, getCurrencies, getSectors } = useJobManagement();
   const [jobs, setJobs] = useState([]);
+  const [jobSectors, setJobSectors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     keyword: "",
@@ -101,20 +28,19 @@ const JobSearchPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [employementList, setEmployementList] = useState([]);
   //const [currencyList, setCurrencyList] = useState([]);
-  
+
   const jobsPerPage = 5;
 
   useEffect(() => {
     const initData = async () => {
       const employementListResult = await getEmployentTypes();
-      //const currencyResult = await getCurrencies();
-      console.log(employementListResult)
+      const sectors = await getSectors();
       setEmployementList(employementListResult);
-      //setCurrencyList(currencyResult)
+      setJobSectors(sectors)
     };
 
     initData();
-    
+
   }, []);
 
   const fetchJobs = async () => {
@@ -128,7 +54,7 @@ const JobSearchPage = () => {
 
       const response = await axios.get(`${BASE_URL}/jobs/search?${params}`);
       const fetchedJobs = response?.data?.data || [];
-      setJobs(fetchedJobs);
+      setJobs(fetchedJobs?.filter(item=>item.status==="approved" || item.status==="pending"));
     } catch (error) {
       console.error("Error fetching jobs:", error);
     } finally {
@@ -151,7 +77,7 @@ const JobSearchPage = () => {
       sector: "",
       type: "",
       //minSalary: "",
-      currency:"",
+      currency: "",
       //maxSalary: "",
       // experience: "",
       // datePosted: "",
@@ -176,13 +102,16 @@ const JobSearchPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Mayrahkee | Job Search</title>
+      </Helmet>
       <div className="relative max-w-[1400px] w-full mx-auto">
         <Navbar />
         <main className="relative my-20 px-5 h-full">
           <Hero shrink={true} title="Discover thousands of job opportunities across various sectors, tailored to match your skills and aspirations." />
-          <div className="job-search-page max-w-7xl mx-auto my-4 px-4 h-max">
+          <div className="job-search-page max-w-7xl mx-auto my-4 px-2 h-max">
             <h1 className="text-center text-3xl font-bold my-8">
-            Find Your Dream Job Today
+              Find Your Dream Job Today
             </h1>
 
             {/* Filters and Listings */}
@@ -196,37 +125,37 @@ const JobSearchPage = () => {
                       {filterKey.replace(/([A-Z])/g, " $1").trim()}
                     </label>
                     {filterKey === "sector" ||
-                    filterKey === "type"
-                     ? (
-                      <select
-                        className="w-full border px-3 py-2 rounded-md focus:ring-2 focus:ring-indigo-500"
-                        onChange={(e) =>
-                          handleFilterChange(filterKey, e.target.value)
-                        }
-                        value={filters[filterKey]}
-                      >
-                        <option value="">All</option>
-                        {/* Add specific options for each dropdown */}
-                        {filterKey === "sector" && (
-                          <>
-                         { jobSectors?.map((item)=>(
-                            <option key={item.id} value={item?.name} > {item?.name} </option>
-                            
-                          ))}
-                            
-                          </>
-                        )}
-                                                
-                        {filterKey === "type" && (
-                          <>
-                         { employementList?.map((item)=>(
-                            <option key={item.id} value={item?.name} > {item?.name} </option>
-                            
-                          ))}
-                            
-                          </>
-                        )}
-                        {/*{filterKey === "currency" && (
+                      filterKey === "type"
+                      ? (
+                        <select
+                          className="w-full border px-3 py-2 rounded-md focus:ring-2 focus:ring-indigo-500"
+                          onChange={(e) =>
+                            handleFilterChange(filterKey, e.target.value)
+                          }
+                          value={filters[filterKey]}
+                        >
+                          <option value="">All</option>
+                          {/* Add specific options for each dropdown */}
+                          {filterKey === "sector" && (
+                            <>
+                              {jobSectors?.map((item) => (
+                                <option key={item.id} value={item?.name} > {item?.name} </option>
+
+                              ))}
+
+                            </>
+                          )}
+
+                          {filterKey === "type" && (
+                            <>
+                              {employementList?.map((item) => (
+                                <option key={item.id} value={item?.name} > {item?.name} </option>
+
+                              ))}
+
+                            </>
+                          )}
+                          {/*{filterKey === "currency" && (
                           <>
                          { currencyList?.map((item)=>(
                             <option key={item.id} value={item?.name} > {item?.name} </option>
@@ -234,14 +163,14 @@ const JobSearchPage = () => {
                           ))}                           
                           </>
                         )}*/}
-                        {/* {filterKey === "experience" && (
+                          {/* {filterKey === "experience" && (
                           <>
                             <option value="Entry-level">Entry-level</option>
                             <option value="Mid-level">Mid-level</option>
                             <option value="Senior-level">Senior-level</option>
                           </>
                         )} */}
-                        {/* {filterKey === "datePosted" && (
+                          {/* {filterKey === "datePosted" && (
                           <>
                             <option value="7">Last 7 days</option>
                             <option value="14">Last 14 days</option>
@@ -255,18 +184,18 @@ const JobSearchPage = () => {
                             <option value="deadline">Deadline</option>
                           </>
                         )} */}
-                      </select>
-                    ) : (
-                      <input
-                        type={filterKey.includes("Salary") ? "number" : "text"}
-                        className="w-full border px-3 py-2 rounded-md focus:ring-2 focus:ring-indigo-500"
-                        placeholder={`Enter ${filterKey}`}
-                        onChange={(e) =>
-                          handleFilterChange(filterKey, e.target.value)
-                        }
-                        value={filters[filterKey]}
-                      />
-                    )}
+                        </select>
+                      ) : (
+                        <input
+                          type={filterKey.includes("Salary") ? "number" : "text"}
+                          className="w-full border px-3 py-2 rounded-md focus:ring-2 focus:ring-indigo-500"
+                          placeholder={`Enter ${filterKey}`}
+                          onChange={(e) =>
+                            handleFilterChange(filterKey, e.target.value)
+                          }
+                          value={filters[filterKey]}
+                        />
+                      )}
                   </div>
                 ))}
                 <button
@@ -310,7 +239,7 @@ const JobSearchPage = () => {
                               <strong>Experience:</strong>{" "}
                               <span
                                 dangerouslySetInnerHTML={{
-                                  __html: job.experience,
+                                  __html: job?.experience?.slice(0,60),
                                 }}
                               ></span>
                             </p>
@@ -318,14 +247,12 @@ const JobSearchPage = () => {
                               <strong>Application Deadline:</strong>{" "}
                               {job.application_deadline_date}
                             </p>
-                            <a
-                              href={job?.external_url || "javascript:void(0)"}
-                              target={job?.external_url && "_blank"}
-                              rel="noopener noreferrer"
+                            <Link
+                              to="/registration"
                               className="text-center text-sm mt-auto bg-green-600 p-2 rounded-md text-white font-medium mb-2 inline-block"
                             >
                               More Information
-                            </a>
+                            </Link>
                           </div>
                         ))}
                       </div>

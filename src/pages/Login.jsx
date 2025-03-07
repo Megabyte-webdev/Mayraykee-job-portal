@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import LoginForm from "../components/Auth/LoginForm";
 import LoginOne from "../assets/pngs/login-image2.png";
 import { Helmet } from "react-helmet";
 import SideCard from "../components/Auth/SideCard";
 import { useNavigate } from "react-router-dom";
-
+import { redirect, Navigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContex";
 function Login() {
+  const { authDetails } = useContext(AuthContext);
   const [rememberMe, setRememberMe] = useState(false);
   const [loginDetails, setLoginDetails] = useState({
     email_phone: "",
@@ -21,7 +23,20 @@ function Login() {
   };
 
 
-  return (
+  const redirectPath = () => {
+    switch (authDetails?.user?.role) {
+      case "candidate":
+        return "/applicant";
+      case "employer":
+        return "/company";
+      case "staff":
+        return "/staff";
+    }
+  };
+
+  return (authDetails?.user?.role ? (
+    <Navigate to={redirectPath()} />
+  ) :
     <>
       <Helmet>
         <title>Login Page</title>

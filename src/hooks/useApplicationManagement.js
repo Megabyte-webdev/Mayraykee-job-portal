@@ -7,6 +7,7 @@ import { get, set } from "idb-keyval";
 import { stages } from "../utils/constants";
 import { interviewOptions } from "../company-module/components/applicants/ScheduleInteviewModal";
 import { onSuccess } from "../utils/notifications/OnSuccess";
+import { debounce } from 'lodash'; // Debounce function to limit requests
 
 const APPLICANTS_KEY = "Applicants Database";
 
@@ -27,37 +28,38 @@ function useApplicationManagement() {
     setInterviewDetails({ ...interviewDetails, [name]: value });
   };
 
-  const getApplicantsByEmployee = async () => {
-    if(authDetails?.token !== null){
+  // Debounced function to get applicants by employer ID
+  const getApplicantsByEmployeeDebounced = debounce(async () => {
+    if (authDetails?.token !== null) {
       setLoading(true);
-    try {
-      const response = await client(
-        `getEmployerApply/${authDetails?.user?.id}`
-      );
-      setApplicants(response.data.job_application);
-      await set(APPLICANTS_KEY, response.data.job_application);
-     
-    } catch (error) {
-      FormatError(error, setError, "Applicants Error");
-    } finally {
-      setLoading(false);
+      try {
+        const response = await client(`getEmployerApply/${authDetails?.user?.id}`);
+        await set(APPLICANTS_KEY, response.data.job_application);
+        setApplicants(response.data.job_application);
+      } catch (error) {
+        FormatError(error, setError, "Applicants Error");
+      } finally {
+        setLoading(false);
+      }
     }
-    }
-  };
-  const getJobApplications = async () => {
-    if(authDetails?.token){
-      setLoading(true);
-    try {
-      const response = await client(`/getUserApply/${authDetails?.user?.id}`);
-      setjobApplications(response.data.job_application);
-    } catch (error) {
-      FormatError(error, setError, "Applicants Error");
-    } finally {
-      setLoading(false);
-    }
-    }
-  };
+  }, 1000); // Adjust debounce time as needed (1000ms = 1 second)
 
+  // Debounced function to get job applications for the logged-in user
+  const getJobApplicationsDebounced = debounce(async () => {
+    if (authDetails?.token) {
+      setLoading(true);
+      try {
+        const response = await client(`/getUserApply/${authDetails?.user?.id}`);
+        setjobApplications(response.data.job_application);
+      } catch (error) {
+        FormatError(error, setError, "Applicants Error");
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, 1000); // Adjust debounce time as needed
+
+  // Function to get applicant by ID
   const getApplicant = async (applicantId, setApplicant) => {
     setLoading(true);
     const applicant = applicants.find(
@@ -77,6 +79,7 @@ function useApplicationManagement() {
     }
   };
 
+  // Function to get company details by employer ID
   const getCompany = async (employerId, setEmployer) => {
     setLoading(true);
     try {
@@ -89,18 +92,19 @@ function useApplicationManagement() {
     }
   };
 
+  // Function to change user password
   const changePassword = async (currentPassword, newPassword) => {
     setLoading(true);
     try {
       const response = await client.post(`/candidate/changePassword`, {
-        current_password:currentPassword,
+        current_password: currentPassword,
         new_password: newPassword,
-        user_id: authDetails.user.id
+        user_id: authDetails.user.id,
       });
       onSuccess({
         message: 'Password updated',
-        succes: 'Password change was successful'
-      })
+        success: 'Password change was successful'
+      });
     } catch (error) {
       FormatError(error, setError, "Applicants Error");
     } finally {
@@ -108,46 +112,67 @@ function useApplicationManagement() {
     }
   };
 
+  // Function to schedule an interview
   const scheduleInterview = async (
     applicant,
     data,
     setData,
     handleOnSuccess,
     option,
-    meetingId
+    meetingId,
+    exclusive,
+    edit
   ) => {
     setLoading(true);
     try {
-      if (!option.name) throw Error("An inteview option must be selected");
+      
+      if (!option.name) throw Error("An interview option must be selected");
       if (!meetingId && option.name === "online")
-        throw Error("Please generate a meeting id");
+        throw Error("Please generate a meeting ID");
 
       let interviewPrimarydata = {
         job_application_id: data.id,
-        employer_id: authDetails.user.id,
+        employer_id: exclusive ? exclusive.id : authDetails.user.id,
         candidate_id: applicant.candidate_id,
         option: option.name,
         meeting_id: meetingId,
       };
 
       if (option.name !== "online") {
-        interviewPrimarydata = {
-          job_application_id: data.id,
-          employer_id: authDetails.user.id,
-          candidate_id: applicant.candidate_id,
-          option: option.name,
-        };
+        interviewPrimarydata={
+          ...interviewPrimarydata,
+          location:interviewDetails?.location,
+          meeting_id: null
+        }
+      }else{
+        interviewPrimarydata={
+          ...interviewPrimarydata,
+          meeting_id:meetingId,
+          location: null
+        }
+        
       }
 
       const updateprimarydata = {
         job_id: data.job_id,
         candidate_id: applicant.candidate_id,
-      };
-
-      const interviewResponse = await client.post(`/interviews`, {
+      };  
+      // if(edit){
+      //   delete interviewDetails?.id      
+      // }
+      console.log({
+        ...interviewPrimarydata,
+        ...interviewDetails,
+      })
+      const apiFunc=edit ? client.put(`/interviews/${interviewDetails?.id}`, {
+        ...interviewPrimarydata,
+        ...interviewDetails,
+      }):client.post(`/interviews`, {
         ...interviewPrimarydata,
         ...interviewDetails,
       });
+      const interviewResponse =await apiFunc;
+     
       const interviewData = interviewResponse.data.interview;
       const applicationUpdateResponse = await client.post(
         `/applicationRespond`,
@@ -161,14 +186,20 @@ function useApplicationManagement() {
         applicationUpdateResponse.data.job_application;
       setData(applicatonUpdateData);
       handleOnSuccess();
-      await getApplicantsByEmployee();
+      onSuccess({
+        message: `${edit ? "Update":"Schedule"} Interview`,
+        success: interviewResponse.data?.message || `Interview ${edit ? "Updated":"Scheduled"} successfully`
+      });
+      await getApplicantsByEmployeeDebounced(); // Re-fetch the applicants list
     } catch (error) {
+      console.log(error);
       FormatError(error, setError, "Schedule Error");
     } finally {
       setLoading(false);
     }
   };
 
+  // Function to get resume by ID
   const getResume = async (resumeId, setResume) => {
     setLoading(true);
     try {
@@ -182,6 +213,7 @@ function useApplicationManagement() {
     }
   };
 
+  // Update application status
   const updateApplication = async (status, candidate_id, job_id) => {
     try {
       const response = await client.post("/applicationRespond", {
@@ -189,49 +221,58 @@ function useApplicationManagement() {
         job_id: data.job_id,
         status,
       });
-      set;
-    } catch (error) {}
+      setApplicants((prevApplicants) =>
+        prevApplicants.map((applicant) =>
+          applicant.id === candidate_id ? { ...applicant, status } : applicant
+        )
+      );
+    } catch (error) {
+      FormatError(error, setError, "Application Update Error");
+    }
   };
 
+  // Handle errors
   useEffect(() => {
-    if (error.error && error.message) {
+    if (error?.error !== "" && error?.message !== "") {
       onFailure(error);
     }
-  }, [error.message, error.error]);
+  }, [error]);
 
+  // Fetch data on mount or token change
   useEffect(() => {
-    
-if(authDetails?.token){
-  const initValue = async () => {
-    try {
-      const storedValue = await get(APPLICANTS_KEY);
-      if (storedValue !== undefined) {
-        setApplicants([...storedValue]);
-      } else {
-        await getApplicantsByEmployee();
-      }
-    } catch (error) {
-      FormatError(error, setError, "Index Error");
+    if (authDetails?.token) {
+      const initValue = async () => {
+        try {
+          const storedValue = await get(APPLICANTS_KEY);
+          if (storedValue) {
+            setApplicants(storedValue); // Use cached data if available
+          } else {
+            getApplicantsByEmployeeDebounced(); // Fetch with debounce
+            getJobApplicationsDebounced(); // Fetch with debounce
+          }
+        } catch (error) {
+          FormatError(error, setError, "Index Error");
+        }
+      };
+      initValue();
+      console.log("render of Application", 1)
     }
-  };
-  initValue();
-}
-  }, [authDetails?.token]);
+  }, [authDetails?.token]); // Fetch data on token change
 
   return {
     loading,
     applicants,
     interviewDetails,
+    setInterviewDetails,
     jobApplications,
     scheduleInterview,
     onTextChange,
-    getApplicantsByEmployee,
+    getApplicantsByEmployee: getApplicantsByEmployeeDebounced, // Use debounced function
     getApplicant,
     getResume,
-    getJobApplications,
+    getJobApplications: getJobApplicationsDebounced, // Use debounced function
     getCompany,
-
-    changePassword
+    changePassword,
   };
 }
 

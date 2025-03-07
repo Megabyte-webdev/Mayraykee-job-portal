@@ -7,10 +7,13 @@ import { AuthContext } from "../../context/AuthContex";
 import { axiosClient } from "../../services/axios-client";
 import { onFailure } from "../../utils/notifications/OnFailure";
 import { FormatPrice } from "../../utils/formmaters";
+import { CONMPANY_TAX } from "../../utils/base";
 import { PaystackConsumer } from "react-paystack";
 import useCart from "../../hooks/useCart";
 import MarketPlace from "./marketplace/MarketPlace";
 import PopUpBox from "../PopUpBox";
+import {FaArrowLeftLong} from "react-icons/fa6"
+
 import FormButton from "../FormButton";
 
 function CartedStaffs() {
@@ -45,6 +48,7 @@ function CartedStaffs() {
       setSelectedItems([...selectedItems, item]);
     }
   };
+  
 
   //cart ui logic ended
   const navigateToStaff = (staff) =>
@@ -54,13 +58,16 @@ function CartedStaffs() {
 
   //cart items from api
   const getCartItems = async () => {
+    const type = data.type
     try {
       const { data } = await client.post("staff-cart/get", {
         user_id: authDetails.user.id,
         user_type: authDetails.user.role,
       });
       if (data.cart_items) {
-        setCartItems(data.cart_items);
+        setCartItems(data.cart_items?.filter(
+          (current) => current.domestic_staff.staff_category === type
+        ));
       } else {
         setCartItems([]);
       }
@@ -95,6 +102,13 @@ function CartedStaffs() {
 
   return (
     <>
+    <button
+          type="button"
+          onClick={() => window.history.back()}
+          className="w-max flex items-center gap-2 outline outline-offset-5 outline-green-500 px-4 py-2 rounded text-green-500 hover:bg-green-100"
+        >
+       <FaArrowLeftLong className="me-4 text-green-500" />Back
+        </button>
       <PopUpBox isOpen={conditions}>
         <div className="w-[90%] md:w-[40%] md:h-fit text-gray-500 p-5 items-center flex flex-col gap-4 bg-white">
           <MdClose
@@ -128,7 +142,13 @@ function CartedStaffs() {
               handleSuccess,
               selectedItems,
               getCartItems,
-              2000 * selectedItems.length + 100
+              (selectedItems.length > 0
+                ?
+                selectedItems.reduce(
+                  (total, item) => Number(total + CONMPANY_TAX) + Number(item?.domestic_staff?.expected_salary || 0),
+                  0
+                )
+                : 0)
             )}
           >
             {({ initializePayment }) => (
@@ -151,7 +171,7 @@ function CartedStaffs() {
           </PaystackConsumer>
         </div>
       </PopUpBox>
-      <div className="w-full px-5 md:px-8 lg:px-12 flex  pt-5 flex-col gap-5">
+      <div className="w-full flex  pt-5 flex-col gap-5">
 
         <div
           id="content"
@@ -213,15 +233,16 @@ function CartedStaffs() {
                       checked={selectedItems.includes(item)}
                       onChange={() => {
                         console.log(item);
-                        if (item.domestic_staff.availability_status === '1') {
-                          handleItemSelect(item);
-                        } else {
-                          onFailure({
-                            message: "Availabilty status",
-                            error:
-                              "Only available staffs can be checked out.",
-                          });
-                        }
+                        handleItemSelect(item);
+                        // if (item.domestic_staff.availability_status === '1') {
+                        //   handleItemSelect(item);
+                        // } else {
+                        //   onFailure({
+                        //     message: "Availabilty status",
+                        //     error:
+                        //       "Only available staffs can be checked out.",
+                        //   });
+                        // }
                       }}
                       type="checkbox"
                       className="mr-4 cursor-pointer"
@@ -238,11 +259,10 @@ function CartedStaffs() {
                           <span className={`text-md ${item.domestic_staff.availability_status === '1' ? 'text-green-600' : 'text-red-600'}`}>{item.domestic_staff.availability_status === '1' ? 'Available' : 'Unavailable'}</span>
                         </p>
                         <p className="text-base font-medium capitalize">
-                          {`${item?.domestic_staff?.surname} ${item?.domestic_staff?.first_name} ${item?.domestic_staff?.middle_name}` ||
-                            "Python Programming - From Basics to Advanced Level"}
+                          {`${item?.domestic_staff?.surname} ${item?.domestic_staff?.first_name} ${item?.domestic_staff?.middle_name}`}
                         </p>
                         <p className="text-sm text-gray-700">
-                          {FormatPrice(2000)}
+                          {FormatPrice(parseFloat(item?.domestic_staff?.expected_salary))}
                         </p>
                       </section>
                     </div>
@@ -258,35 +278,47 @@ function CartedStaffs() {
                 {selectedItems?.map((item) => (
                   <li key={item.id} className="flex justify-between text-sm">
                     <span className="capitalize">
-                      {`${item?.domestic_staff?.subcategory} - ${item?.domestic_staff?.surname} ${item?.domestic_staff?.first_name}` ||
-                        "Python Programming - From Basics to Advanced Level"}
+                      {`${item?.domestic_staff?.subcategory} - ${item?.domestic_staff?.surname} ${item?.domestic_staff?.first_name}`}
                     </span>
-                    <span>{FormatPrice(2000)}</span>
+                    <span>{FormatPrice(parseFloat(item?.domestic_staff?.expected_salary))}</span>
                   </li>
                 ))}
               </ul>
               <ul className="border-t pt-4">
                 <li className="flex justify-between text-sm mb-2">
                   <span>Total Price (Item)</span>
-                  <span>{FormatPrice(2000 * selectedItems.length)}</span>
+                  <span>{selectedItems.length > 0
+                    ? FormatPrice(
+                      selectedItems.reduce(
+                        (total, item) => parseFloat(Number(total) + Number(item?.domestic_staff?.expected_salary || 0)),
+                        0
+                      )
+                    )
+                    : 0}</span>
                 </li>
                 <li className="flex justify-between text-sm mb-2">
                   <span>Tax Fee</span>
-                  <span>{selectedItems.length > 0 ? FormatPrice(100) : 0}</span>
+                  <span>{selectedItems.length > 0 ? FormatPrice(CONMPANY_TAX * selectedItems.length) : 0}</span>
                 </li>
                 <li className="flex justify-between font-bold text-lg">
                   <span>Grand Total</span>
                   <span>
                     {selectedItems.length > 0
-                      ? FormatPrice(2000 * selectedItems.length + 100)
+                      ? FormatPrice(
+                        selectedItems.reduce(
+                          (total, item) => Number(total + CONMPANY_TAX) + Number(item?.domestic_staff?.expected_salary || 0),
+                          0
+                        )
+                      )
                       : 0}
                   </span>
                 </li>
+
               </ul>
               <button
                 className={`${selectedItems.length > 0
-                    ? "opacity-100 cursor-pointer"
-                    : "opacity-50 cursor-not-allowed"
+                  ? "opacity-100 cursor-pointer"
+                  : "opacity-50 cursor-not-allowed"
                   } w-full bg-black font-semibold text-white py-3 rounded-full mt-6`}
                 height="h-fit text-sm p-1"
                 disabled={selectedItems.length > 0 ? false : true}
@@ -295,7 +327,8 @@ function CartedStaffs() {
                 }}
               >
                 Checkout
-              </button>
+              </
+              button>
             </div>
           </div>
         ) : (

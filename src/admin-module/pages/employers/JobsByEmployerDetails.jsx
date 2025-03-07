@@ -61,7 +61,7 @@ function JobsByEmployerDetails() {
                 {/* Job Title and Description */}
                 <div className="mb-4">
                   <h3 className="text-2xl font-bold text-gray-800">{employer.job_title}</h3>
-                  <p className="text-gray-500 mb-2">{employer.job_description}</p>
+                  <p className="text-gray-500 mb-2" dangerouslySetInnerHTML={{__html: employer?.job_description}} />
                 </div>
 
                 <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
@@ -72,7 +72,7 @@ function JobsByEmployerDetails() {
                       <p className="text-gray-600"><strong>Sector:</strong> {employer.sector}</p>
                       <p className="text-gray-600"><strong>Type:</strong> {employer.type}</p>
                       <p className="text-gray-600"><strong>Search Keywords:</strong> {employer.search_keywords}</p>
-                      <p className="text-gray-600"><strong>Experience:</strong> {employer.experience}</p>
+                      <p className="text-gray-600"><strong>Experience:</strong> <span dangerouslySetInnerHTML={{__html: employer?.experience}} /> </p>
                       <p className="text-gray-600"><strong>Career Level:</strong> {employer.career_level}</p>
                       <p className="text-gray-600"><strong>Qualification:</strong> {employer.qualification.join(', ')}</p>
                       <p className="text-gray-600"><strong>Application Deadline:</strong> {format(new Date(employer.application_deadline_date), 'MMMM dd, yyyy')}</p>

@@ -37,7 +37,7 @@ function Verifications() {
 
   return (
     <div className="h-fit w-full py-5 px-2 md:px-12 gap-[15px] flex flex-col">
-      <div className="w-full min-h-[45px] border-b grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 ">
+      <div className="w-full min-h-[45px] border-b grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 ">
         {options.map((current) => (
           <button
             className={`h-full p-2 ${

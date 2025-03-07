@@ -5,33 +5,73 @@ import { MdDeleteForever } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import Switch from "../../../components/DefaultSwitch";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { onSuccess } from "../../../utils/notifications/OnSuccess";
 import DeleteDialog from "../../../components/DeleteDialog";
 import DefaultSwitch from "../../../components/DefaultSwitch";
+import AddJobModal from "../../../admin-exclusive-module/components/modals/AddJobModal";
+import UseAdminManagement from "../../../hooks/useAdminManagement";
+import { resourceUrl } from "../../../services/axios-client";
+import { IMAGE_URL } from "../../../utils/base";
 
-function JobDetails({ data, jobUtils, applicants }) {
-  const [enabled, setEnabled] = useState(true);
+function JobDetails({ data, jobUtils, applicants, exclusive }) {
+  const location = useLocation();
+  const { updateStatus } = UseAdminManagement();
+  const [enabled, setEnabled] = useState(null);
+  const [addJob, setAddJob] = useState(false);
   const [isDeleteOpen, setIsDeleteOpened] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+console.log(data)
   const navigate = useNavigate();
+  const toogleJobModal = () => setAddJob(!addJob);
+  const handleEdit = () => {
+    if (exclusive) {
+      navigate(location.pathname, { state: { details: data } });
+      toogleJobModal();
+    } else {
+      navigate("/company/job-posting", { state: { details: data } });
+      scrollTo(0, 0)
+    }
 
+  }
   const handleDelete = () => {
     jobUtils.deleteJob(() => {
       onSuccess({
         message: "Delete Job",
         success: "Job deleted successfully",
       });
-      navigate("/company/job-listing");
+      window.history.back();
+
     }, data.id);
   };
-
+  const handleStatusToggle = async () => {
+    setIsLoading(true); // Start loading
+    const newStatus = !enabled ? "approved" : "pending";
+    const formData = {
+      id: data.id,
+      status: newStatus,
+      type: "job"
+    };
+    const res = await jobUtils.deactivateJob(formData)
+    onSuccess({
+      message: "Status Updated",
+      success: `Job is now ${enabled ? "closed" : "open"}`,
+    });
+    setIsLoading(false); // Stop loading
+    setEnabled(!enabled); // Toggle the switch state
+    window.history.back();
+  };
   useEffect(() => {
     setEnabled(data?.status === "1" || data?.status === "approved");
   }, [data?.status]);
 
   return (
     <>
+      <AddJobModal
+        toogleJobModal={toogleJobModal}
+        isOpen={addJob}
+        exclusive={exclusive}
+      />
       <DeleteDialog
         isOpen={isDeleteOpen}
         loading={jobUtils?.loading}
@@ -43,7 +83,9 @@ function JobDetails({ data, jobUtils, applicants }) {
       <div className="p-2 flex flex-col w-full gap-4">
         <div className="w-full border flex flex-col md:flex-row justify-between px-2 py-1 items-center">
           <div className="flex gap-3 items-center w-full md:w-auto">
-            <div className="h-12 w-12 bg-gray-300" />
+            <div className="h-12 w-12 bg-gray-300" >
+              <img src={`${resourceUrl}${data?.featured_image}`} className="w-full h-full object-cover" />
+            </div>
 
             <div className="flex flex-col">
               <h3 className="font-bold text-lg">{data.job_title}</h3>
@@ -59,7 +101,7 @@ function JobDetails({ data, jobUtils, applicants }) {
             </div>
           </div>
 
-          <div className="w-full md:w-1/3 flex gap-2 mt-2 md:mt-0">
+          <div className="w-full md:w-1/3 flex items-center gap-2 mt-2 md:mt-0">
             <button
               onClick={() => setIsDeleteOpened(true)}
               className="px-1 py-1 flex text-sm border items-center justify-center gap-1 w-1/2 md:w-20"
@@ -67,24 +109,16 @@ function JobDetails({ data, jobUtils, applicants }) {
               <MdDeleteForever className="text-red-600" />
               Delete
             </button>
-            <button onClick={()=>{navigate("/company/job-posting", {state:{details: data}}); scrollTo(0,0)}} className="px-1 py-1 flex text-sm border items-center justify-center gap-1 w-1/2 md:w-20">
+            <button onClick={handleEdit} className="px-1 py-1 flex text-sm border items-center justify-center gap-1 w-1/2 md:w-20">
               <CiEdit className="text-primaryColor" />
               Edit
             </button>
-            <DefaultSwitch
+            {data?.status === "pending" || data?.status === "approved" ?<DefaultSwitch
               enabled={enabled}
               setEnabled={setEnabled}
-              onClick={() => {
-                const newStatus = enabled ? 'approved' : 'pending';
-                jobUtils?.deactivateJob({id:data?.employer_id}, newStatus, () => {
-                  onSuccess({
-                    message: 'Status Updated',
-                    success: `Job is now ${enabled ? 'closed' : 'open'}`,
-                  });
-                });
-                setEnabled(!enabled);
-              }}
-            />
+              loading={isLoading}
+              onClick={handleStatusToggle}
+            />: <strong className="text-red-500 uppercase text-xs">{data?.status === "suspend" ?"suspended": data?.status}</strong>}
           </div>
         </div>
 

@@ -45,7 +45,7 @@ function FindJob() {
     }));
   }, []);
 
-  const filteredData = getAllJobs.data
+  const filteredData = getAllJobs.data?.filter(item=>item.status==="approved")
     ?.filter((job) => {
       const salaryFigures = job.min_salary?.split(".")[0];
       const salaryInRange = salaryRange ? salaryFigures >= salaryRange : true;
@@ -53,7 +53,7 @@ function FindJob() {
         ? job.type?.toLowerCase().includes(employmentType?.toLowerCase())
         : true;
       const matchesCategory = category
-        ? job.search_keywords?.toLowerCase().includes(category?.toLowerCase())
+        ? job.sector?.toLowerCase().includes(category?.toLowerCase())
         : true;
       const matchesJobLevel = jobLevel
         ? job.career_level?.toLowerCase() === jobLevel?.toLowerCase()
@@ -103,12 +103,12 @@ function FindJob() {
       <Helmet>
         <title>Dashboard | Find Job </title>
       </Helmet>
-      <div className="h-full text-[#25324b] p-4 md:p-8 text-sm w-full">
+      <div className="h-full text-[#25324b] text-sm w-full">
         <div className="px-3 py-5 border mb-2 flex flex-col md:flex-row">
           <div className="relative border-b py-1 px-4 md:px-6 mx-4 w-full md:w-[35%] mb-2 md:mb-0">
             <input
               type="text"
-              placeholder="Search messages"
+              placeholder="Search Job"
               onChange={(e) => setJobTitle(e.target.value)}
               value={jobTitle}
               className="pl-[10px] focus:outline-none w-full"
@@ -123,7 +123,7 @@ function FindJob() {
               className="pl-[10px] focus:outline-none w-full"
             >
               <option value={''} id={'030'}>
-                  -- select location --
+                Select Location
                 </option>
               {State.getStatesOfCountry("NG").map((current) => (
                 <option value={current.name} id={current.name}>

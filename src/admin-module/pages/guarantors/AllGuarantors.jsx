@@ -21,21 +21,22 @@ function AllGuarantors() {
     })();
   }, []);
 
-  const heading = ["ID", "Name","Email", "Occupation", "Residential Acdress", "DOB", "Status","StaffID"];
+  const heading = ["ID", "Name","Email", "Occupation","Created At", "Residential Address", "DOB", "Status","StaffID"];
   
   const data = guarantors.map(guarantor => ({
     [heading[0].toLowerCase()]: guarantor.domestic_staff_id,
     [heading[1].toLowerCase()]: guarantor.title + " " + guarantor.surname +  " " + guarantor.first_name,
     [heading[2].toLowerCase()]: guarantor.email,
     [heading[3].toLowerCase()]: guarantor.occupation,
-    [heading[4].toLowerCase()]: guarantor.residential_address,
-    [heading[5].toLowerCase()]: guarantor.dob,
-    [heading[6].toLowerCase()]: guarantor.status === null ? "Pending" : guarantor.status, // Check if status is null
-    [heading[7].toLowerCase()]: guarantor.domestic_staff_id,
+    [heading[4].toLowerCase()]: new Date(guarantor.created_at).toLocaleDateString('en-GB', {day: '2-digit', month:'2-digit', year:'numeric'}),
+    [heading[5].toLowerCase()]: guarantor.residential_address,
+    [heading[6].toLowerCase()]: new Date(guarantor.dob).toLocaleDateString('en-GB', {day: '2-digit', month:'2-digit', year:'numeric'})?.replaceAll("/", "-"),
+    [heading[7].toLowerCase()]: guarantor.status === null ? "Pending" : guarantor.status, // Check if status is null
+    [heading[8].toLowerCase()]: guarantor.domestic_staff_id,
   }));
 
   return (
-    <div className="mx-14 mt-10">
+    <div className="mt-10">
     <button
           type="button"
           onClick={() => window.history.back()}

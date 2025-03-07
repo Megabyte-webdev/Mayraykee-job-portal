@@ -5,9 +5,10 @@ import { AuthContext } from '../../../../context/AuthContex'
 import { ResourceContext } from '../../../../context/ResourceContext'
 import { onSuccess } from '../../../../utils/notifications/OnSuccess';
 import { FcApproval } from 'react-icons/fc';
+import { Link, useNavigate } from 'react-router-dom';
 
 const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }) => {
-
+const navigate=useNavigate();
     const { authDetails } = useContext(AuthContext)
 
     const [errorMsg, setErrorMsg] = useState(null)
@@ -87,6 +88,7 @@ const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }
                 })
                 setLoading(false)
                 setIsOpen(false)
+                navigate("/applicant/find-job")
             })
             .catch((error) => {
                 console.log(error)
@@ -121,7 +123,8 @@ const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }
                 <div className="update_form py-6">
                     <div>
                         <div className="grid md:grid-cols-2 gap-3 mb-4">
-                            {resume?.map((item) => {
+                            {resume?.length > 0 ?
+                             resume?.map((item) => {
                                 const active = activeResume === item.id
                                 return (
                                     <>
@@ -137,7 +140,7 @@ const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }
                                             className={`p-4 cursor-pointer border relative rounded shadow-2xl justify-between flex-col flex ${active ? "bg-green-100" : ""}`}>
                                             <div>
                                                 <div className="flex justify-between w-full">
-                                                    <p>{item.title}</p>
+                                                    <p className="text-green-600 font-medium">{item.title}</p>
                                                     <span className='absolute right-0 top-0'> {active && (<FcApproval size={30}/>)}</span>
                                                 </div>
                                                 <div className="details">
@@ -151,7 +154,7 @@ const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }
                                                             <h3 className="font-bold">{getCandidate.details?.full_name}</h3>
                                                         </div>
                                                     </div>
-                                                    <div className="grid md:grid-cols-3 gap-3">
+                                                    <div className="grid md:grid-cols-3 gap-3 break-all">
                                                         <div className="">
                                                             <p className="font-bold">Address:</p>
                                                             <p>{getCandidate.details?.address}</p>
@@ -165,7 +168,7 @@ const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }
                                                             <p className='break-words'>{getCandidate.details?.email}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="flex my-3">
+                                                    <div className="flex flex-wrap my-3 break-all">
                                                         <div className="w-2/4">
                                                             <p className="font-bold text-base">Employment</p>
                                                             <p className="font-medium text-base">Position</p>
@@ -176,7 +179,7 @@ const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }
                                                             <p><span>{item.start_date}</span> - <span>{item.end_date}</span></p>
                                                         </div>
                                                     </div>
-                                                    <div className="flex my-3">
+                                                    <div className="flex flex-wrap break-all my-3">
                                                         <div className="w-2/4">
                                                             <p className="font-bold text-base">Education</p>
                                                         </div>
@@ -204,7 +207,12 @@ const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }
                                         </div>
                                     </>
                                 )
-                            })}
+                            }):(
+                                <div className="flex flex-col gap-2 items-center justify-center mx-auto">
+                                    <p className="text-sm tet-gray-700">Please you need to create a resume</p>
+                                    <Link to="/applicant/my-resume" className="rounde-md text-sm px-3 py-1 bg-green-600 text-white font-medium">Create Resume</Link>
+                                </div>
+                            )}
                         </div>
                         <form onSubmit={handleSubmit}>
                             <div className=" md:w-">

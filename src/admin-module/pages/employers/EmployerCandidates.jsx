@@ -67,7 +67,7 @@ const EmployerCandidates = () => {
 
 
     
-    <div className="max-w-screen-lg mx-auto mt-10 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-screen-lg mx-auto mt-10">
        <button
           type="button"
           onClick={() => window.history.back()}

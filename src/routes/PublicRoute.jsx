@@ -10,10 +10,10 @@ import FallBack from "../components/Fallback";
 import { ResourceContextProvider } from "../context/ResourceContext";
 const NotFound = lazy(() => import("../pages/404"));
 
-const LandingPage = lazy(() => import("../pages/LandingPage"));
+const RecruitmentPage = lazy(() => import("../pages/RecruitmentPage"));
 const AboutUs = lazy(() => import("../pages/AboutUs"));
 const Help = lazy(() => import("../pages/Help"));
-const ContactForm = lazy(() => import("../pages/ContactForm"));
+const ContactPage = lazy(() => import("../pages/ContactPage"));
 const FAQ = lazy(() => import("../pages/FAQ"));
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("../pages/TermsConditions"));
@@ -31,7 +31,7 @@ function PublicRoute() {
       <Suspense fallback={<FallBack />}>
 
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<RecruitmentPage />} />
           <Route
             path="/learning"
             element={<ElearningPage />}
@@ -39,7 +39,7 @@ function PublicRoute() {
           <Route path="/help" element={<Help />} />
           <Route
             path="/contact"
-            element={<ContactForm />}
+            element={<ContactPage />}
           />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/find-jobs" element={<JobSearchPage />} />

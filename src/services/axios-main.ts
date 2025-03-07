@@ -10,7 +10,7 @@ const MainAxios = axios.create({
 // Request interceptor to add authorization token
 MainAxios.interceptors.request.use(
   (config) => {
-    const token = JSON.parse(localStorage.getItem("__auth_details") as string).token; // Or wherever you store your token
+    const token = JSON.parse(sessionStorage.getItem("__auth_details") as string).token; // Or wherever you store your token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

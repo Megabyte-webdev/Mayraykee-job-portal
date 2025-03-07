@@ -3,62 +3,68 @@ import { useNavigate } from "react-router-dom";
 function ListingRow({ data, applicants, isExclusive = false }) {
   const navigate = useNavigate();
 
+  // Navigate to job details page based on exclusivity
   const navigateJobTypeDetails = () => {
-    if (isExclusive) {
-      navigate(`/admin-exclusives/job/${data.id}`, {
-        state: { data: data, applicants: applicants },
-      });
-      return;
-    } else {
-      navigate(`/company/job-listing/type/${data.id}`, {
-        state: { data: data, applicants: applicants },
-      });
-    }
+    const path = isExclusive 
+      ? `/admin-exclusives/job/${data.id}` 
+      : `/company/job-listing/type/${data.id}`;
+
+    navigate(path, {
+      state: { data: data, applicants: applicants },
+    });
   };
 
+  const formatDate = (date) => new Date(date).toLocaleDateString();
+  
   return (
     <tr
       onClick={navigateJobTypeDetails}
-      className="border-b cursor-pointer odd:bg-[#e7efe6] odd:text-black   hover:bg-green-200  text-gray-700  text-little"
+      className="border-b cursor-pointer odd:bg-[#e7efe6] odd:text-black hover:bg-green-200 text-gray-700 text-little *:px-2"
     >
+      {/* Job Title */}
       <td className="text-center py-[5px]">
         <div className="flex justify-center font-semibold items-center gap-[5px]">
           <span>{data.job_title}</span>
         </div>
       </td>
 
+      {/* Job Status */}
       <td>
         <div className="flex w-full justify-center py-[10px] items-center">
-          <button className="py-[2px] px-[5px] border w-[80%] text-little border-primaryColor rounded-[30px] text-center font-semibold">
-            {(data?.status === "approved" || data?.status === "1") ? "Open" :"Closed"}
+          <button className="py-[2px] px-[5px] border w-max text-little border-primaryColor rounded-[30px] text-center font-semibold">
+            {(data?.status === "approved" || data?.status === "1") ? "Open" : "Closed"}
           </button>
         </div>
       </td>
 
+      {/* Created At */}
       <td>
         <div className="flex w-full justify-center py-[10px] items-center">
           <span className="text-little font-semibold">
-            {new Date(data.created_at).toLocaleDateString()}
+            {formatDate(data.created_at)}
           </span>
         </div>
       </td>
 
+      {/* Application Deadline */}
       <td>
         <div className="flex w-full justify-center py-[10px] items-center">
           <span className="text-little font-semibold">
-            {new Date(data.application_deadline_date).toLocaleDateString()}
+            {formatDate(data.application_deadline_date)}
           </span>
         </div>
       </td>
 
+      {/* Job Type */}
       <td>
         <div className="flex w-full justify-center py-[10px] items-center">
-          <button className="py-[2px] px-[5px] min-w-[80%] text-little border border-primaryColor rounded-[30px] text-center font-semibold">
+          <button className="py-[2px] px-[5px] w-max text-little border border-primaryColor rounded-[30px] text-center font-semibold">
             {data?.type}
           </button>
         </div>
       </td>
 
+      {/* Applicants Count */}
       <td>
         <div className="flex w-full justify-center py-[10px] items-center">
           <span className="text-little font-semibold">
@@ -66,12 +72,12 @@ function ListingRow({ data, applicants, isExclusive = false }) {
           </span>
         </div>
       </td>
+
+      {/* Gender Criteria */}
       <td>
         <div className="flex w-full justify-center py-[10px] items-center">
           <span className="text-little font-semibold">
-            {data?.gender?.toLowerCase() !== "any"
-              ? data.gender
-              : "Not A Criteria"}
+            {data?.gender?.toLowerCase() !== "any" ? data.gender : "Not A Criteria"}
           </span>
         </div>
       </td>

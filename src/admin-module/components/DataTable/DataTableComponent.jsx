@@ -1,17 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import {
-  FaCheck,
-  FaSearch,
-  FaTimes,
-  FaExclamationCircle,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaPauseCircle,
-} from "react-icons/fa";
+import { FaCheck, FaSearch, FaTimes, FaExclamationCircle, FaCheckCircle, FaTimesCircle, FaPauseCircle } from "react-icons/fa";
 import { RiFilterOffLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { BiPencil } from "react-icons/bi";
@@ -19,14 +11,16 @@ import { Dialog } from "primereact/dialog";
 import UseAdminManagement from "../../../hooks/useAdminManagement";
 import { toast } from "react-toastify";
 import { Dropdown } from "primereact/dropdown";
+import { debounce } from "lodash";
 
 const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [editDialog, setEditDialog] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+  const [dataState, setDataState] = useState(null);
 
   const { loading, updateStatus, deleteAdminById } = UseAdminManagement();
-  const [dataState, setDataState] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (data) {
@@ -34,51 +28,48 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
     }
   }, [data]);
 
-  const onGlobalFilterChange = (e) => {
-    setGlobalFilterValue(e.target.value);
-  };
+  const debouncedFilter = useMemo(() => {
+    return debounce((value) => {
+      setGlobalFilterValue(value);
+    }, 500); // Adjust debounce delay as needed
+  }, []);
+
+  const onGlobalFilterChange = useCallback((e) => {
+    debouncedFilter(e.target.value);
+  }, [debouncedFilter]);
 
   const clearFilter = () => {
     setGlobalFilterValue("");
   };
 
-  const renderHeader = () => {
-    return (
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <button
-            type="button"
-            onClick={clearFilter}
-            className="flex items-center gap-2 bg-green-300 px-4 py-2 rounded text-white"
-          >
-            <RiFilterOffLine className="mr-2" /> Clear
-          </button>
-        </div>
-
-        <span className="p-input-icon-left w-full sm:w-auto">
-          <FaSearch className="ml-2 text-gray-500" />
-          <InputText
-            value={globalFilterValue}
-            className="pl-8 w-full sm:w-auto"
-            onChange={onGlobalFilterChange}
-            placeholder="Keyword Search"
-          />
-        </span>
+  const renderHeader = () => (
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        <button type="button" onClick={clearFilter} className="flex items-center gap-2 bg-green-300 px-4 py-2 rounded text-white">
+          <RiFilterOffLine className="mr-2" /> Clear
+        </button>
       </div>
-    );
-  };
+
+      <span className="p-input-icon-left w-full sm:w-auto">
+        <FaSearch className="ml-2 text-gray-500" />
+        <InputText
+          value={globalFilterValue}
+          className="pl-8 w-full sm:w-auto"
+          onChange={onGlobalFilterChange}
+          placeholder="Keyword Search"
+        />
+      </span>
+    </div>
+  );
 
   const editData = async (e, rowData) => {
-    e.stopPropagation();
     setEditDialog(true);
     setSelectedData(rowData);
   };
 
   const onStatusChange = (e) => {
     const val = e.value.code;
-    let _selectedData = { ...selectedData };
-    _selectedData.status = val;
-    setSelectedData(_selectedData);
+    setSelectedData((prevData) => ({ ...prevData, status: val }));
   };
 
   const updateSelectedData = async () => {
@@ -87,7 +78,7 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
       toast.error('An error occurred. Please try again');
       return;
     }
-    
+
     const formData = {
       id: selectedData.id,
       status: selectedData.status,
@@ -101,10 +92,8 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
         .then((res) => {
           if (res) {
             setEditDialog(false);
-            setDataState(
-              dataState.map((d) =>
-                d.id === selectedData.id ? selectedData : d
-              )
+            setDataState((prevData) =>
+              prevData.map((d) => (d.id === selectedData.id ? selectedData : d))
             );
             return Promise.resolve();
           } else {
@@ -126,7 +115,7 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
   const deleteAdmin = async (id) => {
     try {
       await deleteAdminById(id);
-      setDataState(dataState.filter((d) => d.id !== id));
+      setDataState((prevData) => prevData.filter((d) => d.id !== id));
       toast.success('Admin deleted successfully');
     } catch (error) {
       console.error('Error deleting admin:', error);
@@ -134,38 +123,24 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
     }
   };
 
-  const actionBodyTemplate = (rowData) => {
-    return (
-      <div className="flex justify-center space-x-2">
-        {allowEdit && (
-          <button
-            type="button"
-            onClick={(e) => editData(e, rowData)}
-            className="flex items-center gap-2 bg-green-500 px-4 py-2 rounded"
-          >
-            <BiPencil className="ml-2 text-lg text-white" />
-          </button>
-        )}
-        {name === 'admins' ? (
-          <button
-            type="button"
-            className="bg-red-500 px-4 py-2 text-white"
-            onClick={() => deleteAdmin(rowData.id)}
-          >
-            Delete
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="bg-green-500 px-4 py-2 text-white"
-            onClick={() => handleViewDetails(rowData)}
-          >
-            View
-          </button>
-        )}
-      </div>
-    );
-  };
+  const actionBodyTemplate = (rowData) => (
+    <div className="flex justify-center space-x-2">
+      {allowEdit && (
+        <button type="button" onClick={(e) => editData(e, rowData)} className="flex items-center gap-2 bg-green-500 px-4 py-2 rounded">
+          <BiPencil className="ml-2 text-lg text-white" />
+        </button>
+      )}
+      {name === 'admins' ? (
+        <button type="button" className="bg-red-500 px-4 py-2 text-white" onClick={() => deleteAdmin(rowData.id)}>
+          Delete
+        </button>
+      ) : (
+        <button type="button" className="bg-green-500 px-4 py-2 text-white" onClick={() => handleViewDetails(rowData)}>
+          View
+        </button>
+      )}
+    </div>
+  );
 
   const handleViewDetails = (rowData) => {
     const id = rowData.id;
@@ -175,30 +150,16 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
 
   const editDialogFooter = (
     <>
-      <button
-        className="outline outline-red-700 px-2 py-2 flex items-center gap-2 text-red-700 rounded mt-3"
-        onClick={() => setEditDialog(false)}
-      >
+      <button className="outline outline-red-700 px-2 py-2 flex items-center gap-2 text-red-700 rounded mt-3" onClick={() => setEditDialog(false)}>
         <FaTimes className="mr-2" />
         Cancel
       </button>
-      <button
-        className="outline outline-green-700 px-2 py-2 flex items-center gap-2 text-green-700 rounded mt-3"
-        onClick={updateSelectedData}
-      >
+      <button className="outline outline-green-700 px-2 py-2 flex items-center gap-2 text-green-700 rounded mt-3" onClick={updateSelectedData}>
         <FaCheck className="mr-2" />
         Save
       </button>
     </>
   );
-
-  const header = renderHeader();
-
-  const navigate = useNavigate();
-
-  const htmlBodyTemplate = (rowData) => {
-    return <div dangerouslySetInnerHTML={{ __html: rowData.profile }} />;
-  };
 
   const statusBodyTemplate = (rowData) => {
     let statusClass = "";
@@ -235,19 +196,20 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
     );
   };
 
-  const statuses = [
-    { status: "Pending", code: "pending" },
-    { status: "Approved", code: "approved" },
-    { status: "Rejected", code: "rejected" },
-    { status: "Suspend", code: "suspend" },
-  ];
+  const statuses = useMemo(
+    () => [
+      { status: "Pending", code: "pending" },
+      { status: "Approved", code: "approved" },
+      { status: "Rejected", code: "rejected" },
+      { status: "Suspend", code: "suspend" },
+    ],
+    []
+  );
 
-  const rowClassName = (rowData, { rowIndex }) => {
-    return {
-      "bg-gray-100": rowIndex % 2 === 0,
-      "bg-white": rowIndex % 2 !== 0,
-    };
-  };
+  const rowClassName = (rowData, { rowIndex }) => ({
+    "bg-gray-100": rowIndex % 2 === 0,
+    "bg-white": rowIndex % 2 !== 0,
+  });
 
   return (
     <>
@@ -259,7 +221,7 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
           removableSort
           loading={isLoading}
           dataKey="id"
-          header={header}
+          header={renderHeader()}
           globalFilter={globalFilterValue}
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
@@ -279,19 +241,27 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
                   filterPlaceholder={`Search ${head}`}
                   body={
                     head.toLowerCase() === "profile"
-                      ? htmlBodyTemplate
+                      ? (rowData) => {
+                        const parseHtml = (html) => {
+                          const doc = new DOMParser().parseFromString(html, "text/html");
+                          return doc.body.textContent || "";
+                        };
+
+                        return (
+                          <div className="line-clamp-2">
+                            {rowData.profile ?parseHtml(rowData.profile) : null}
+                          </div>
+                        );
+                      }
                       : head.toLowerCase() === "status"
                         ? statusBodyTemplate
                         : null
                   }
+
                 />
               )
           )}
-          <Column
-            body={actionBodyTemplate}
-            exportable={false}
-            style={{ width: "10em" }}
-          />
+          <Column body={actionBodyTemplate} exportable={false} style={{ width: "10em" }} />
         </DataTable>
       </div>
 
@@ -308,9 +278,9 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
               ? "Edit Artisan"
               : name === "job"
                 ? "Edit Job"
-               : name === 'admins'
-                ? "Edit Admin"
-                : "Edit Domestic Staff"
+                : name === 'admins'
+                  ? "Edit Admin"
+                  : "Edit Domestic Staff"
         }
         modal
         className="p-fluid overflow-y-auto"
@@ -320,10 +290,7 @@ const DataTableComponent = ({ data, name, heading, isLoading, allowEdit }) => {
         {selectedData && (
           <Dropdown
             optionLabel="status"
-            value={
-              statuses.find((status) => status.code === selectedData.status) ||
-              ""
-            }
+            value={statuses.find((status) => status.code === selectedData.status) || ""}
             options={statuses}
             onChange={onStatusChange}
             placeholder="Select Status"

@@ -29,7 +29,7 @@ function GridCard({ data, navigateToSingle }) {
           onClick={() => navigateToSingle(data)}
           className="hover:underline hover:bg-primaryColor cursor-pointer bg-green-600 text-white w-full p-2 rounded-md font-semibold"
         >
-          View Application
+          Manage
         </button>
    
     </div>

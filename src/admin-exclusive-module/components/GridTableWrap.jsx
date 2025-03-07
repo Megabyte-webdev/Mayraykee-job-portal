@@ -20,7 +20,7 @@ function GridTableWrap() {
     <div className="h-full w-full flex flex-col px-2 md:px-2 mt-5 py-2 gap-[15px]">
       <div className="w-full flex justify-between ">
         <h2 className="font-semibold text-md">
-          All Exclusives: {exclusives.length}
+          Exclusive Subscribers: {exclusives?.length}
         </h2>
 
         <div className=" px-2">

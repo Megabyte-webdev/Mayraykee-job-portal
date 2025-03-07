@@ -1,19 +1,21 @@
 import { clear } from "idb-keyval";
-import React from "react";
+import React, {useContext} from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContex";
 
-function AdminSideBarItem({ data, dispatch, state }) {
+function AdminSideBarItem({ data, dispatch, state, setIsOpen }) {
   const navigate = useNavigate();
-
+  const {setAuthDetails} = useContext(AuthContext)
   const navigateToPage = () => {
     if (data.type === "LOG-OUT") {
-      localStorage.clear();
-      clear();
+      sessionStorage.clear();
+      setAuthDetails(null);
       navigate(data.route, { replace: true });
     } else {
       dispatch({ ...data });
       navigate(data.route);
     }
+    setIsOpen(false)
   };
 
   return (

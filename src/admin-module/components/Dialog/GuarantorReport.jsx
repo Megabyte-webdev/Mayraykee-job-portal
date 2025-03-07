@@ -84,26 +84,26 @@ const GuarantorReportDialog = ({ fetchData }) => {
       View Guarantor Report
       {isLoading && <ClipLoader size={20} color={"#ffffff"} loading={isLoading} className="ml-2" />}
       </div>
-      <Dialog header="Guarantor Report" visible={visible} style={{ width: '90vw', maxWidth: '600px' }} onHide={() => setVisible(false)} modal>
+      <Dialog header="Guarantor Report" visible={visible} style={{ width: '90vw', maxWidth: '600px',  overflowY:"auto", height:"max-content", maxHeight:"90%" }} onHide={() => setVisible(false)} modal>
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
             <ClipLoader size={50} color={"#000"} loading={isLoading} />
           </div>
         ) : (
           guarantors.length > 0 ? guarantors.map((guarantor) => (
-            <div key={guarantor.id} className="p-3 border-b-2 border-gray-200 space-y-5">
-              <p><strong>Title:</strong> {guarantor.title}</p>
-              <p><strong>Surname:</strong> {guarantor.surname}</p>
-              <p><strong>First Name:</strong> {guarantor.first_name}</p>
-              <p><strong>Date of Birth:</strong> {guarantor.dob}</p>
-              <p><strong>Religion:</strong> {guarantor.religion}</p>
-              <p><strong>Residential Address:</strong> {guarantor.residential_address}</p>
-              <p><strong>Near Bus Stop:</strong> {guarantor.near_bus_stop}</p>
-              <p><strong>Close Landmark:</strong> {guarantor.close_landmark}</p>
-              <p><strong>Mobile Phone:</strong> {guarantor.mobile_phone}</p>
-              <p><strong>Email:</strong> {guarantor.email}</p>
-              <p><strong>Occupation:</strong> {guarantor.occupation}</p>
-              <p><strong>Status:</strong> {guarantor.status}</p>
+            <div key={guarantor?.id} className="p-3 border-b-2 border-gray-200 space-y-5">
+              <p><strong>Title:</strong> {guarantor?.title}</p>
+              <p><strong>Surname:</strong> {guarantor?.surname}</p>
+              <p><strong>First Name:</strong> {guarantor?.first_name}</p>
+              <p><strong>Date of Birth:</strong> {(guarantor?.dob?.match(/(\d{4})-(\d{1,2})-(\d{1,2})/) || [])?.slice(1).reverse().join("-")}</p>
+              <p><strong>Religion:</strong> {guarantor?.religion}</p>
+              <p><strong>Residential Address:</strong> {guarantor?.residential_address}</p>
+              <p><strong>Near Bus Stop:</strong> {guarantor?.near_bus_stop}</p>
+              <p><strong>Close Landmark:</strong> {guarantor?.close_landmark}</p>
+              <p><strong>Mobile Phone:</strong> {guarantor?.mobile_phone}</p>
+              <p><strong>Email:</strong> {guarantor?.email}</p>
+              <p><strong>Occupation:</strong> {guarantor?.occupation}</p>
+              <p><strong>Status:</strong> {guarantor?.status}</p>
               <button
                 type="button"
                 className="flex items-center gap-2 bg-green-500 px-4 py-2 rounded"

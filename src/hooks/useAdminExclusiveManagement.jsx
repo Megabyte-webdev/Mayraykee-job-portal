@@ -5,7 +5,7 @@ import { onFailure } from "../utils/notifications/OnFailure";
 
 function useAdminExclusiveManagement(setDaboardSummary, setExclusives) {
   const { authDetails } = useContext(AuthContext);
-  const client = axiosClient(authDetails.token);
+  const client = axiosClient(authDetails?.token);
 
   //Retrievr all excluisves
   const getDashboardSummary = async () => {
@@ -58,6 +58,7 @@ function useAdminExclusiveManagement(setDaboardSummary, setExclusives) {
       return []
     }
   };
+  
 
   const getAllExclusives = async () => {
     try {

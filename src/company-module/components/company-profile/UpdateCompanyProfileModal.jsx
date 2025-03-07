@@ -7,8 +7,9 @@ import {
   FaLinkedin,
   FaTwitter,
   FaInstagram,
+  FaTimes,
 } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import BasicInput from "./BasicInput";
 import SocialMediaInput from "./SocialMediaInput";
 import ReactQuill from "react-quill";
@@ -16,7 +17,8 @@ import "react-quill/dist/quill.snow.css";
 //import useCompanyProfile from "../../../hooks/useCompanyProfile";
 import FormButton from "../../../components/FormButton";
 import { resourceUrl } from "../../../services/axios-client";
-
+import Selector from "../../../components/Selector";
+import { JobContext } from "../../../context/JobContext";
 export const basic_inputs = [
   {
     id: 1,
@@ -44,9 +46,10 @@ export const basic_inputs = [
   },
   {
     id: 4,
-    name: "Company Website",
+    name: "website",
     label: "Company Website",
     type: "text",
+    required: false,
     placeholder: "https://www.example.com",
   },
   {
@@ -74,23 +77,24 @@ export const basic_inputs = [
     id: 8,
     name: "sector",
     label: "Sector",
-    type: "text",
+    type: "dropdown",
     placeholder: "technology",
   },
   {
     id: 9,
-    name: "introductory_video_url",
+    name: "introduction_video_url",
     label: "Intorduction video url",
     type: "text",
+    required: false,
     placeholder: "https://www.example.com/video.mp4",
   },
-  {
-    id: 10,
-    name: "network",
-    label: "Network",
-    type: "text",
-    placeholder: "Local Network",
-  },
+  // {
+  //   id: 10,
+  //   name: "network",
+  //   label: "Network",
+  //   type: "text",
+  //   placeholder: "Local Network",
+  // },
   {
     id: 11,
     name: "location",
@@ -110,9 +114,11 @@ export const basic_inputs = [
     name: "profile_url",
     label: "Profile Url",
     type: "text",
+    required: false,
     placeholder: "https://www.example.com/profile",
   },
 ];
+
 
 export const social_media_inputs = [
   {
@@ -142,6 +148,7 @@ function UpdateCompanyProfileModal({
   setIsOpen,
   onInit = false,
   companyHookProps,
+  plain=false
 }) {
   const [displayPic, setDisplayPic] = useState("");
   const [socials, setSocials] = useState(["", "", "", ""]);
@@ -154,27 +161,69 @@ function UpdateCompanyProfileModal({
     updateCompanyProfile,
     retrievalState,
   } = companyHookProps;
+  const { getSectors } = useContext(JobContext) ?? {};
+
   const [campaignPhotos, setCampaignPhotos] = useState([...details?.company_campaign_photos || []]);
+  const [sectorList, setSectorList] = useState([]);
 
-  const getCampaingPhotoURL = (e) => {
+
+  const getCampaignPhotoURL = (e) => {
     const { name } = e.target;
-    const file = e.target.files[0]; //filelist is an object carrying all details of file, .files[0] collects the value from key 0 (not array), and stores it in file
+    const files = e.target.files;
 
-    if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
-      // You can also perform additional actions with the valid file
-      const generatedUrl = URL.createObjectURL(file);
-      if (campaignPhotos.length <= 0) return
-      const list = [...campaignPhotos, { url: generatedUrl, file: file }];
-      const files = list?.map((current) => current.file);
-      if (list.length > 0) {
-        setDetails({ ...details, [name]: files });
-        setCampaignPhotos(list);
-      }
+    // Validate files
+    const validFiles = Array.from(files)?.filter(
+      (file) => file.type === "image/jpeg" || file.type === "image/png"
+    );
+
+    if (validFiles.length > 0) {
+      const updatedList = validFiles.map((file) => ({
+        url: URL.createObjectURL(file),
+        file,
+      }));
+
+      const updatedPhotos = [
+        ...(details?.company_campaign_photos || []),
+        ...updatedList,
+      ];
+
+      const updatedFiles = [
+        ...(Array.isArray(details?.company_campaign_photos) ? details?.company_campaign_photos?.map((item) => item) : []),
+        ...updatedList.map((item) => item.file),
+      ];
+
+      setDetails((prevDetails) => ({
+        ...prevDetails,
+        [name]: updatedFiles,
+      }));
+      setCampaignPhotos(updatedPhotos);
+
+      console.log("Updated Campaign Photos:", updatedPhotos);
     } else {
-      // Handle invalid file type
       alert("Please select a valid JPEG or PNG file.");
     }
   };
+
+  useEffect(() => {
+    const init = async () => {
+      const jobSectors = await getSectors();
+      setSectorList(jobSectors || [])
+    }
+    init();
+  }, [])
+  useEffect(() => {
+    if (details?.company_campaign_photos?.length > 0) {
+      const newPhotos = details.company_campaign_photos
+        .filter((file) => typeof file === "string" || file instanceof File) // Filter invalid entries
+        .map((file) => ({
+          url: typeof file === "string" ? `${resourceUrl}${file}` : URL.createObjectURL(file),
+          file: typeof file === "string" ? null : file, // Set file to null if it's a string
+        }));
+
+      setCampaignPhotos(newPhotos);
+    }
+    //console.log(details)
+  }, [details]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -190,22 +239,42 @@ function UpdateCompanyProfileModal({
         details?.beenRetreived === retrievalState?.notRetrieved &&
         onInit
       ) {
-     
+
         setIsOpen(true);
       } else {
         setIsOpen(false);
       }
     }, 1000);
   }, [details?.beenRetreived]);
+  const handleRemovePhoto = (index) => {
+    // Remove the selected photo from the campaignPhotos state
+    const updatedPhotos = campaignPhotos.filter((_, idx) => idx !== index);
+
+    // Filter out the resourceUrl variable dynamically if present in the strings
+    setDetails((prevDetails) => ({
+      ...prevDetails,
+      company_campaign_photos: updatedPhotos.map((photo) => {
+        if (photo.file) {
+          return photo.file; // Return the File object for new uploads
+        }
+        // Remove the resourceUrl prefix dynamically
+        return photo.url.replace(new RegExp(resourceUrl, 'g'), '').trim();
+      }),
+    }));
+
+    // Update the campaignPhotos state
+    setCampaignPhotos(updatedPhotos);
+  };
+
 
   return (
     isOpen && (
-      <div className="h-full z-10 w-full text-gray-600 text-little flex justify-center items-center bg-gray-600/70 fixed top-0 left-0">
-        <div className="w-[90%] sm:max-w-[600px] h-[90%] p-2 flex flex-col  rounded-[10px]  bg-white border">
-          <IoMdCloseCircle
+      <div className={`h-full w-full text-gray-600 text-little flex justify-center items-center bg-gray-600/70 ${!plain && "fixed top-0 left-0 z-10"}`}>
+        <div className={`${plain ?"w-full h-full":"w-[90%] sm:max-w-[600px] h-[90%] rounded-[10px] border"} bg-white p-2 flex flex-col`}>
+          {!plain && <IoMdCloseCircle
             onClick={() => setIsOpen(false)}
             className="text-lg place-self-end  cursor-pointer"
-          />
+          />}
           <div className="w-full px-2 flex gap-[10px] flex-col h-[90%] ">
             <h3 className="font-semibold text-lg border-b pb-2 text-gray-600">{`Update Company Profile`}</h3>
 
@@ -216,7 +285,7 @@ function UpdateCompanyProfileModal({
               {/* Logo Input */}
               <div className="flex flex-col">
                 <span className="text-sm font-semibold">Company Icon</span>
-                <div className="w-[20%] mt-[5px] flex items-start justify-start relative">
+                <div className="w-[20%] mt-[5px] flex flex-col items-start justify-start relative">
                   <img
                     className="h-[50px] w-[50px] rounded-full"
                     src={
@@ -229,6 +298,7 @@ function UpdateCompanyProfileModal({
                     id="displayPic"
                     name="logo_image"
                     type="file"
+                    accept=".jpeg, .png, .jpg,"
                     onChange={(e) => {
                       getImageURL(e, setDisplayPic, setDetails);
                     }}
@@ -240,24 +310,36 @@ function UpdateCompanyProfileModal({
                   >
                     <FaRegEdit />
                   </label>
+                  <small className="text-xs text-gray-500">
+                File size should not exceed 1MB. </small>
                 </div>
               </div>
 
               {/* Basic Form inputs */}
               {basic_inputs?.map((current) => (
-                <BasicInput
-                  data={current}
-                  details={details}
-                  onTextChange={onTextChange}
-                  key={current.id}
-                />
+                current?.type !== "dropdown" ?
+                  <BasicInput
+                    data={current}
+                    details={details}
+                    onTextChange={onTextChange}
+                    key={current.id}
+                    required={current?.required}
+                  /> : <label>
+                    <strong>{current.label}</strong>
+                    <Selector
+                      key={current.id}
+                      data={sectorList || []}
+                      selected={sectorList?.find(one => one.name === details?.sector) || null}
+                      setSelected={({ name }) => setDetails({ ...details, "sector": name })}
+                    />
+                  </label>
               ))}
 
               {/* Company Profile Text Editor */}
               <div className="flex flex-col gap-[5px]">
                 <span className="text-sm font-semibold">Company Profile</span>
 
-                <div className="flex flex-col gap-[3px] mb-[35px] w-full text-gray-400 justify-between ">
+                <div className="flex flex-col gap-[3px] mb-[30px] w-full text-gray-600 justify-between ">
                   <ReactQuill
                     placeholder="Enter company details...."
                     value={details?.company_profile}
@@ -269,28 +351,52 @@ function UpdateCompanyProfileModal({
               </div>
 
               {/* Campaign Photos */}
-              <div className="w-full flex flex-col gap-[3px]">
-                <label
-                  htmlFor="currentCampaignPhoto"
+              <div className="w-full flex flex-col gap-[3px] mt-10">
+                <div
                   className="text-sm font-semibold flex w-full justify-between items-center"
                 >
-                  Capaign Photos <FaRegEdit className="cursor-pointer" />
-                </label>
-                <input
-                  name="company_campaign_photos"
-                  onChange={getCampaingPhotoURL}
-                  id="currentCampaignPhoto"
-                  className="hidden"
-                  type="file"
-                />
-                <div className="w-full min-h-[100px] flex gap-[3px] items-start border-dashed p-2 border overscroll-x-auto">
-                  {campaignPhotos?.map((current, idx) => (
-                    <img key={idx}
-                      className="h-[80px] w-[80px] border"
-                      src={current.url}
+                  Company Photos <label
+                    htmlFor="currentCampaignPhoto" className="relative overflow-hidden">
+                    <FaRegEdit size="24" className="cursor-pointer" />
+                    <input
+                      name="company_campaign_photos"
+                      accept=".jpeg, .png, .jpg,"
+                      onChange={getCampaignPhotoURL}
+                      id="currentCampaignPhoto"
+                      className="hidden absolute w-full h-full"
+                      type="file"
+                      multiple // Allows multiple file selection
                     />
+                  </label>
+                </div>
+
+
+                <section>
+                <div className="w-full min-h-[100px] flex gap-[5px] items-start border-dashed p-2 border overflow-x-auto">
+                  {campaignPhotos?.map((current, idx) => (
+                    <div
+                      key={idx}
+                      className="flex-shrink-0 relative h-[80px] w-[80px] border border-gray-300"
+                    >
+                      <img
+                        className="h-full w-full object-cover"
+                        src={current.url}
+                        alt={`Campaign ${idx}`}
+                      />
+                      <span
+                        onClick={() => handleRemovePhoto(idx)}
+                        className="absolute top-[-5px] right-[-5px] bg-red-500 font-bold text-white rounded-full w-5 h-5 flex items-center justify-center cursor-pointer"
+                      >
+                        <FaTimes size="12" />
+                      </span>
+                    </div>
                   ))}
                 </div>
+                <small className="text-xs text-gray-500">
+                Images should not exceed 3MB. </small>
+                </section>
+                
+
               </div>
 
               {/* Social Media Inputs */}
@@ -304,7 +410,7 @@ function UpdateCompanyProfileModal({
                 <div className="w-full border border-dashed p-2 grid grid-cols-3 gap-[3px]">
                   {social_media_inputs?.map((current) => (
                     <SocialMediaInput
-                    key={current?.id}
+                      key={current?.id}
                       id={current?.id}
                       data={current}
                       socials={details?.social_media}
@@ -315,7 +421,7 @@ function UpdateCompanyProfileModal({
               </div>
 
               <FormButton
-                width="w-[50%] bg-primaryColor"
+                width="w-[50%] bg-primaryColor text-gray-200"
                 height="min-h-[30px] mb-[10px]"
                 loading={loading}
               >

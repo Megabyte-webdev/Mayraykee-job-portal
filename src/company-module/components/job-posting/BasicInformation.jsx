@@ -9,6 +9,8 @@ import QualificationsForm from "./QualificationsForm";
 import SelectorInput from "./SelectorInput";
 import useJobManagement from "../../../hooks/useJobManagement";
 import { Country, State } from 'country-state-city'
+import { resourceUrl } from "../../../services/axios-client";
+import { toast } from "react-toastify";
 
 const basic_inputs = [
   {
@@ -18,6 +20,7 @@ const basic_inputs = [
     type: "text",
     placeholder: "e.g hr@example.com",
     prompt: "Here you input the company email",
+    required: true
   },
   {
     id: 2,
@@ -28,15 +31,19 @@ const basic_inputs = [
     min: 18,
     max: 100,
     prompt: "Here you input preferred average age (years)",
-    verification: "At least 18 years"
+    verification: "At least 18 years",
+    required: true
   },
   {
     id: 3,
     name: "application_deadline_date",
     label: "Application Deadline",
     type: "date",
-    placeholder: "e.g some date",
+    placeholder: "dd-mm-yyy",
+    min:new Date().toISOString().split('T')[0],
+    max:"4040-12-31",
     prompt: "Here you set an application deadline",
+    required: true
   },
   {
     id: 4,
@@ -45,6 +52,7 @@ const basic_inputs = [
     type: "text",
     placeholder: "e.g victoria Island, Lagos street",
     prompt: "Here you insert the office address",
+    required: true
   },
   {
     id: 6,
@@ -53,46 +61,31 @@ const basic_inputs = [
     type: "text",
     placeholder: "e.g Tech",
     prompt: "Here you specify search keywords",
-    verification: "At least 4 characters"
+    verification: "At least 4 characters",
+    required: true
   },
-  {
-    id: 7,
-    name: "experience",
-    label: "Minimum years of Experience",
-    type: "number",
-    placeholder: "e.g 2",
-    min: 2,
-    max: 70,
-    prompt: "Here you specify experience in years",
-    verification: "At least 2 years"
-  },
-];
-
-const job_types = [
-  {
-    id: 1,
-    name: "Full Time",
-  },
-  {
-    id: 2,
-    name: "Part Time",
-  },
-  {
-    id: 3,
-    name: "Remote",
-  },
-  {
-    id: 4,
-    name: "Internship",
-  },
-  {
-    id: 5,
-    name: "Contract",
-  },
-  {
-    id: 6,
-    name: "Hybrid",
-  }
+  // {
+  //   id: 7,
+  //   name: "number_of_participants",
+  //   label: "Number of epected participants",
+  //   type: "number",
+  //   placeholder: "e.g 2",
+  //   min: 2,
+  //   max: 50,
+  //   prompt: "Here you specify the number of applicants you are expecting for this job",
+  //   verification: "At least 1"
+  // },
+  // {
+  //   id: 7,
+  //   name: "experience",
+  //   label: "Minimum years of Experience",
+  //   type: "number",
+  //   placeholder: "e.g 2",
+  //   min: 2,
+  //   max: 70,
+  //   prompt: "Here you specify experience in years",
+  //   verification: "At least 2 years"
+  // },
 ];
 
 const genderData = [
@@ -107,80 +100,6 @@ const genderData = [
   {
     id: 3,
     name: "Female",
-  },
-];
-const jobSectors = [
-  {
-    id: 1,
-    name: "Agriculture",
-    subsections: [
-      { id: 1.1, name: "Crop Production" },
-      { id: 1.2, name: "Animal Husbandry" },
-      { id: 1.3, name: "Agricultural Technology" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Oil and gas",
-    subsections: [
-      { id: 2.1, name: "Exploration" },
-      { id: 2.2, name: "Extraction" },
-      { id: 2.3, name: "Refining" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Manufacturing",
-    subsections: [
-      { id: 3.1, name: "Textiles" },
-      { id: 3.2, name: "Electronics" },
-      { id: 3.3, name: "Automobiles" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Information and communications",
-    subsections: [
-      { id: 4.1, name: "Software Development" },
-      { id: 4.2, name: "Network Administration" },
-      { id: 4.3, name: "Cybersecurity" },
-    ],
-  },
-  {
-    id: 5,
-    name: "Information Technology",
-    subsections: [
-      { id: 5.1, name: "Cloud Computing" },
-      { id: 5.2, name: "Data Science" },
-      { id: 5.3, name: "IT Support" },
-    ],
-  },
-  {
-    id: 6,
-    name: "Construction",
-    subsections: [
-      { id: 6.1, name: "Residential" },
-      { id: 6.2, name: "Commercial" },
-      { id: 6.3, name: "Infrastructure" },
-    ],
-  },
-  {
-    id: 7,
-    name: "Services",
-    subsections: [
-      { id: 7.1, name: "Hospitality" },
-      { id: 7.2, name: "Consulting" },
-      { id: 7.3, name: "Customer Support" },
-    ],
-  },
-  {
-    id: 8,
-    name: "HealthCare",
-    subsections: [
-      { id: 8.1, name: "Clinical Services" },
-      { id: 8.2, name: "Research" },
-      { id: 8.3, name: "Public Health" },
-    ],
   },
 ];
 
@@ -200,12 +119,12 @@ const salaryTypeData = [
 ];
 
 function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }) {
-  const { getEmployentTypes, getCurrencies } = useJobManagement();
+  const { getEmployentTypes, getCurrencies, getSectors, getSubSectors } = useJobManagement();
   const [salaryRange, setSalaryRange] = useState([5000, 22000]);
-  const [jobSectorList, setJobSectorList] = useState(jobSectors || []);
+  const [jobSectorList, setJobSectorList] = useState([]);
   const [selectedType, setSelectedType] = useState(jobUtils?.details?.type && jobUtils?.details?.type);
   const [currentQualification, setCurrentQualification] = useState("");
-  const [selectedGender, setSelectedGender] = useState(jobUtils?.details?.salary_type ? genderData?.find(one => one.name === jobUtils?.details?.gender) : genderData[0]);
+  const [selectedGender, setSelectedGender] = useState(jobUtils?.details?.salary_type && genderData?.find(one => one.name === jobUtils?.details?.gender));
   const [selectedSector, setSelectedSector] = useState();
   const [subSectorList, setSubSectorList] = useState(null);
   const [selectedSubSector, setSelectedSubSector] = useState(null);
@@ -228,7 +147,11 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
   const getPhotoURL = (e) => {
     const { name } = e.target;
     const file = e.target.files[0];
-
+   if (file && file.size > 1 * 1024 * 1024) {
+      toast.error("File size exceeds the file size limit of 1MB.");
+      e.target.value = null
+      return
+    }
     if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
       const generatedUrl = URL.createObjectURL(file);
       setPhotoUrl(generatedUrl);
@@ -244,20 +167,28 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
     const initData = async () => {
       const employementListResult = await getEmployentTypes();
       const currencyResult = await getCurrencies();
+      const sectors = await getSectors();
+      setJobSectorList(sectors)
       setEmployementList(employementListResult);
-
+      console.log(Country.getAllCountries())
+      const currencyWithCountry=currencyResult?.map((item)=>{
+        const country = Country.getAllCountries().find(c => item.name?.startsWith(c.isoCode));
+        return{
+            ...item,
+            name: `${item?.name} ${country ? `(${country?.name})` : ''}`,
+        };
+      })
+      console.log(currencyWithCountry)
+      setCurrencyList(currencyWithCountry);
       if (employementListResult.length > 0) {
         setSelectedType(jobUtils.details.type
           && employementListResult?.find(one => one?.name === jobUtils?.details?.type));
       }
-      setCurrencyList(currencyResult);
-
-
-      setJobSectorList(jobSectors)
     };
-
     initData();
+  }, []);
 
+  useEffect(() => {
     let savedPhoto = null;
     if (savedPhoto === null && jobUtils.details?.featured_image) {
       // Check if the featured image is a Blob/File
@@ -265,18 +196,16 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
         savedPhoto = URL.createObjectURL(jobUtils.details.featured_image);
       } else {
         // If it's not a Blob/File, assume it's already a URL
-        savedPhoto = jobUtils.details.featured_image;
+        savedPhoto = `${resourceUrl}${jobUtils.details?.featured_image}`;
       }
-
       setPhotoUrl(savedPhoto);
     }
-
     return () => {
       if (savedPhoto) {
         URL.revokeObjectURL(savedPhoto);
       }
     };
-  }, []);
+  }, [jobUtils.details?.featured_image])
 
   useEffect(() => {
     if (jobUtils?.details?.location) {
@@ -295,35 +224,29 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
       : null);
   }, [currencyList]);
   useEffect(() => {
-    console.log(jobUtils?.details?.sector, selectedSector)
-    // Find the sector from jobUtils.details or default to the first one
-    if (jobSectorList && jobUtils?.details?.sector) {
+   if (jobSectorList && jobUtils?.details?.sector) {
       const sector = jobUtils?.details?.sector
         ? jobSectorList?.find(one => one?.name === jobUtils?.details?.sector)
         : null;
 
       setSelectedSector(sector);
-
       // Set subsectors list based on the selected sector
       setSubSectorList(sector?.subsections || []);
       // Find the selected subsector or default to the first one in the subsector list
       const subsector = jobUtils?.details?.subsector
-        ? sector?.subsections?.find(one => one?.name === jobUtils?.details?.subsector)
-        : sector?.subsections[0];
-
+        ? sector?.sub_sectors?.find(one => one?.name === jobUtils?.details?.subsector)
+        : null;
       setSelectedSubSector(subsector);
     }
-
-
   }, [jobSectorList, jobUtils?.details?.sector]);
 
   useEffect(() => {
     if (selectedSector) {
-      setSubSectorList(selectedSector?.subsections || []);
-      const matchingSubsector = selectedSector?.subsections?.find(
+      setSubSectorList(selectedSector?.sub_sectors || []);
+      const matchingSubsector = selectedSector?.sub_sectors?.find(
         (one) => one?.name === jobUtils?.details?.subsector
       );
-      setSelectedSubSector(matchingSubsector || selectedSector?.subsections[0]);
+      setSelectedSubSector(matchingSubsector);
     }
   }, [selectedSector]);
 
@@ -335,7 +258,6 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
       }));
     }
   }, [selectedSubSector]);
-
 
   useEffect(() => {
     jobUtils.setDetails((prevDetails) => ({
@@ -355,7 +277,6 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
     selectedSubSector,
     selectedLocation,
   ]);
-
 
   // Validation function before proceeding to the next step
   const handleValidateAndProceed = () => {
@@ -377,7 +298,6 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
   };
 
   //console.log(State.getStatesOfCountry('NG'))
-
   return (
     <div className="flex flex-col w-full p-4 gap-4">
       {/* Basic Info */}
@@ -392,12 +312,12 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
       {/* Featured Image */}
       <div className="flex flex-col sm:flex-row gap-4 items-center border-b py-4">
         <div className="flex flex-col w-full sm:max-w-[25%] gap-2">
-          <h3 className="text-gray-700 text-sm font-semibold">
-            Featured Image
+          <h3 className="text-gray-700 text-sm font-semibold flex gap-1">
+            Featured Image <strong className="text-red-500">*</strong>
           </h3>
-          <span className="text-xs text-gray-400">
+          {/* <span className="text-xs text-gray-400">
             Here you upload image for job
-          </span>
+          </span> */}
         </div>
 
         <div className="flex flex-col gap-2 items-center">
@@ -418,12 +338,16 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
             <input
               id="photo_url"
               onChange={getPhotoURL}
+              accept=".png, .jpg, .jpeg"
               name="featured_image"
               type="file"
               className="hidden"
             />
           </div>
-          <span className="text-xs text-gray-400">Only JPEG or PNG</span>
+          <small class="text-xs text-gray-400 max-w-40 text-center">
+            File size should not exceed 1MB. Only *.jpeg, .png, .jpg* are allowed.
+          </small>
+
         </div>
       </div>
       <SelectorInput
@@ -450,6 +374,7 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
           label: "Sub-Sector",
           prompt: "Here you select subsector based on the job sector",
           name: "subsector",
+          required: true 
         }}
         listData={subSectorList}
         jobUtils={jobUtils}
@@ -471,12 +396,12 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
       {/* Employment Types */}
       <div className="flex flex-col sm:flex-row gap-4 border-b py-4">
         <div className="flex flex-col gap-2 w-full sm:max-w-[25%]">
-          <h3 className="text-gray-700 text-sm font-semibold">
-            Type of Employment
+          <h3 className="text-gray-700 text-sm font-semibold flex gap-1">
+            Type of Employment <strong className="text-red-500">*</strong>
           </h3>
-          <span className="text-xs text-gray-400">
+          {/* <span className="text-xs text-gray-400">
             You can select multiple types of employment
-          </span>
+          </span> */}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -497,6 +422,7 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
           label: "Location",
           prompt: "Here you select job location",
           name: "location",
+          required: true
         }}
         listData={State.getStatesOfCountry('NG')}
         jobUtils={jobUtils}
@@ -513,6 +439,7 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
           label: "Gender",
           prompt: "Here you select preferred Gender",
           name: "gender",
+          required: true
         }}
         listData={genderData}
         jobUtils={jobUtils}
@@ -525,6 +452,7 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
           label: "Salary Type",
           prompt: "Here you select how the job pays",
           name: "salary_type",
+          required: true
         }}
         listData={salaryTypeData}
         jobUtils={jobUtils}
@@ -537,6 +465,7 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
           label: "Currency",
           prompt: "Here you select the currency",
           name: "currency",
+          required: true
         }}
         listData={currencyList}
         jobUtils={jobUtils}
@@ -546,11 +475,11 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
       {/* Salary */}
       <div className="flex flex-col sm:flex-row gap-4 border-b py-4">
         <div className="flex flex-col gap-2 sm:max-w-[25%] w-full">
-          <h3 className="text-gray-700 text-sm font-semibold">Salary</h3>
-          <span className="text-xs text-gray-400">
+          <h3 className="text-gray-700 text-sm font-semibold flex gap-1">Salary<strong className="text-red-500">*</strong></h3>
+          {/* <span className="text-xs text-gray-400">
             Please specify the estimated salary range for the role. *You can
             leave this blank.
-          </span>
+          </span> */}
         </div>
         <div className="flex flex-col w-full sm:w-[50%] gap-4">
           <div className="flex items-center justify-between">

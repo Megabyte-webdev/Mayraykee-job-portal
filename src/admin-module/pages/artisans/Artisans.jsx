@@ -57,7 +57,7 @@ function Artisan() {
       <Helmet>
         <title>Admin| Artisans</title>
       </Helmet>
-      <div className="h-full p-6 w-full text-sm text-gray-800">
+      <div className="h-full py-6 w-full text-sm text-gray-800">
         <div className="text-sm">
          
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
@@ -69,7 +69,7 @@ function Artisan() {
             <DashboardCard
               leftIcon={<FiUsers />}
               title={artisanCount}
-              subtitle="Total Artisans"
+              subtitle="Total Registered Artisans"
               smallText="2 new Ad-hoc staff added"
               smallTextIcon={<FaPlus />}
               link={"/admin/artisans/all"}

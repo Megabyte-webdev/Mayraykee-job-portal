@@ -7,10 +7,14 @@ import InfoSection from '../components/Landing/InfoSection';
 import tunnel from '../assets/pngs/Tunnel2.png'
 import missionImg from '../assets/pngs/about3.png'
 import visionImg from '../assets/pngs/about4.png'
+import { Helmet } from "react-helmet";
 const AboutUs = () => {
     window.scrollTo(0, 0)
     return (
         <>
+            <Helmet>
+                <title>Mayrahkee | About</title>
+            </Helmet>
             <div className='relative max-w-[1400px] w-full mx-auto'
                 style={{
                     backgroundImage: `linear-gradient(rgba(250,250,250,.6), rgba(250,250,250,.6)), url(${tunnel})`,

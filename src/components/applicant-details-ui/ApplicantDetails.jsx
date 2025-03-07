@@ -14,45 +14,6 @@ const ApplicantDetails = () => {
   const { id } = useParams();
   const [staff, setStaff] = useState(null);
 
-  // Static data as if coming from storage
-  const userData = {
-    username: "Jake",
-    name: "Jerome Bell",
-    jobTitle: "Domestic Staff",
-    rating: 4.0,
-    appliedTime: "2 days ago",
-    appliedJob: {
-      title: "Product Development",
-      category: "Marketing",
-      type: "Full-Time",
-    },
-    email: "jeromeBell45@email.com",
-    phone: "+44 1245 572 135",
-    social: {
-      instagram: "instagram.com/jeromebell",
-      twitter: "twitter.com/jeromebell",
-    },
-    website: "www.jeromebell.com",
-  };
-
-  const workExperience = [
-    {
-      title: "Associate UX designer",
-      company: "Capital Inc.",
-      startDate: "Jan 2020",
-      endDate: "Aug 2023",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipiscing elit. Aliquet vehicula scelerisque est ornare.",
-    },
-    {
-      title: "Associate UX designer",
-      company: "Capital Inc.",
-      startDate: "Jan 2020",
-      endDate: "Aug 2023",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipiscing elit. Aliquet vehicula scelerisque est ornare.",
-    },
-  ];
 
   useEffect(() => {
     const initData = async () => {
@@ -76,7 +37,7 @@ const ApplicantDetails = () => {
           <ApplicantHeader staff={staff} setStaff={setStaff} />
           <div className="flex gap-4 flex-col lg:flex-row">
             <ApplicantProfileCard userData={staff} />
-            <MainContent workExperience={workExperience} staff={staff} />
+            <MainContent staff={staff} />
           </div>
         </>
       ) : (

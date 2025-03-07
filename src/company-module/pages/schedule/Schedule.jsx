@@ -23,10 +23,10 @@ function Schedule() {
       <Helmet>
         <title>Company Dashboard | My Schedules </title>
       </Helmet>
-      <div className="h-full w-full flex flex-col px-4 md:px-12 py-2 gap-4 md:gap-[15px]">
+      <div className="h-full w-full flex flex-col py-2 gap-4 md:gap-[15px]">
         <div className="w-full flex flex-col md:flex-row justify-between items-center">
           <h2 className="font-semibold text-sm md:text-md mb-2 md:mb-0">
-            Total Interviews: {interviewUtils.interviews.length}
+            Total Interviews: {applicationUtils?.applicants?.filter(item=>item.status === "shortlist")?.length}
           </h2>
           <div className="border- px-2">
             <button
@@ -52,7 +52,7 @@ function Schedule() {
           {isGrid ? (
             <ul className="grid grid-cols-responsive gap-5 px-3">
               {applicationUtils?.applicants &&
-                applicationUtils?.applicants?.map((current) => (
+                applicationUtils?.applicants?.filter(item=>item.status === "shortlist")?.map((current) => (
                   <InterviewGridCard key={current.id} data={current} />
                 ))}
             </ul>
@@ -73,7 +73,7 @@ function Schedule() {
 
               <tbody>
                 {applicationUtils?.applicants &&
-                  applicationUtils?.applicants?.map((current) => (
+                  applicationUtils?.applicants?.filter(item=>item.status === "shortlist")?.map((current) => (
                     <ApplicantRow key={current.id} data={current} />
                   ))}
               </tbody>

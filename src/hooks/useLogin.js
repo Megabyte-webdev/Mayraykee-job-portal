@@ -5,15 +5,18 @@ import { onFailure } from "../utils/notifications/OnFailure";
 import { AuthContext } from "../context/AuthContex";
 import { onSuccess } from "../utils/notifications/OnSuccess";
 import { SessionContext } from "../context/SessionContext";
-
+import {useNavigate} from 'react-router-dom'
+import useRegistration from "./useRegistration";
+import { resetTimer } from "../components/Auth/EmailVerification";
 function useLogin(role) {
+  const navigate=useNavigate();
   const [loginDetails, setLoginDetails] = useState({
     email: "",
     password: "",
   });
   const { setAuthDetails } = useContext(AuthContext);
   const {saveSession} = useContext(SessionContext)
-
+  const {resendOtp} =useRegistration()
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
     message: "",
@@ -43,16 +46,50 @@ function useLogin(role) {
           email: loginDetails.email,
           password: loginDetails.password,
         });
+        if(response?.data?.user?.staff_category !== role){
+           throw new Error("User not found")
+          return
+        }
         setAuthDetails({
           token: response.data.token,
           user: response.data.user,
         });
+
       }
       onSuccess();
       saveSession()
     } catch (e) {
       console.log(e)
-      FormatError(e, setError, "Registration Error");
+      // Format and display the error immediately
+      FormatError(e, setError, "Incomplete Registration");
+      if (e?.response?.data?.message?.toLowerCase()?.includes("not verified")) {
+        localStorage.setItem(
+          "__reg_info",
+          JSON.stringify({
+            ...loginDetails,
+            password: "__",
+            re_enter_password: "__",
+          })
+        )
+        console.log("complete registration");
+      
+        // Optional: Delay the confirmation box slightly to ensure UI updates
+        setTimeout(() => {
+          const userConfirmation = window.confirm(
+            "Your registration is incomplete. Would you like to verify your email now?"
+          );
+      
+          if (userConfirmation) {
+            navigate("/registration/email_verification");
+            resendOtp(resetTimer);
+          } else {
+            console.log("User chose to stay on the current page.");
+          }
+        }, 1000); // Adjust delay as needed
+      }else{
+        FormatError(e, setError, "Login Error");
+      }
+      
     } finally {
       setLoading(false);
     }
@@ -68,10 +105,12 @@ function useLogin(role) {
       });
       onSuccess({
         message: "Reset succesful",
-        success: "A reset otp has been sent to you email",
+        success: "A reset otp has been sent to your email",
       });
+      return true;
     } catch (error) {
       FormatError(error, setError, "Reset Error");
+      return false
     } finally {
       setLoading(false);
     }
@@ -93,6 +132,7 @@ function useLogin(role) {
         message: "Reset succesful",
         success: "Your passwod has been succesfull resetr",
       });
+      navigate("/login");
     } catch (error) {
       FormatError(error, setError, "Reset Error");
     } finally {
@@ -103,7 +143,7 @@ function useLogin(role) {
   
 
   useEffect(() => {
-    console.log(error)
+    //console.log(error)
     if (error.message || error.error) {
       onFailure(error);
     }

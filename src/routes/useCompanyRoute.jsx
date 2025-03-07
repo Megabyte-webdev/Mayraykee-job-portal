@@ -5,14 +5,15 @@ import {
   Route,
   Routes,
   useNavigate,
+  useLocation
 } from "react-router-dom";
 import ApplicantReducer from "../reducers/ApplicantReducer";
 import {
-  applicantOptions,
   companyOptions,
   adminUtilOptions,
   companyExclusiveOptions,
   exclusiveUtilOptions,
+  extraOptions
 } from "../utils/constants";
 import CompanyReducer from "../reducers/CompanyReducer";
 import { AuthContext } from "../context/AuthContex";
@@ -20,9 +21,12 @@ import RedirectModal from "../components/RedirectModal";
 import UpdateCompanyProfileModal from "../company-module/components/company-profile/UpdateCompanyProfileModal";
 import { clear} from "idb-keyval";
 import useCompanyProfile from "../hooks/useCompanyProfile";
+import withApplicationStatus from "../hocs/withApplicationStatus";
 import withSubscription from "../hocs/withSubscription";
+
 import useSubscription from "../hooks/useSubscription";
 import SubscriptionModal from "../components/subscription/SubscriptionModal";
+import SubscriptionPlans from "../pages/SubscriptionPlans";
 import { ApplicationContextProvider } from "../context/ApplicationContext";
 import {
   CompanyRouteContext,
@@ -44,6 +48,8 @@ const SideBarItem = lazy(() =>
 );
 
 //Route Pages
+const SubscriptionPackages = lazy(() => import("../components/subscription/SubscriptionPackages"));
+
 const Home = lazy(() => import("../company-module/pages/home/Home"));
 const Messages = lazy(() =>
   import("../company-module/pages/messages/Messages")
@@ -91,43 +97,46 @@ const Settings = lazy(() =>
 const HelpCenter = lazy(() => import("../pages/HelpCenter"));
 
 const NotFound = lazy(() => import("../company-module/pages/404"));
+const BlogList = lazy(() => import("../pages/BlogList"));
+const BlogRead = lazy(() => import("../pages/BlogRead"));
 
 function useCompanyRoute() {
 
   const { authDetails } = useContext(AuthContext);
   const [redirectState, setRedirectState] = useState();
   const [isOpen, setIsOpen] = useState(false);
-
-  const activeReducer = authDetails?.user?.user_type === 'regular' ? CompanyReducer : CompanyExclusiveReducer
-  const activeOptions = authDetails?.user?.user_type === 'regular' ? companyOptions : companyExclusiveOptions
-  const activeUtilOptions = authDetails?.user?.user_type === 'regular' ? adminUtilOptions : exclusiveUtilOptions
+  const [subPage, setSubPage] = useState(true);
   
-  const [state, dispatch] = useReducer(activeReducer, activeOptions[0]);
+  const activeReducer = authDetails?.user?.user_type === 'regular' ? CompanyReducer : CompanyExclusiveReducer;
+  const activeOptions = authDetails?.user?.user_type === 'regular' ? companyOptions : companyExclusiveOptions;
+  const activeUtilOptions = authDetails?.user?.user_type === 'regular' ? adminUtilOptions : exclusiveUtilOptions;
+  
 
-  // const [redirectState, setRedirectState] = useState();
+  const options=[...activeOptions, ...activeUtilOptions, ...extraOptions]
+  //console.log(options)
+  const [state, dispatch] = useReducer(activeReducer,options[0]);
+  
   const navigate = useNavigate();
   const companyHookProps = useCompanyProfile();
-
   const toogleIsOpen = () => setIsOpen(!isOpen);
+  const { pathname }=useLocation();
+  
+  useEffect(() => {
+    const matchedOption = options.find((opt) => pathname===opt?.route);
+    if (matchedOption) {
+      dispatch(matchedOption);
+    }else{
+dispatch(options[0]);
+    }
+  }, [pathname]);
 
-  // const navigateToProfile = (setIsOpen) => {
-  //   const profile = companyOptions[3];
-  //   navigate(profile.route);
-  //   dispatch({ ...profile });
-  //   setIsOpen(false);
-  // };
-
-  const setSideBar = (index) => {
-    const page = companyOptions[index];
-    dispatch({ ...page });
-  };
-
+// Save to localStorage whenever state changes
   useEffect(() => {
     const clearDb = async () => await clear();
 
     const onlineStatusRef = ref(
       database,
-      "online-status/" + `employer-${authDetails.user.id}`
+      "online-status/" + `employer-${authDetails?.user?.id}`
     );
 
     const handleUnload = () => {
@@ -151,19 +160,26 @@ function useCompanyRoute() {
     };
   }, []);
 
+  const setSideBar = (index) => {
+    const page = options[index];
+    //console.log(index, page)
+    dispatch(page);
+  };
+  // const WithProtection=(Component, title)=>withApplicationStatus(withSubscription(Component, title))
+  const WithProtection=(Component, title)=>withSubscription(Component, title)
   return (
     <>
       {authDetails?.user?.role === "employer" ? (
         <CompanyRouteContextProvider setSideBar={setSideBar}>
           <SubscriptionModal redirectState={redirectState} />
-          <main className="h-screen w-screen relative flex">
-            {/* Side bar takes up 20% of total width and 100% of height */}
-
-            <SideBar
+          <main className="h-screen w-screen relative flex overflow-hidden">
+           <
+              SideBar
               companyHookProps={companyHookProps}
               authDetails={authDetails}
               toogleIsOpen={toogleIsOpen}
               isMenuOpen={isOpen}
+              
             >
               <ul className="flex flex-col gap-[10px]">
                 {activeOptions.map((currentOption) => (
@@ -172,6 +188,7 @@ function useCompanyRoute() {
                     data={currentOption}
                     dispatch={dispatch}
                     state={state}
+                    setIsOpen={setIsOpen}
                   />
                 ))}
               </ul>
@@ -182,13 +199,15 @@ function useCompanyRoute() {
                     key={currentOption.type}
                     data={currentOption}
                     dispatch={dispatch}
+                    state={state}
+                    setIsOpen={setIsOpen}
                   />
                 ))}
               </ul>
             </SideBar>
 
             {/* Routes and dashboard take up 80% of total width and 100% of height*/}
-            <div className="md:w-[82%] w-full relative flex divide-y-2 divide-secondaryColor bg-white flex-col h-full">
+            <div className="flex-1 w-2/3 relative flex divide-y-2 divide-secondaryColor bg-white flex-col h-full">
               <UpdateCompanyProfileModal
                 isOpen={redirectState}
                 setIsOpen={setRedirectState}
@@ -200,25 +219,28 @@ function useCompanyRoute() {
                 toogleIsOpen={toogleIsOpen}
                 isMenuOpen={isOpen}
               />
-              <div className="w-full  h-[92%] overflow-y-auto">
+              <div className="w-full h-[92%] overflow-y-auto px-2 lg:px-4">
                 <Routes>
                   <Route index element={<Home />} />
                   <Route path="*" element={<NotFound />} />
 
-                  <Route path="messages" element={<Messages />} />
+                  <Route path="messages" element={WithProtection(Messages, "Message")} />
                   <Route
                     path="job-posting"
-                    element={withSubscription(JobPosting, "Job Posting")}
+                    element={WithProtection(JobPosting,  "Job")}
                   />
-
+                   <Route
+                  path="subscription" 
+                  element={<SubscriptionPackages />}
+                />
                   <Route path="applicants/*">
                     <Route
                       index
-                      element={withSubscription(Applicants, "Applicant")}
+                      element={WithProtection(Applicants, "candidate")}
                     />
                     <Route
                       path="detail/:id"
-                      element={withSubscription(SingleApplicant)}
+                      element={WithProtection(SingleApplicant, "candidate")}
                     />
                   </Route>
 
@@ -227,21 +249,25 @@ function useCompanyRoute() {
                   <Route path="domestic-staffs" element={<DomesticStaffs />} />
                   <Route path=":category/:id" element={<StaffDetails />} />
                   <Route path="staff/cart" element={<CartedStaffs />} />
-                  <Route path="staff/success" element={<SuccessPage/>}/>  
-                  <Route path="staff/contract-history" element={<ContractHistory/>}/>  
+                  <Route path="staff/success" element={<SuccessPage />}/>  
+                  <Route path="staff/contract-history" element={<ContractHistory />}/>  
                  
                   <Route path="job-listing/*">
                     <Route
                       index
-                      element={withSubscription(JobListing, "Job Listing")}
+                      element={WithProtection(JobListing, "Job")}
                     />
-                    <Route path="type/:id" element={<JobType />} />
+                    <Route path="type/:id" element={WithProtection(JobType, "Job")} />
                   </Route>
 
                   <Route
                     path="schedule"
-                    element={withSubscription(Schedule, "Schedule")}
+                    element={WithProtection(Schedule, "job")}
                   />
+
+                <Route path="/blogs" element={<BlogList general={false} direct="/company/" />} />
+                <Route path="/blogs/:id" element={<BlogRead general={false} />} />
+         
 
                   <Route path="settings" element={<Settings />} />
                   <Route path="help-center" element={<HelpCenter />} />
@@ -251,7 +277,7 @@ function useCompanyRoute() {
           </main>
         </CompanyRouteContextProvider>
       ) : (
-        <Navigate to={"/"} replace />
+        <Navigate to={"/login"} replace />
       )}
     </>
   );

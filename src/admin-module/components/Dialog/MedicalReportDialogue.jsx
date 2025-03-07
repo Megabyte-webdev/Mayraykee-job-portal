@@ -103,7 +103,7 @@ const MedicalReportDialog = ({ fetchData }) => {
       View Medical Report
       {isLoading && <ClipLoader size={20} color={"#ffffff"} loading={isLoading} className="ml-2" />}
       </div>
-      <Dialog header="Medical Report" visible={visible} style={{ width: '90vw', maxWidth: '600px' }} onHide={() => setVisible(false)} modal>
+      <Dialog header="Medical Report" visible={visible} style={{ width: '90vw', maxWidth: '600px',  overflowY:"auto", height:"max-content", maxHeight:"90%" }} onHide={() => setVisible(false)} modal>
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
             <ClipLoader size={50} color={"#000"} loading={isLoading} />

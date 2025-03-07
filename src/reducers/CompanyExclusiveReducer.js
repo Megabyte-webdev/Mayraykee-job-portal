@@ -1,4 +1,4 @@
-import { adminUtilOptions, companyExclusiveOptions, companyOptions, exclusiveUtilOptions } from "../utils/constants";
+import { adminUtilOptions, companyExclusiveOptions, companyOptions, exclusiveUtilOptions,extraOptions } from "../utils/constants";
 
 //useReducer with some() for increased readability
 function CompanyExclusiveReducer(state, action) {
@@ -6,12 +6,12 @@ function CompanyExclusiveReducer(state, action) {
   let payload = null;
 
   //map through the dashboardOptions to compare each option type with action type
-  [...companyExclusiveOptions, ...exclusiveUtilOptions].some((element) => {
+  [...companyExclusiveOptions, ...exclusiveUtilOptions, ...extraOptions].some((element) => {
     /*if element is found, assign to the action payload to the palyload variable,
           together the state. and return true to break out of loop (some),
           else return false and continue to loop through the elements
         */
-    if (element.type === action.type) {
+    if (element?.type === action?.type) {
       payload = { ...action };
       return true;
     }

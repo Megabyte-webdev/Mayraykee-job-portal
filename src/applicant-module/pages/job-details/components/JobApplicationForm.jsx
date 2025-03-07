@@ -29,7 +29,7 @@ const JobApplicationForm = ({ job, getResumeById, hasApplied }) => {
 
             {/* Modal */}
             <UseModal header={header} setIsOpen={setIsOpen} isOpen={isOpen}>
-                <div className="p-4 sm:p-8">
+                <div className="sm:p-4">
                     <JobForm
                         setIsOpen={setIsOpen}
                         getCandidate={getCandidate.data}

@@ -21,22 +21,23 @@ function AllArtisans() {
     })();
   }, []); // Dependency array ensures this runs only when getEmployers changes
 
-  const heading = ["ID", "Name", "Email", "Subcategory", "Job", "Status", "YOE", "Current Salary", "Expected Salary", "Location"];
+  const heading = ["ID", "Name","Registered", "Email", "Subcategory", "Job", "Status", "YOE", "Current Salary", "Expected Salary", "Location"];
   const data = artisans.map(artisan => ({
     [heading[0].toLowerCase()]: artisan.id,
     [heading[1].toLowerCase()]: artisan.first_name + " " + (artisan.middle_name === null || artisan.middle_name === 'null' ? '' : artisan.middle_name) + " " + artisan.surname,
-    [heading[2].toLowerCase()]: artisan.email,
-    [heading[3].toLowerCase()]: artisan.subcategory,
-    [heading[4].toLowerCase()]: artisan.job_type,
-    [heading[5].toLowerCase()]: artisan.status,
-    [heading[6].toLowerCase()]: artisan.years_of_experience,
-    [heading[7].toLowerCase()]: artisan.current_salary,
-    [heading[8].toLowerCase()]: artisan.expected_salary,
-    [heading[9].toLowerCase()]: artisan.location,
+    [heading[2].toLowerCase()]: new Date(artisan.created_at).toLocaleDateString('en-GB', {day: '2-digit', month:'2-digit', year:'numeric'}),
+    [heading[3].toLowerCase()]: artisan.email,
+    [heading[4].toLowerCase()]: artisan.subcategory,
+    [heading[5].toLowerCase()]: artisan.job_type,
+    [heading[6].toLowerCase()]: artisan.status,
+    [heading[7].toLowerCase()]: artisan.years_of_experience,
+    [heading[8].toLowerCase()]: artisan.current_salary,
+    [heading[9].toLowerCase()]: artisan.expected_salary,
+    [heading[10].toLowerCase()]: artisan.location,
   }));
 
   return (
-    <div className="mx-14 mt-10">
+    <div className="mt-10">
        <button
           type="button"
           onClick={() => window.history.back()}

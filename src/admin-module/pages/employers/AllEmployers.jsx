@@ -23,15 +23,16 @@ function AllEmployers() {
   }, []);
 
   // Table Headings
-  const heading = ["ID", "Name", "Profile", "Image", "Status"];
+  const heading = ["ID", "Name","Registered", "Profile", "Image", "Status"];
 
  
   const data = employers.map(item => {
     const employerDetails = item.employer || {};  
     
     return {
-      id: employerDetails.id,                                     
+      id: item.id,                                     
       name: employerDetails.company_name,
+      registered: new Date(item.created_at).toLocaleDateString('en-GB', {day: '2-digit', month:'2-digit', year:'numeric'}),
       profile: employerDetails.company_profile,
       image: (
         <img 
@@ -45,7 +46,7 @@ function AllEmployers() {
   });
 
   return (
-    <div className="mx-14 mt-10">
+    <div className="mt-10">
       <button
         type="button"
         onClick={() => window.history.back()}

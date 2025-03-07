@@ -29,7 +29,7 @@ export default function CandidateUsageChart({ candidates }) {
     {
       label: 'Pending',
       value: candidates.filter(c => c.status === 'pending').length,
-      color: 'purple',
+      color: 'yellow',
     },
   ];
 

@@ -6,8 +6,10 @@ import SectionHeader from "../components/Landing/SectionHeader";
 import { BASE_URL } from '../utils/base';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet';
+import { resourceUrl } from '../services/axios-client';
 
-const BlogRead = () => {
+const BlogRead = ({general=true}) => {
     const { id } = useParams(); // Get the blog ID from the URL
     const [blog, setBlog] = useState(null); // Store the fetched blog data
     const [loading, setLoading] = useState(false); // Loading state
@@ -57,22 +59,25 @@ const BlogRead = () => {
 
     return (
         <>
+            <Helmet>
+                <title>Mayrahkee | {blog?.title}</title>
+            </Helmet>
             <SectionHeader
                 title={blog.title}
                 subtitle={blog.description.slice(0, 150)}
-                img={blog.main_image}
+                img={`${resourceUrl}${blog.main_image}`}
                 reads={blog.readingTime}
                 time={new Date(blog.created_at).toLocaleDateString()}
             />
-            <div className="relative max-w-[1400px] w-full mx-auto">
-                <Navbar />
-                <main className="relative mb-20 px-5 h-auto flex flex-col gap-5">
-                    <div className="prose max-w-none leading-8">
-                        <p>{blog.description}</p>
+            <div className={general ? "relative max-w-[1400px] w-full mx-auto" : "w-full"}>
+                <div className={general ? "block":"hidden"}><Navbar /></div>
+                <main className="w-full relative mb-20 px-5 h-auto flex flex-col gap-5">
+                    <div className="prose max-w-full">
+                        <p dangerouslySetInnerHTML={{ __html: blog?.description}} />
                     </div>
                 </main>
             </div>
-            <Footer />
+            <div className={general ? "block":"hidden"}><Footer /></div>
         </>
     );
 };

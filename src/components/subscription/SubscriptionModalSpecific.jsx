@@ -5,6 +5,7 @@ import { MdClose } from "react-icons/md";
 import { SubscriptionContext } from "../../context/SubscriptionContext";
 
 function SubscriptionModal({ specificPackages, isOpen, setIsOpen }) {
+  console.log(specificPackages)
   return (
     isOpen && (
       <div className="h-full z-50 w-full text-gray-400 text-little flex justify-center items-center bg-gray-600/70 fixed top-0 bottom-0 right-0 left-0 m-auto">

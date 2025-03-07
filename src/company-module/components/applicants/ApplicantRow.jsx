@@ -8,14 +8,14 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContex";
 
-function ApplicantRow({ data, isExclusive = false }) {
+function ApplicantRow({ data, isExclusive = false, exclusiveData=null }) {
   const navigate = useNavigate();
   const { authDetails } = useContext(AuthContext);
   const role = authDetails?.user?.role === "employer" ? "company" : "applicant";
 
   const navigateToApplicantDetails = () => {
     if (isExclusive) {
-      navigate(`/admin-exclusives/applicant/${data?.id}`,  { state: { data } });
+      navigate(`/admin-exclusives/applicant/${data?.id}`,  { state: { data, exclusiveData:exclusiveData } });
     } else {
       navigate(`/${role}/applicants/detail/${data?.id}`, { state: { data } });
     }

@@ -9,7 +9,7 @@ function TableRow({ data, navigateToSingle }) {
         </div>
       </td>
       <td className="hidden md:block py-[10px]">
-        <div className="w-full flex h-full  justify-center items-center gap-[5px]">
+        <div className="w-full flex h-full  justify-center items-center gap-[5px] break-all">
           <span>{data.email}</span>
         </div>
       </td>
@@ -19,7 +19,7 @@ function TableRow({ data, navigateToSingle }) {
           <button
             className={`py-[2px] px-[5px] text-[10px] min-w-[80%] tracking-wider capitalize rounded-[30px] text-center font-semibold`}
           >
-            {new Date(data.created_at).toLocaleDateString()}
+            {new Date(data?.created_at).toLocaleDateString('en-GB', {day: '2-digit', month:'2-digit', year:'numeric'})}
           </button>
         </div>
       </td>

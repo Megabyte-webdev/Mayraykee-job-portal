@@ -47,7 +47,7 @@ const DomesticStaffDetails = () => {
   const { data } = artisan;
 
   return (
-    <div className="p-4">
+    <div className="py-4">
       <button
         type="button"
         onClick={() => window.history.back()}
@@ -59,9 +59,9 @@ const DomesticStaffDetails = () => {
         <div className="shadow-lg px-4 py-4 md:col-span-1">
           <div className="flex space-x-4">
             <div className="">
-              {data.profile_image ? (
+              {data?.profile_image ? (
                 <img
-                  src={"https://dash.mayrahkeeafrica.com/" + data.profile_image}
+                  src={"https://dash.mayrahkeeafrica.com/" + data?.profile_image}
                   alt="Profile"
                   className="h-20 w-20 rounded-full border-4 border-white shadow-lg"
                 />
@@ -73,10 +73,10 @@ const DomesticStaffDetails = () => {
             </div>
 
             <div>
-              <h2 className="text-gray-800 text-2xl font-bold mb-2">{data.name}</h2>
+              <h2 className="text-gray-800 text-2xl font-bold mb-2">{data?.name}</h2>
               <h1 className="text-gray-400 text-sm">
-                <a href={`mailto:${data.email}`} className="text-gray-400 hover:underline">
-                  {data.email}
+                <a href={`mailto:${data?.email}`} className="text-gray-400 hover:underline">
+                  {data?.email}
                 </a>
               </h1>
             </div>
@@ -84,20 +84,20 @@ const DomesticStaffDetails = () => {
 
           <div className="bg-gray-200 px-4 py-4 my-4">
             <div className="flex text-xs justify-between pb-3">
-              <p className="font-bold">Member Since</p>  <p>{data.member_since}</p>
+              <p className="font-bold">Member Since</p>  <p>{data?.member_since}</p>
             </div>
             <div className="flex">
-              <p className="text-sm font-bold">Current Salary:</p> <p className="text-sm ml-2">{data.current_salary}</p>
+              <p className="text-sm font-bold">Current Salary:</p> <p className="text-sm ml-2">{data?.current_salary}</p>
             </div>
             <div className="flex">
-              <p className="text-sm font-bold">Expected Salary:</p> <p className="text-sm ml-2">{data.expected_salary}</p>
+              <p className="text-sm font-bold">Expected Salary:</p> <p className="text-sm ml-2">{data?.expected_salary}</p>
             </div>
           </div>
           <hr />
           <div className="text-md px-4 py-4">
             <h1 className="font-bold">Contact</h1>
             <div className="flex items-center space-x-2">
-              <span className="font-bold">Phone Number:</span> <span>{data.phone_number}</span>
+              <span className="font-bold">Phone Number:</span> <span>{data?.phone_number}</span>
             </div>
           </div>
         </div>
@@ -106,19 +106,19 @@ const DomesticStaffDetails = () => {
           <div className="pb-4">
             <h1 className="font-bold">Details</h1>
             <div className="text-sm px-4 py-4 grid grid-cols-2 gap-2">
-              <p className="text-sm font-bold">Staff Category:</p> <p className="text-sm">{data.staff_category}</p>
-              <p className="text-sm font-bold">Subcategory:</p> <p className="text-sm">{data.subcategory}</p>
-              <p className="text-sm font-bold">Employment Type:</p> <p className="text-sm">{data.employment_type}</p>
-              <p className="text-sm font-bold">Work Type:</p> <p className="text-sm">{data.work_type}</p>
-              <p className="text-sm font-bold">Work Days:</p> <p className="text-sm">{data.work_days}</p>
-              <p className="text-sm font-bold">Religion:</p> <p className="text-sm">{data.religion}</p>
-              <p className="text-sm font-bold">Location:</p> <p className="text-sm">{data.location}</p>
-              <p className="text-sm font-bold">Job Type:</p> <p className="text-sm">{data.job_type}</p>
-              <p className="text-sm font-bold">Years of Experience:</p> <p className="text-sm">{data.years_of_experience}</p>
-              <p className="text-sm font-bold">Education Level:</p> <p className="text-sm">{data.education_level}</p>
-              <p className="text-sm font-bold">Marital Status:</p> <p className="text-sm">{data.marital_status}</p>
-              <p className="text-sm font-bold">Languages Spoken:</p> <p className="text-sm">{data.languages_spoken?.join(", ")}</p>
-              <p className="text-sm font-bold">Status:</p> <p className="text-sm">{data.status}</p>
+              <p className="text-sm font-bold">Staff Category:</p> <p className="text-sm">{data?.staff_category}</p>
+              <p className="text-sm font-bold">Subcategory:</p> <p className="text-sm">{data?.subcategory}</p>
+              <p className="text-sm font-bold">Employment Type:</p> <p className="text-sm">{data?.employment_type}</p>
+              <p className="text-sm font-bold">Work Type:</p> <p className="text-sm">{data?.work_type}</p>
+              <p className="text-sm font-bold">Work Days:</p> <p className="text-sm">{data?.work_days}</p>
+              <p className="text-sm font-bold">Religion:</p> <p className="text-sm">{data?.religion}</p>
+              <p className="text-sm font-bold">Location:</p> <p className="text-sm">{data?.location}</p>
+              <p className="text-sm font-bold">Job Type:</p> <p className="text-sm">{data?.job_type}</p>
+              <p className="text-sm font-bold">Years of Experience:</p> <p className="text-sm">{data?.years_of_experience}</p>
+              <p className="text-sm font-bold">Education Level:</p> <p className="text-sm">{data?.education_level}</p>
+              <p className="text-sm font-bold">Marital Status:</p> <p className="text-sm">{data?.marital_status}</p>
+              <p className="text-sm font-bold">Languages Spoken:</p> <p className="text-sm">{data?.languages_spoken?.join(", ")}</p>
+              <p className="text-sm font-bold">Status:</p> <p className="text-sm">{data?.status}</p>
             </div>
           </div>
           <hr />
@@ -129,11 +129,11 @@ const DomesticStaffDetails = () => {
           <div className="shadow-lg px-4 py-4 md:col-span-2">
             <h1 className="font-bold py-4">Reports</h1>
             <div className="text-sm px-4 py-4 mb-3 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <PoliceReportDialog fetchData={() => fetchReport("police-report", data.id)} />
-              <MedicalReportDialog fetchData={() => fetchReport("medical-history", data.id)} />
-              <GuarantorReportDialog fetchData={() => fetchReport("guarantor", data.id)} />
-              <PreviousWorkExperienceDialog fetchData={() => fetchReport("previous-work-experience", data.id)} />
-              <ResidentDialog fetchData={() => fetchReport("residential-status", data.id)} />
+              <PoliceReportDialog fetchData={() => fetchReport("police-report", data?.id)} />
+              <MedicalReportDialog fetchData={() => fetchReport("medical-history", data?.id)} />
+              <GuarantorReportDialog fetchData={() => fetchReport("guarantor", data?.id)} />
+              <PreviousWorkExperienceDialog fetchData={() => fetchReport("previous-work-experience", data?.id)} />
+              <ResidentDialog fetchData={() => fetchReport("residential-status", data?.id)} />
             </div>
           </div>
         </div>

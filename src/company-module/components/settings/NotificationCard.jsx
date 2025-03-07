@@ -17,8 +17,8 @@ function NotificationCard({ title, description, id, details, setDetails, initial
 
 
   return (
-    <div className="flex gap-[30px] border-b py-2 ">
-      <div className="flex flex-col min-w-[25%] max-w-[25%] gap-[10px]">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-[8px] md:gap-[30px] border-b py-2 ">
+      <div className="flex flex-col min-w-[25%] gap-[10px]">
         <h3 className="text-gray-700 text-sm font-semibold">{title}</h3>
         <span className="text-little text-gray-400">{description}</span>
       </div>

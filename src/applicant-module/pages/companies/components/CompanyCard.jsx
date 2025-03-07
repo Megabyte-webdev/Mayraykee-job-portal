@@ -1,17 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { resourceUrl } from '../../../../services/axios-client';
 
 const CompanyCard = ({ company, newApplicant }) => {
   const navigate = useNavigate();
 
   return (
     <div
-      onClick={() => {navigate("/applicant/browse-companies/id", { state: { company: company } }); scrollTo(0,0)}}
+      onClick={() => { navigate("/applicant/browse-companies/id", { state: { company: company } }); scrollTo(0, 0) }}
       className="border cursor-pointer hover:shadow-inner my-4 p-4">
       <div className="flex flex-col md:flex-row justify-between">
-        <div className="flex">
-          <div>
-            <img src={newApplicant} className="w-12 h-12 object-cover" alt={`${company.company_name} logo`} />
+        <div className="flex flex-col md:flex-row">
+          <div className="w-14 h-14 flex-shrink-0 rounded-full border-1 bg-gray-400">
+            <img src={`${resourceUrl}${company?.logo_image}` || newApplicant} className="rounded-full w-full h-full object-cover" alt="" />
           </div>
           <div className="ml-3">
             <p className="font-bold">{company.company_name}</p>
@@ -34,10 +35,10 @@ const CompanyCard = ({ company, newApplicant }) => {
           <button className="w-full md:w-[150px] text-white mb-2 py-2 bg-green-700 hover:bg-green-900">
             {company.phone_number}
           </button>
-          <div className="flex my-3 bg-gray-100">
+          {/* <div className="flex my-3 bg-gray-100">
             <div className="pt-1 bg-[#56CDAD] w-[50%]"></div>
           </div>
-          <p className="text-sm"><b>5 applied</b> of 10 capacity</p>
+          <p className="text-sm"><b>5 applied</b> of 10 capacity</p> */}
         </div>
       </div>
     </div>

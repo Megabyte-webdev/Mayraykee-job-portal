@@ -108,11 +108,11 @@ function ResidenceForm() {
         <div className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600">
           {residenceFields()?.map((currentKey) => {
             const value = currentResidence[currentKey];
-            const labelText = currentKey.replace(/_/g, " ").toUpperCase();
+            const labelText = currentKey ==="close_landmark"? "closest landmark" : currentKey.replace(/_/g, " ");
 
             return (
               <div className="flex flex-col gap-1">
-                <label>{labelText}</label>
+                <label className="capitalize font-medium">{labelText}</label>
                 <label>{value}</label>
               </div>
             );
@@ -126,7 +126,7 @@ function ResidenceForm() {
           className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600"
         >
           <label className="flex flex-col justify-center gap-1">
-            <span className="block text-sm font-medium text-slate-700 mb-1">
+            <span className="block font-medium text-slate-700 mb-1">
               Country
             </span>
             <select
@@ -136,7 +136,7 @@ function ResidenceForm() {
                 setSelectStates(states);
                 setSelectedCountry(Country.getCountryByCode(e.target.value));
               }}
-              className="p-1 border w-full focus:outline-none border-gray-900  rounded-md"
+              className="p-1 border w-full focus:outline-none text-sm border-gray-500  rounded-md"
             >
               <option value="">-- select --</option>
               {countries.map((country) => (
@@ -148,7 +148,7 @@ function ResidenceForm() {
           </label>
 
           <label className="flex flex-col justify-center gap-1">
-            <span className="block text-sm font-medium text-slate-700 mb-1">
+            <span className="block font-medium text-slate-700 mb-1">
               State
             </span>
             <select
@@ -162,7 +162,7 @@ function ResidenceForm() {
                 setSelectState(State.getStateByCode(e.target.value));
                 setSelectCities(cities);
               }}
-              className="p-1 border w-full focus:outline-none border-gray-900  rounded-md"
+              className="p-1 border w-full focus:outline-none border-gray-500 text-sm rounded-md"
             >
               <option value="">-- select --</option>
               {selectStates?.map((each) => (
@@ -174,7 +174,7 @@ function ResidenceForm() {
           </label>
 
           <label className="flex flex-col justify-center gap-1">
-            <span className="block text-sm font-medium text-slate-700 mb-1">
+            <span className="block font-medium text-slate-700 mb-1">
               Local Governmennt
             </span>
             <select
@@ -182,7 +182,7 @@ function ResidenceForm() {
               onChange={(e) => {
                 setSelectCity(e.target.value);
               }}
-              className="p-1 border w-full focus:outline-none border-gray-900  rounded-md"
+              className="p-1 border w-full focus:outline-none border-gray-500 text-sm rounded-md"
             >
               <option value="">-- select --</option>
               {selectCities?.map((city) => (
@@ -195,14 +195,14 @@ function ResidenceForm() {
 
           {formFields.map((currentKey) => {
             const detail = formFields[currentKey];
-            const labelText = currentKey.replace(/_/g, " ").toUpperCase();
+            const labelText = currentKey==="close_landmark" ? "closest landmark" :currentKey.replace(/_/g, " ");
 
             const inputType = currentKey == "member_since" ? "date" : "text";
             return (
               <div className="flex flex-col gap-1">
-                <label>{labelText}</label>
+                <label className="capitalize font-medium">{labelText}</label>
                 <input
-                  className="p-1 border focus:outline-none border-gray-900  rounded-md"
+                  className="p-1 border focus:outline-none border-gray-500  rounded-md"
                   type={inputType}
                   defaultValue={detail}
                   {...register(currentKey)}

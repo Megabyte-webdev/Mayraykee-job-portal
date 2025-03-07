@@ -10,10 +10,23 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaArrowLeftLong } from "react-icons/fa6";
 import axios from 'axios';
 
-const countryOptions = Object.keys(countries).map(countryCode => ({
-  value: countryCode,
-  label: countries[countryCode].name
-}));
+console.log(countries)
+const uniqueCountries = new Set();
+
+const countryOptions = Object.keys(countries)
+  .map((countryCode) => {
+    const country = countries[countryCode];
+
+    if (country && country.name && !uniqueCountries.has(country.name)) {
+      uniqueCountries.add(country.name);
+      return { value: countryCode, label: country.name };
+    }
+
+    return null; // Exclude duplicates or invalid data
+  })
+  .filter((option) => option !== null); // Remove null entries
+
+
 
 function AddCurrency() {
   const [countryName, setCountryName] = useState("");
@@ -25,17 +38,25 @@ function AddCurrency() {
   const { AddFormCurrency } = UseAdminManagement();
 
   useEffect(() => {
-    const selectedCountry = countries[countryName];
-    if (selectedCountry) {
-      const currencyCode = selectedCountry.currencies[0];
-      const currency = currencies[currencyCode];
-      setCurrencySymbol(currency.symbol);
-      setFlag(`https://flagcdn.com/w320/${selectedCountry.alpha2.toLowerCase()}.png`);
-    } else {
-      setCurrencySymbol("");
-      setFlag("");
-    }
-  }, [countryName]);
+  if (!countryName) {
+    setCurrencySymbol("");
+    setFlag("");
+    return;
+  }
+
+  const selectedCountry = countries[countryName];
+  if (selectedCountry && selectedCountry.currencies.length > 0) {
+    const currencyCode = selectedCountry.currencies[0];
+    const currency = currencies[currencyCode];
+
+    setCurrencySymbol(currency ? currency.symbol : "");
+    setFlag(selectedCountry.alpha2 ? `https://flagcdn.com/w320/${selectedCountry.alpha2.toLowerCase()}.png` : "");
+  } else {
+    setCurrencySymbol("");
+    setFlag("");
+  }
+}, [countryName]);
+
 
   const convertFlagToFile = async (url) => {
     const response = await axios.get(url, { responseType: 'blob' });
@@ -106,7 +127,7 @@ function AddCurrency() {
             <Select
               options={countryOptions}
               value={countryOptions.find(option => option.value === countryName)}
-              onChange={(option) => setCountryName(option.value)}
+              onChange={(option) => setCountryName(option?.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               required
             />

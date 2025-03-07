@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { resourceUrl } from '../../../../services/axios-client';
 
 const JobCard = ({ newApplicant, job, getAllApplications }) => {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ const JobCard = ({ newApplicant, job, getAllApplications }) => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                 {/* Left Section - Job Info */}
                 <div className="flex items-start space-x-3">
-                    <img src={newApplicant} alt="Applicant Logo" className="w-12 h-12 object-contain" />
+                    <img src={`${resourceUrl}/${job?.featured_image}`} alt="job" className="w-12 h-12 object-contain" />
                     <div>
                         <p className="font-bold text-lg">{job.job_title}</p>
                         <p className="text-sm text-gray-600">

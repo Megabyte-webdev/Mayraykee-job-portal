@@ -6,11 +6,13 @@ export const SubscriptionContext = createContext();
 export const SubscriptionContextProvider = ({ children }) => {
   const {
     loading,
-    packages,
-    activePackage,
-    config,
-    makePaymentCheck,
-    getActivePackage,
+      packages,
+      activePackage,
+      config,
+      makePaymentCheck,
+      getActivePackage,
+      interviewPackages,
+      isInterviewPackge
   } = useSubscription();
 
 
@@ -18,11 +20,13 @@ export const SubscriptionContextProvider = ({ children }) => {
     <SubscriptionContext.Provider
       value={{
         loading,
-        packages,
-        activePackage,
-        config,
-        makePaymentCheck,
-        getActivePackage,
+      packages,
+      activePackage,
+      config,
+      makePaymentCheck,
+      getActivePackage,
+      interviewPackages,
+      isInterviewPackge
       }}
     >
 

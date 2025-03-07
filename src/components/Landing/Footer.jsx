@@ -11,8 +11,8 @@ const Footer = () => {
         {/* Logo and Company Info */}
         <div className="mb-6 md:mb-0 flex flex-col">
           <img src={logo} alt="logo" className="w-32 md:w-48 my-2" />
-          <p className="text-sm my-2 capitalize">6<sup>th</sup> floor, NICON Plaza 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja.</p>
-          <a className="text-sm my-2" href="mailto:support@mayraykeeafrica.com">support@mayraykeeafrica.com</a>
+          <p className="text-sm my-2 capitalize">6<sup>th</sup> floor, NICON Plaza, 242 Muhammadu Buhari Way,<br/> Central Business District, Abuja.</p>
+          <a className="text-sm my-2" href="mailto:support@mayraykeeafrica.com">support@mayrahkeeafrica.com</a>
           <a className="text-sm my-2" href="tel:+2348078874748">+234(0)807 887 4748</a>
           
         </div>
@@ -40,16 +40,16 @@ const Footer = () => {
       </div>
       <div className=" mt-6 border-t border-white pt-4 flex flex-wrap justify-center md:justify-between w-[95%] md:max-w-[1400px] mx-auto"
         style={{ borderImageSource: "linear-gradient(to left, rgba(102, 102, 102, 0.05), #FFFFFF, rgba(102, 102, 102, 0.05))", borderImageSlice: "1 0 1 0", borderImageRepeat: "stretch", borderTop: "2px solid" }}>
-        <p className="text-center text-sm">© 2024 Mayraykee. All Rights Reserved.</p>
+        <p className="text-center text-sm">© 2024 Mayrahkee. All Rights Reserved.</p>
         {/* Social Media Links */}
         <div className="mt-6 md:mt-0 flex gap-4 text-white">
-          <a href="#facebook" className="hover:scale-110 transition">
+          <a href="https://web.facebook.com/mayrahkeeafrica" className="hover:scale-110 transition">
             <TiSocialFacebookCircular size="24" />
           </a>
-          <a href="#twitter" className="hover:scale-110 transition">
+          <a href="https://www.instagram.com/mayrahkeeafrica" className="hover:scale-110 transition">
             <TiSocialInstagram size="24" />
           </a>
-          <a href="#linkedin" className="hover:scale-110 transition">
+          <a href="https://www.linkedin.com/in/mayrahkee-africa-7ab62a246" className="hover:scale-110 transition">
             <RiLinkedinBoxLine size="24" />
           </a>
         </div>

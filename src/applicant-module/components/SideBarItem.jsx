@@ -1,18 +1,22 @@
-import React from "react";
+import React, {useContext} from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContex";
 
-function SideBarItem({ data, dispatch, state }) {
+function SideBarItem({ data, dispatch, state, setIsOpen }) {
   const navigate = useNavigate();
-
+  const {setAuthDetails} = useContext(AuthContext)
   const navigateToPage = () => {
   
     if(data.type === 'LOG-OUT'){
-      localStorage.clear()
+      sessionStorage.clear()
+      setAuthDetails(null);
+      dispatch({ });
       navigate(data.route, {replace: true});
     }else{
       dispatch({ ...data });
       navigate(data.route);
     }
+  setIsOpen(false)
   };
 
   

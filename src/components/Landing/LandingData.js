@@ -139,7 +139,7 @@ export const valuesData = [
     image: value4,
   },
   {
-    title: "Diversity and Inclusion",
+    title: "Diversity, Equity and Inclusion",
     description: "Diversity is indicative of what and inclusion is of the how. We at Mayrahkee Africa support diversity and inclusion in all forms.We believe the value of social variations and differences in how we coexist is critical for integration.",
     image: value5,
   },

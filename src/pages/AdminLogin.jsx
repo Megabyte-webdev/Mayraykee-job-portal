@@ -5,8 +5,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UseAdminManagement from "../hooks/useAdminManagement";
 import { AuthContext } from "../context/AuthContex";
-import MainLogo from "../assets/svgs/main-logo.svg";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import MainLogo from "../assets/pngs/main-logo-icon.png";
+import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 
 function AdminLogin() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -15,6 +15,7 @@ function AdminLogin() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { adminLogin } = UseAdminManagement();
   const { setAuthDetails } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ function AdminLogin() {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await adminLogin(loginDetails);
       console.log("Response login:", response);
       if (response) {
@@ -32,13 +34,16 @@ function AdminLogin() {
           token: response.token,
           user: response.admin,
         });
+        setLoading(false);
         navigate("/admin/");
       } else {
         toast.error("Incorrect credentials");
+        setLoading(false);
       }
     } catch (error) {
       toast.error("An error occurred during login");
       console.error("Error details:", error);
+      setLoading(false);
     }
   };
 
@@ -53,7 +58,7 @@ function AdminLogin() {
         <title>Admin Login Page</title>
       </Helmet>
       <ToastContainer />
-      <main className="flex flex-col items-center justify-center min-h-screen px-4">
+      <main className="flex flex-col items-center justify-center min-h-screen">
         <div className="flex justify-center mb-4">
           <img src={MainLogo} alt="Main Logo" className="h-12" />
         </div>
@@ -100,8 +105,8 @@ function AdminLogin() {
                 Forgot Password?
               </NavLink>
             </div>
-            <button type="submit" className="w-full bg-[#47AA49] text-white p-3 rounded-md hover:bg-green-700">
-              Login
+            <button type="submit" className="w-full bg-[#47AA49] text-white p-3 rounded-md hover:bg-green-700 flex items-center justify-center gap-2">
+              Login {loading && <FaSpinner size="24" className="animate-spin" />}
             </button>
           </form>
         </div>

@@ -62,6 +62,7 @@ import medicalIcon from "../assets/pngs/Admin-Dashboard/health-check.png";
 import badgeIcon from "../assets/pngs/Admin-Dashboard/badge.png";
 import todoIcon from "../assets/pngs/Admin-Dashboard/to-do-list.png";
 
+import logout from "../assets/pngs/logout.png";
 export const applicantOptions = [
   {
     type: "DASHBOARD",
@@ -112,6 +113,13 @@ export const applicantOptions = [
     icon: profileIconResume,
     iconActive: profileIconActive,
   },
+  {
+    type: "BLOG",
+    title: "Blogs",
+    route: "/applicant/blogs",
+    icon: ApplyForJob,
+    iconActive: ApplyForJob,
+  }
 ];
 
 export const companyOptions = [
@@ -156,7 +164,20 @@ export const companyOptions = [
     route: "/company/schedule",
     icon: calanderIcon,
     iconActive: searchIconActive,
+  },{
+    type: "PACKAGES",
+    title: "Subscriptions",
+    route: "/company/subscription",
+    icon: profileIconResume,
+    iconActive: profileIconActive, 
   },
+  {
+    type: "BLOG",
+    title: "Blogs",
+    route: "/company/blogs",
+    icon: ApplyForJob,
+    iconActive: ApplyForJob,
+  }
 ];
 
 export const companyExclusiveOptions = [
@@ -195,6 +216,13 @@ export const companyExclusiveOptions = [
     icon: calanderIcon,
     iconActive: searchIconActive,
   },
+  {
+    type: "BLOG",
+    title: "Blogs",
+    route: "/company/blogs",
+    icon: ApplyForJob,
+    iconActive: ApplyForJob,
+  }
 ];
 
 export const exclusiveUtilOptions = [
@@ -216,13 +244,20 @@ export const exclusiveUtilOptions = [
     type: "LOG-OUT",
     title: "Log Out",
     route: "/login",
-    icon: helpIcon,
-    iconActive: helpIcon,
+    icon: logout,
+    iconActive: logout,
   },
 ];
 
 
-
+export const extraOptions = [
+  {
+    type: "JOB-POSTING",
+    title: "Job Posting"
+    // icon: clipboardIcon,
+    // iconActive: profileIconActive,
+  },
+]
 export const utilOptions = [
   {
     type: "ARTISAN",
@@ -256,8 +291,8 @@ export const utilOptions = [
     type: "LOG-OUT",
     title: "Log Out",
     route: "/login",
-    icon: helpIcon,
-    iconActive: helpIcon,
+    icon: logout,
+    iconActive: logout,
   },
 ];
 
@@ -294,8 +329,8 @@ export const adminUtilOptions = [
     type: "LOG-OUT",
     title: "Log Out",
     route: "/login",
-    icon: helpIcon,
-    iconActive: helpIcon,
+    icon: logout,
+    iconActive: logout,
   },
 ];
 
@@ -311,8 +346,8 @@ export const staffOptions = [
     type: "profile",
     title: "Profile",
     route: "/staff/profile",
-    icon: homeIcon,
-    iconActive: homeIconActive,
+    icon: profileIcon,
+    iconActive: profileIconActive,
   },
   {
     type: "verifications",
@@ -328,6 +363,13 @@ export const staffOptions = [
     icon: profileIconResume,
     iconActive: profileIconActive,
   },
+  {
+    type: "blog",
+    title: "Blogs",
+    route: "/staff/blogs",
+    icon: ApplyForJob,
+    iconActive: ApplyForJob,
+  }
 ];
 
 export const staffUtilOptions = [
@@ -349,8 +391,8 @@ export const staffUtilOptions = [
     type: "LOG-OUT",
     title: "Log Out",
     route: "/login",
-    icon: helpIcon,
-    iconActive: helpIcon,
+    icon: logout,
+    iconActive: logout,
   },
 ];
 
@@ -364,10 +406,17 @@ export const adminExclusiveOptions = [
   },
   {
     type: "All Exclusives",
-    title: "Exclusives",
+    title: "Exclusive Subscribers",
     route: "/admin-exclusives/lists",
     icon: peopleIcon,
     iconActive: peopleIcon,
+  },
+  {
+    type: "Interviews",
+    title: "Interviews",
+    route: "/admin-exclusives/interviews",
+    icon: policeIcon,
+    iconActive: policeIcon,
   },
 ];
 
@@ -446,18 +495,17 @@ export const adminOptions = [
     iconActive: policeIcon,
   },
   {
-    type: "Interviews",
-    title: "Interviews",
-    route: "/admin/interviews",
-    icon: policeIcon,
-    iconActive: policeIcon,
-  },
-  {
     type: "Blogs",
     title: "Blogs",
     route: "/admin/blogs",
-    icon: policeIcon,
-    iconActive: policeIcon,
+    icon: ApplyForJob,
+    iconActive: ApplyForJob,
+  },{
+    type: "Support",
+    title: "Support",
+    route: "/admin/support",
+    icon: helpIcon,
+    iconActive: helpIcon,
   },
 ];
 
@@ -473,9 +521,9 @@ export const adminnUtilOptions = [
   {
     type: "LOG-OUT",
     title: "Log Out",
-    route: "/admin/logout",
-    icon: helpIcon,
-    iconActive: helpIcon,
+    route: "/login",
+    icon: logout,
+    iconActive: logout,
   },
 ];
 
@@ -746,3 +794,16 @@ export const ethnicGroups = [
   "Atyap"]
 
   
+  export const convertDays=(days)=> {
+    if (days < 7) {
+        return `${days} day(s)`;
+    } else if (days < 14) {
+        return `1 week`;
+    } else if (days < 30) {
+        return `${Math.floor(days / 7)} weeks`;
+    } else if (days < 365) {
+        return `${Math.floor(days / 30)} month(s)`;
+    } else {
+        return `${Math.floor(days / 365)} year(s)`;
+    }
+}

@@ -34,7 +34,7 @@ function AllMedicalHistories() {
   }));
 
   return (
-    <div className="mx-14 mt-10">
+    <div className="mt-10">
       <button
           type="button"
           onClick={() => window.history.back()}

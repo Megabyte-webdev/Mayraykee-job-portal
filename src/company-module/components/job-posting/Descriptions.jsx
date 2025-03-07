@@ -11,6 +11,7 @@ const descriptions = [
     name: "job_description",
     desc: "Job responsibilities must be describe by one position",
     placeholder: "List out all Responsibilities",
+    required: true
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ const descriptions = [
     name: "experience",
     desc: "Outline the qualifications required for the Job",
     placeholder: "Begin to type...",
+    required: true
   },
 ];
 
@@ -29,6 +31,7 @@ const basic_inputs = [
     type: "text",
     placeholder: "e.g FrontEnd Dev",
     prompt: "Here you state the job title",
+    required: true
   },
   {
     id: 2,
@@ -44,7 +47,7 @@ const basic_inputs = [
     label: "Intro Video Url",
     type: "text",
     placeholder: "e.g https://introvideourl.com",
-    prompt: "Here you add intro videp url",
+    prompt: "Here you add intro video url",
   },
 ];
 
@@ -138,6 +141,7 @@ function Descriptions({
           label: "Career Level",
           prompt: "Here you select prefered career level",
           name: "career_level",
+          required: true
         }}
         listData={careerData}
         jobUtils={jobUtils}
@@ -160,7 +164,7 @@ function Descriptions({
             if (exclusive?.id) {
               console.log('Exclusive')
               jobUtils.addJobForExclusive(() => {
-                () => {}
+                handleSuccess();
               }, exclusive.id);
             }else {
               console.log('Normal')

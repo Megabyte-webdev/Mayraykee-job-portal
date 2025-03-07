@@ -16,7 +16,7 @@ export function ResourceContextProvider({ children }) {
     })
     const [checker, setChecker] = useState(false);
     const [errorMesage, setErrorMessage] = useState('');
-
+    const [notifications, setNotifications] = useState(null);
     const [meetingTitle, setMeetingTitle] = useState('');
 
     const [getCandidate, setGetCandidate] = useState({
@@ -204,7 +204,9 @@ export function ResourceContextProvider({ children }) {
                 getAllBlogSubCategories,
                 setGetAllBlogSubCategories,
                 setGetAllCourses,
-                getAllCourses
+                getAllCourses,
+                notifications,
+                setNotifications
             }}
         >
             {children}

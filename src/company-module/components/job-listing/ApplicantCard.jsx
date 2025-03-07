@@ -3,14 +3,20 @@ import useApplicationManagement from "../../../hooks/useApplicationManagement";
 import { resourceUrl } from "../../../services/axios-client";
 import { useNavigate } from "react-router-dom";
 
-function ApplicantCard({ data }) {
+function ApplicantCard({ data, exclusive=false }) {
   const navigate = useNavigate();
   const { getApplicant } = useApplicationManagement();
   const [applicant, setApplicant] = useState();
 
-  const navigateToApplicantDetails = () =>
-    navigate(`/company/applicants/detail/${data.id}`, { state: { data } });
-
+ 
+  const navigateToApplicantDetails = () =>{
+    if(exclusive){
+      navigate(`/admin-exclusives/applicants/detail/${data.id}`, { state: { data } });
+    }else{
+      navigate(`/company/applicants/detail/${data.id}`, { state: { data } });
+    }
+  }
+    
   useEffect(() => {
     getApplicant(data?.candidate_id, setApplicant);
   }, []);

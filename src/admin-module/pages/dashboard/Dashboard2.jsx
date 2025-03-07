@@ -63,7 +63,7 @@ function Dashboard2() {
       <Helmet>
         <title>Dashboard | Dashboard</title>
       </Helmet>
-      <div className="h-full p-6 w-full text-sm text-gray-800">
+      <div className="h-full py-6 w-full text-sm text-gray-800">
         <div className="text-sm">
           <div className="flex justify-between">
             <div className="">

@@ -28,7 +28,7 @@ function MedicalHistory({ staff }) {
         )}
       </div>
       {medicalHistory && (
-        <div className="text-black divide-x *:pl-2 grid grid-cols-4 gap-x-2 gap-y-3 border-t mt-2 pt-3">
+        <div className="text-black divide-x *:pl-2 grid grid-cols-responsive2 gap-x-2 gap-y-3 border-t mt-2 pt-3">
           <div className="flex flex-col text-lg  font-semibold text-gray-800">
             <h1>Hospital Name</h1>
             <p className="text-md font-normal">

@@ -1,16 +1,17 @@
+import { resourceUrl } from '../../services/axios-client';
 import LearningCourseCard from './LearningCourseCard'
 const LearningCourseGrid = ({ list }) => {
     return (
-        <div className="flex gap-x-5 overflow-x-auto h-max w-full py-7">
+        <div className="flex item-stretch gap-x-5 overflow-x-auto h-max w-full py-7">
             {
                 list?.map((course) => (
                     <LearningCourseCard
                         key={course?.id}
                         title={course?.title}
-                        author="Silex secure"
-                        price="30.00"
+                        author={course?.program || "program"}
+                        price={course?.price}
                         rating="4.0"
-                        img={course?.image}
+                        img={`${resourceUrl}${course?.image}` || "https://via.placeholder.com/150/0000/FFFFFF?text=${title}"}
                     />
                 ))}
         </div>

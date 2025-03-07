@@ -65,7 +65,7 @@ function JobListing() {
           >
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h2 className="text-md text-zinc-400">All Jobs Applied</h2>
+                <h2 className="text-md text-zinc-400">All Jobs Posted</h2>
               </div>
               <div className="w-8 h-8 flex items-center justify-center rounded-full bg-purple-400">
                 <FaBriefcase className="text-white text-xl" />

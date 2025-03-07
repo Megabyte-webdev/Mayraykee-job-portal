@@ -32,14 +32,14 @@ function AllAdmins() {
   }));
 
   return (
-    <div className="mx-14 mt-10">
+    <div className="mt-10">
       <button
         type="button"
         onClick={() => window.history.back()}
         className="flex items-center gap-2 outline outline-offset-5 outline-green-500 px-4 py-2 rounded text-green-500 hover:bg-green-100"
       >
         <FaArrowLeftLong className="me-4 text-green-500" />Back
-      </button>
+      </button> 
       <h2 className="text-black border-b border-gray-500 text-2xl font-bold mt-10">Admins</h2>
       <DataTableComponent heading={heading} data={data} loading={loading} name="admins" allowEdit={true} />
     </div>

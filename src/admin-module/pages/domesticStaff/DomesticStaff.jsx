@@ -44,7 +44,7 @@ function DomesticStaff() {
       <Helmet>
         <title>Dashboard | Domestic Staff </title>
       </Helmet>
-      <div className="h-full p-6 w-full text-sm text-gray-800">
+      <div className="h-full py-6 w-full text-sm text-gray-800">
         <div className="text-sm">
          
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
@@ -56,7 +56,7 @@ function DomesticStaff() {
             <DashboardCard
               leftIcon={<FiUsers />}
               title={domesticsCount}
-              subtitle="Total Domestic Staff"
+              subtitle="Total Registered Domestic Staff"
               smallText="2 new Ad-hoc staff added"
               smallTextIcon={<FaPlus />}
               link={"/admin/domestic-staff/all"}

@@ -7,6 +7,7 @@ import Hero from "../components/Landing/Hero";
 import Navbar from "../components/Landing/Navbar";
 import Advert from "../components/Landing/Advert";
 import Footer from "../components/Landing/Footer";
+import { Helmet } from "react-helmet";
 
 function FindStaff() {
   const { id } = useParams();
@@ -46,11 +47,11 @@ function FindStaff() {
   useEffect(() => {
     if (categories.length > 0 && id) {
       const matchedCategory = categories.find(
-        (category) => category.name.toLowerCase() === id.toLowerCase()
+        (category) => category.name.toLowerCase().includes(id.toLowerCase())
       );
       if (matchedCategory) {
         setSelectedCategory(matchedCategory.name);
-        } else {
+      } else {
         navigate("/not-found");
       }
     }
@@ -77,40 +78,40 @@ function FindStaff() {
   };
 
   const handleSearchClick = async () => {
-  setLoading(true);
-  if (!selectedCategory) {
-    return;
-  }
+    setLoading(true);
+    if (!selectedCategory) {
+      return;
+    }
 
-  // Reset subcategory if it doesn't belong to the current category
-  const validSubcategories = categories.find(
-    (category) => category.name === selectedCategory
-  )?.subcategories.map((sub) => sub.name) || [];
+    // Reset subcategory if it doesn't belong to the current category
+    const validSubcategories = categories.find(
+      (category) => category.name === selectedCategory
+    )?.subcategories.map((sub) => sub.name) || [];
 
-  if (!validSubcategories.includes(selectedSubcategory)) {
-    setSelectedSubcategory("");
-  }
+    if (!validSubcategories.includes(selectedSubcategory)) {
+      setSelectedSubcategory("");
+    }
 
-  const queryParams = {
-    staff_category:
-      selectedCategory?.toLowerCase() === "domestic staff"
-        ? "staff"
-        : selectedCategory?.toLowerCase(),
-    ...(validSubcategories.includes(selectedSubcategory) && {
-      subcategory: selectedSubcategory,
-    }),
-    ...(ageRange && { age_range: ageRange }),
-    ...(gender && { gender }),
-    ...(educationalLevel && { education_level: educationalLevel }),
+    const queryParams = {
+      staff_category:
+        selectedCategory?.toLowerCase() === "domestic staff"
+          ? "staff"
+          : selectedCategory?.toLowerCase(),
+      ...(validSubcategories.includes(selectedSubcategory) && {
+        subcategory: selectedSubcategory,
+      }),
+      ...(ageRange && { age_range: ageRange }),
+      ...(gender && { gender }),
+      ...(educationalLevel && { education_level: educationalLevel }),
+    };
+
+    await handleQuerySubmit(queryParams);
   };
 
-  await handleQuerySubmit(queryParams);
-};
-  
 
   useEffect(() => {
     handleSearchClick(); // Trigger search only when valid category is set
-      
+
     const selectedCategoryData = categories?.find(
       (category) => category.name === selectedCategory
     );
@@ -125,36 +126,39 @@ function FindStaff() {
         staff.surname?.toLowerCase().includes(searchInput.toLowerCase())
     )
     : searchResult;
-
+  window.scrollTo(0, 0);
   return (
     categories && searchResult && (
       <>
+        <Helmet>
+          <title>Mayrahkee | {selectedCategory}</title>
+        </Helmet>
         <div className="relative max-w-[1400px] w-full mx-auto">
           <Navbar />
           <main className="relative my-20 px-5 h-full">
             <Hero shrink={true} title={selectedCategory?.toLowerCase() !== "domestic staff"
               ? "Connect with skilled artisans in your area. Quality craftsmanship and expertise, just a step away!" : "Discover reliable domestic staff near you. Experience peace of mind with trusted professionals for your home!"} />
-            
 
-              {/* Filter Section */}
-              <div className="w-full px-6 bg-[#AFB6AE1A] rounded-lg shadow-md h-fit flex flex-col gap-6">
-                <h2 className="text-lg font-semibold text-gray-800 mt-1">
-                  Find {selectedCategory}
-                </h2>
-                <div className="h-full w-full flex flex-col bg-transparent">
-              {/* Search Bar */}
-              <div className="flex flex-wrap rounded-md mb-3">
-                <input
-                  type="text"
-                  value={searchInput}
-                  onInput={(e) => setSearchInput(e.target.value)}
-                  placeholder={`Search ${selectedCategory} by name e,g Ben`}
-                  className="p-3 py-2 border border-gray-300 rounded-lg flex-1 focus:outline-primaryColor"
-                />
 
-              </div>
+            {/* Filter Section */}
+            <div className="w-full px-6 bg-[#AFB6AE1A] rounded-lg shadow-md h-fit flex flex-col gap-6">
+              <h2 className="text-lg font-semibold text-gray-800 mt-1">
+                Find {selectedCategory}
+              </h2>
+              <div className="h-full w-full flex flex-col bg-transparent">
+                {/* Search Bar */}
+                <div className="flex flex-wrap rounded-md mb-3">
+                  <input
+                    type="text"
+                    value={searchInput}
+                    onInput={(e) => setSearchInput(e.target.value)}
+                    placeholder={`Search ${selectedCategory} by name e,g Ben`}
+                    className="p-3 py-2 border border-gray-300 rounded-lg flex-1 focus:outline-primaryColor"
+                  />
+
+                </div>
                 {/* Filter Options */}
-                <div className="grid grid-cols-responsive3 gap-3">
+                <div className="grid grid-cols-responsive3 gap-3 justify-center">
                   {/* Category Dropdown */}
                   <div className="flex flex-col">
                     <label htmlFor="category" className="text-sm font-medium text-gray-600 mb-2">Category</label>
@@ -192,7 +196,7 @@ function FindStaff() {
                     </select>
                   </div>
 
-                  {/* Age Range Dropdown */}
+                  {/* Age Range Dropdown
                   <div className="flex flex-col">
                     <label htmlFor="age_range" className="text-sm font-medium text-gray-600 mb-2">Age Range</label>
                     <select
@@ -207,7 +211,7 @@ function FindStaff() {
                       <option value="36-45">36-45</option>
                       <option value="46+">46+</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   {/* Gender Dropdown */}
                   <div className="flex flex-col">
@@ -258,21 +262,23 @@ function FindStaff() {
               </div>
 
               {/* Results */}
-              <div className="mt-5">
+              <div className="mt-5 bg-gray-100 flex justify-center items-center min-h-60">
                 {loading ? (
-                  <div className="flex justify-center items-center mt-10 min-h-60 bg-gray-100">
+                  <div className="flex justify-center items-center mt-10">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-600"></div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-responsive2 gap-4 bg-gray-100 p-2">
+                  <>
                     {filteredSearchResult?.length > 0 ? (
-                      filteredSearchResult.map((staff) => (
+                      <div className="grid grid-cols-responsive2 gap-4 p-2">
+                     { filteredSearchResult.map((staff) => (
                         <StaffCard key={staff.id} staff={staff} />
-                      ))
+                        ))}
+                      </div>
                     ) : (
-                      <p>No {selectedCategory} found matching your criteria.</p>
+                      <p className="font-medium text-xl self-start">No {selectedCategory} found matching your criteria.</p>
                     )}
-                  </div>
+                  </>
                 )}
               </div>
             </div>

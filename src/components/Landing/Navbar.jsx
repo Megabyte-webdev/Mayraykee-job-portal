@@ -18,7 +18,7 @@ const Navbar = ({register="/registration", login="/login"}) => {
           } lg:flex lg:flex-row lg:static lg:bg-transparent lg:items-center lg:gap-4 my-3 mx-auto gap-2 font-bold text-sm order-1 w-full lg:w-auto lg:order-0 *:p-2 *:rounded-md *:cursor-pointer hover:*:hover:bg-slate-300`}
       >
 
-        <a href="https://mayraykee-app.vercel.app/">Home</a>
+        <a href="https://mayrahkeeafrica.vercel.app/">Home</a>
         {/* Dropdown */}
         {/* <div
           onClick={() => setDrop(!drop)}
@@ -34,11 +34,11 @@ const Navbar = ({register="/registration", login="/login"}) => {
             </ul>
           )}
         </div> */}
-        <NavLink to="/find-jobs">Find Jobs</NavLink>
-        <NavLink to="/find-staff/artisan">Find Artisans</NavLink>
-        <NavLink to="/find-staff/domestic staff">Find Domestic Staff</NavLink>
-        <NavLink to="/help">Help Center</NavLink>
-        <NavLink to="/blogs">Blog</NavLink>
+        <NavLink className="[&.active]:bg-slate-300" to="/find-jobs">Find Jobs</NavLink>
+        <NavLink className="[&.active]:bg-slate-300" to="/find-staff/artisan">Find Artisans</NavLink>
+        <NavLink className="[&.active]:bg-slate-300" to="/find-staff/domestic staff">Find Domestic Staff</NavLink>
+        <NavLink className="[&.active]:bg-slate-300" to="/help">Help Center</NavLink>
+        <NavLink className="[&.active]:bg-slate-300" to="/blogs">Blog</NavLink>
 
         <div className="cursor-default flex md:hidden items-center gap-3 lg:order-2">
           <Btn

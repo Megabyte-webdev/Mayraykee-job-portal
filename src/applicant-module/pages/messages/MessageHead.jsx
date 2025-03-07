@@ -38,7 +38,7 @@ function MessageHead({current, selectedChat, setSelectedChat}) {
     <li
       key={current.id}
       onClick={() => setSelectedChat(current)}
-      className={`border-l border-r md:border-0 md:border-b md:items-center max-w-30 md:max-w-full  flex ${
+      className={`border-l border-r lg:border-0 lg:border-b lg:items-center min-w-20 lg:w-full flex ${
         selectedChat?.id === current.id
           ? "bg-primaryColor text-white"
           : "bg-opacity-0 text-black hover:bg-gray-100 hover:text-black "
@@ -46,11 +46,11 @@ function MessageHead({current, selectedChat, setSelectedChat}) {
     >
       {/* <img src={`${resourceUrl}/${current.}`} className="h-[35px] w-[35px] rounded-full bg-gray-300" /> */}
       <div className="flex flex-col h-fit">
-        <h4 className="text-sm font-semibold">{current.employer_name}</h4>
+        <h4 className="text-sm font-semibold">{current?.employer_name}</h4>
         {onlineStatus && (
           <div className="truncate flex flex-col h-full">
-            <h4 className="text-sm font-semibold">{current.full_name}</h4>
-            <span className="text-little font-thin italic pb-1">online</span>
+            <h4 className="text-sm font-semibold">{current?.full_name}</h4>
+            <span className="text-little font-thin italic pb-1 text-green-600">online</span>
           </div>
         )}{" "}
       </div>

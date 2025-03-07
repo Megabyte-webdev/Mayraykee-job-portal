@@ -94,7 +94,7 @@ const CandidateDetails = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="py-4">
      <div className="flex pb-3  sm:space-x-72  space-x-0  justify-between sm:justify-start ">
      <button
           type="button"

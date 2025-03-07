@@ -6,7 +6,7 @@ import ContactInfo from "../components/Landing/ContactInfo";
 import Footer from "../components/Landing/Footer";
 import privacy from "../assets/pngs/privacy.png";
 import privacyPolicyData from "./privacy.json"; // Import the JSON data
-
+import { Helmet } from "react-helmet";
 const PrivacyPolicy = () => {
   const [privacyPolicy, setPrivacyPolicy] = useState([]);
 
@@ -17,6 +17,9 @@ const PrivacyPolicy = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Mayrahkee | Privacy Policy</title>
+      </Helmet>
       <SectionHeader
         title="Privacy Policy for MayrahkeeAfrica"
         img={privacy}

@@ -54,7 +54,7 @@ const CandidateStaff = () => {
   }));
 
   return (
-    <div className="mx-14 mt-10 mb-24">
+    <div className="mt-10 mb-24">
     <button
           type="button"
           onClick={() => window.history.back()}

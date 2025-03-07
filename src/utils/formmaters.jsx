@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 export const handleOnChange = (e, setDetails) => {
   const { name, value } = e.target;
 
@@ -5,6 +7,14 @@ export const handleOnChange = (e, setDetails) => {
     return { ...prev, [name]: value };
   });
 };
+
+export const parseHtml = (inputString) => {
+  if (typeof inputString !== "string") return ""; // Ensure it's a string
+
+  const doc = new DOMParser().parseFromString(inputString, "text/html");
+  return doc.body.textContent || inputString; // If no HTML, return original text
+};
+
 
 export const formatTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);
@@ -20,12 +30,12 @@ export const highlightKeyword = (sentence, keyword) => {
     `<span class="${keyword.color} font-bold cursor-pointer hover:underline ">${keyword.name}</span>`
   );
 };
-
 export const FormatPrice = (price, removecode = false) => {
   return `${!removecode ? '' : ''}${price.toLocaleString(navigator.language, {
-    minmumFractionDigits: 0,
+    minimumFractionDigits: 0, // Fixed the typo here
   })}`;
 };
+
 export const FormatNumber = (price) => {
   return `${price.toLocaleString(navigator.language, {
     minmumFractionDigits: 0,
@@ -107,6 +117,18 @@ export const getImageURL = (e, setStateFunctionUrl, setDetails) => {
   const { name } = e.target;
   const file = e.target.files[0]; //filelist is an object carrying all details of file, .files[0] collects the value from key 0 (not array), and stores it in file
 
+  if (file && (file.size > (1024 * 1024))) {
+    const maxSizeMB = ((1024 * 1024) / (1024 * 1024)).toFixed(2); // Convert file size limit to MB
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2); // Convert uploaded file size to MB
+
+    // Truncate long file names to 20 characters for better UI readability
+    const truncatedFileName = file.name.length > 10 ? `${file.name.substring(0, 10)}...` : file.name;
+
+
+    toast.error(`File size of "${truncatedFileName}" exceeds the limit of ${maxSizeMB} MB. The uploaded file is ${fileSizeMB} MB. Please select a smaller file.`);
+    
+    return null;
+  }
   if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
     // You can also perform additional actions with the valid file
     const generatedUrl = URL.createObjectURL(file);
@@ -124,14 +146,27 @@ export const getImageURL = (e, setStateFunctionUrl, setDetails) => {
 export const getDocument = (e, setDetails) => {
   const { name } = e.target;
   const file = e.target.files[0]; //filelist is an object carrying all details of file, .files[0] collects the value from key 0 (not array), and stores it in file
+  if (file && (file.size > (1024 * 1024))) {
+    const maxSizeMB = ((1024 * 1024) / (1024 * 1024)).toFixed(2); // Convert file size limit to MB
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2); // Convert uploaded file size to MB
 
+    // Truncate long file names to 20 characters for better UI readability
+    const truncatedFileName = file.name.length > 10 ? `${file.name.substring(0, 10)}...` : file.name;
+
+
+    toast.error(`File size of "${truncatedFileName}" exceeds the limit of ${maxSizeMB} MB. The uploaded file is ${fileSizeMB} MB. Please select a smaller file.`);
+    
+    return null;
+  }
+
+    console.log(file)
   const validTypes = [
     "application/pdf",
     "application/msword",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   ];
 
-  if (validTypes.includes(file.type)) {
+  if (file && validTypes.includes(file.type)) {
     // You can also perform additional actions with the valid file
     const generatedUrl = URL.createObjectURL(file);
     setDetails(file);
@@ -139,6 +174,7 @@ export const getDocument = (e, setDetails) => {
     // Handle invalid file type
     alert("Please select a valid JPEG or PNG file.");
   }
+
 };
 
 export const onTextChange = (e, details, setDetails) => {

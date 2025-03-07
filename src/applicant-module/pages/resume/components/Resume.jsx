@@ -56,7 +56,7 @@ const Resume = ({ resume, setGetResumeById, authDetails, getCandidate }) => {
     <div className="p-5 border rounded shadow-lg justify-between flex-col flex">
       <div>
         <div className="flex border-b justify-between font-semibold text-primaryColor items-center w-full">
-          <p>{resume.title}</p>
+          <p className="capitalize truncate" >{resume.title}</p>
           <EditResume resume={resume} />
         </div>
         <div className="details mt-4">
@@ -67,47 +67,54 @@ const Resume = ({ resume, setGetResumeById, authDetails, getCandidate }) => {
           </div>
           <div className="details flex justify-center">
             <div className="md:w-[90%] flex flex-col gap-3">
-              <div className="flex justify-between">
-                <p className="font-bold">Address:</p>
+              <div className="flex justify-between gap-2">
+                <p className="font-medium">Address:</p>
                 <p>{getCandidate.details?.address}</p>
               </div>
-              <div className="flex justify-between">
-                <p className="font-bold">Phone: </p>
+              <div className="flex justify-between gap-2">
+                <p className="font-medium">Phone: </p>
                 <p> {getCandidate.details?.phone_number} </p>
               </div>
-              <div className="flex justify-between">
-                <p className="font-bold text-base">Email</p>
-                <p className="font-medium">{getCandidate.details?.email}</p>
-              </div>
-
-              <div className="flex justify-between">
-                <p className="font-medium text-base">Position</p>
-                <p className="">{resume.position_held}</p>
+              <div className="flex justify-between gap-2">
+                <p className="font-medium text-base">Email:</p>
+                <p className="">{getCandidate.details?.email}</p>
               </div>
               
-              {resume.awarding_institution && <div className="flex justify-between text-[#dbc87c]">
-                <p className="font-bold text-base">Awarding Institution</p>
-                <p className="font-medium">{resume.awarding_institution}</p>
+              {resume.awarding_institution && <div className="flex justify-between text-[#dbc87c] gap-2">
+                <p className="font-bold text-base">Awarding Institution:</p>
+                <p className="font-medium">{resume?.awarding_institution} {resume?.year_attended && `(${resume.year_attended} - ${resume?.year_of_graduation || 'Till present'})`}</p>
               </div>}
-              <div className="flex justify-between">
-                <p className="font-medium text-base">Duration</p>
-                <p>
-                  <span>{resume.start_date}</span> to{" "}
-                  <span>{resume.end_date}</span>
-                </p>
+              
+              {<>
+              <div className="flex justify-between gap-2">
+                <p className="font-medium text-base">Previous Company:</p>
+                <p className="">{resume.company_name}</p>
               </div>
+              <div className="flex justify-between gap-2">
+                <p className="font-medium text-base">Position Held:</p>
+                <p className="">{resume.position_held}</p>
+              </div>
+              {resume.start_date && <div className="flex justify-between gap-2">
+                <p className="font-medium text-base">Duration:</p>
+                <p>
+                  <span>{resume.start_date} - {resume.end_date || "Till present"}</span>
+                
+                </p>
+              </div>}
+            </>}
+              
               <div className="flex my-3">
                 <div className="w-2/5">
-                  <p className="font-bold text-base">Education</p>
+                  <p className="font-bold text-base">Education:</p>
                 </div>
                 <div className="w-3/5">
                   <p className="font-medium">
                     {resume.educational_institution}
                   </p>
-                  <p>
-                    <span>{resume.year_of_entry}</span> -{" "}
-                    <span>{resume.year_of_graduation}</span>
-                  </p>
+                  {resume?.year_of_entry && <p>
+                    <span>{resume.year_of_entry}</span> -
+                    <span>{resume.year_of_graduation || "Till present"}</span>
+                  </p>}
                 </div>
               </div>
             </div>

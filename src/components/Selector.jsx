@@ -16,7 +16,7 @@ function Selector({ data, selected, setSelected }) {
         );
 
   return (
-    <div className="min-w-[300px]">
+    <div className="w-full md:min-w-[250px]">
       <Combobox
         value={selected || { name: 'Select an option' }} // Default to "Select an option"
         onChange={(val) => {

@@ -53,12 +53,12 @@ const [rejected,setRejected] = useState(0)
       <Helmet>
         <title>Admin| Dashboard</title>
       </Helmet>
-      <div className="h-full p-6 w-full text-sm text-gray-800">
+      <div className="h-full py-6 w-full text-sm text-gray-800">
         <div className="text-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-4">
             <div className="bg-orange-400 text-white px-4 py-12 rounded-md flex flex-col items-start cursor-pointer" onClick={() => navigate('/admin/candidates/all')}>
               <h3 className="text-xl font-bold">{candidateCount}</h3>
-              <p>All Candidates</p>
+              <p>All Registered Candidates</p>
             </div>
             <div className="bg-yellow-500 text-white px-4 py-12 rounded-md flex flex-col items-start">
               <h3 className="text-xl font-bold">{pending}</h3>
@@ -66,20 +66,20 @@ const [rejected,setRejected] = useState(0)
             </div>
             <div className="bg-green-500 text-white px-4 py-12 rounded-md flex flex-col items-start">
               <h3 className="text-xl font-bold">{approved}</h3>
-              <p>approved</p>
+              <p>Approved</p>
             </div>
             <div className="bg-blue-700 text-white px-4 py-12 rounded-md flex flex-col items-start">
               <h3 className="text-xl font-bold">{suspend}</h3>
-              <p>suspend</p>
+              <p>Suspended</p>
             </div>
             <div className="bg-red-700 text-white px-4 py-12 rounded-md flex flex-col items-start">
               <h3 className="text-xl font-bold">{rejected}</h3>
-              <p>rejected</p>
+              <p>Rejected</p>
             </div>
-            <div className="bg-cyan-950 text-white px-4 py-12 rounded-md flex flex-col items-start">
+            {/* <div className="bg-cyan-950 text-white px-4 py-12 rounded-md flex flex-col items-start">
               <h3 className="text-xl font-bold">{candidateCount}</h3>
               <p>Total Jobs Applied</p>
-            </div>
+            </div> */}
           </div>
           <div className="mt-8">
             <CandidateUsageChart candidates={candidates} />

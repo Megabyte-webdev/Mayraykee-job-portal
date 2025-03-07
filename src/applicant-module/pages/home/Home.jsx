@@ -24,6 +24,9 @@ import Interview from "./components/Interview";
 import axios from "axios";
 import { ApplicantRouteContext } from "../../../context/ApplicantRouteContext";
 import { useNavigate } from "react-router-dom";
+import useApplicationManagement from "../../../hooks/useApplicationManagement";
+import { GoDiscussionOutdated } from "react-icons/go";
+import { GrDocumentText } from "react-icons/gr";
 
 const now = new Date();
 function Home() {
@@ -32,11 +35,15 @@ function Home() {
     setGetAllApplications,
     getAllJobs,
     setGetAllJobs,
+    getCandidate
   } = useContext(ResourceContext);
+  
   const { authDetails, userUpdate } = useContext(AuthContext);
   const { setSideBar } = useContext(ApplicantRouteContext);
   const hour = now.getHours();
+  
   const user = authDetails?.user;
+  const candidate = getCandidate.data?.details?.full_name ? getCandidate.data?.details?.full_name?.split(" ")[0] : `${user?.first_name || "N/A"}`;
   const navigate = useNavigate();
 
   const currentDate = now.toLocaleDateString("en-US", {
@@ -86,7 +93,7 @@ function Home() {
     });
   }, []);
 
-  console.log(userUpdate);
+  //console.log(userUpdate);
 
   useEffect(() => {
     setGetAllApplications((prev) => {
@@ -104,7 +111,9 @@ function Home() {
   const shortlistedReview = allApplications?.filter(
     (app) => app.status === "shortlist"
   );
-
+const interviews = allApplications?.filter(
+    (app) => app.status === "interview"
+  );
   const getInterviews = (id, setState) => {
     axios
       .get(`${BASE_URL}/interviews/${id}`, {
@@ -138,12 +147,12 @@ function Home() {
         <title>Dashboard | Home</title>
       </Helmet>
       <FirstUpdateForm />
-      <div className="h-full p-6 w-full text-sm text-gray-800">
+      <div className="h-full py-6 w-full text-sm text-gray-800">
         <div className="text-sm">
           <div className="flex justify-between ">
             <div className="">
               <h4 className="font-bold text-2xl mb-2  ">
-                Good {timeOfDay}, {user.first_name}
+                Good {timeOfDay}, {candidate}
               </h4>
               <p>
                 Here is what’s happening with your job search applications from{" "}
@@ -158,41 +167,41 @@ function Home() {
               </button>
             </div> */}
           </div>
-          <div className="md:flex-row flex-col flex  mt-8 gap-2">
-            <div className=" w-full md:w-[17%]  flex justify-between md:flex-col ">
-              <div className="pb-1 h-full md:w-full w-[45%] md:h-1/2">
+          <div className="lg:flex-row flex-col flex  mt-8 gap-2">
+            <div className=" w-full lg:w-[20%] flex justify-between lg:flex-col capitalize">
+              <div className="pb-1 h-full lg:w-full w-[45%] lg:h-1/2">
                 <div
                   onClick={navigateToApplications}
                   className="border text-white transition duration-400 bg-lightgreen h-full cursor-pointer mb-4 p-3 pb-0 flex flex-col justify-between"
                 >
-                  <p className="font-bold">Total Jobs Applied for</p>
-                  <div className="flex justify-between items-end mt-">
+                  <p className="font-bold capitalize">Total Jobs Applied for</p>
+                  <div className="flex justify-between items-end mt-4">
                     <p className="text-6xl font-medium">
-                      {getAllApplications.data?.length}
+                      {getAllApplications.data?.length || 0}
                     </p>
-                    <div className="">
-                      <img src={docsIcon} alt="" className="w-5" />
+                    <div className="mb-2">
+                    <GrDocumentText size="30" />
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="pt-1 h-full md:w-full w-[45%]  md:h-1/2">
+              <div className="pt-1 h-full lg:w-full w-[45%]  lg:h-1/2">
                 <div
-                  onClick={()=>navigateToApplications("interviewed")}
-                  className="border bg-yellow-500 text-white transition duration-400 h-full cursor-pointer mb-4 p-3 pb-0 flex flex-col justify-between"
+                  onClick={()=>navigateToApplications("interview")}
+                  className="border bg-yellow-300 text-white transition duration-400 h-full cursor-pointer mb-4 p-3 pb-0 flex flex-col justify-between"
                 >
-                  <p className="font-bold">Interviewed</p>
+                  <p className="font-bold capitalize">Interviewed</p>
                   <div className="flex justify-between items-end mt-4">
-                    <p className="text-6xl font-medium">0</p>
-                    <div className="">
-                      <img src={chatsIcon} alt="" className="w-[60px]" />
+                    <p className="text-6xl font-medium">{interviews?.length || 0}</p>
+                    <div className="mb-2">
+                      <GoDiscussionOutdated size="30" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className=" w-full md:w-[17%]  flex justify-between md:flex-col ">
-              <div className="pt-1 h-full md:w-full w-[45%]  md:h-1/2">
+            <div className=" w-full lg:w-[20%] flex justify-between lg:flex-col ">
+              <div className="pb-1 h-full lg:w-full w-[45%] lg:h-1/2">
                 <div
                 key="in-review"
                   onClick={()=>navigateToApplications("in-review")}
@@ -201,16 +210,16 @@ function Home() {
                   <p className="font-bold">In-Review</p>
                   <div className="flex justify-between items-end mt-4">
                     <p className="text-6xl font-medium">
-                      {pendingReview?.length}
+                      {pendingReview?.length || 0}
                     </p>
                     <div className=" text-gray-300">
-                      <MdOutlineRateReview size={50} />
+                      <MdOutlineRateReview size="30" />
                       {/* <img src={docsIcon} alt="" className="w-10" /> */}
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="pt-1 h-full md:w-full w-[45%]  md:h-1/2">
+              <div className="pt-1 h-full lg:w-full w-[45%]  lg:h-1/2">
                 <div
                   onClick={()=>navigateToApplications("shortlist")}
                   className="border bg-lightblue text-white transition duration-400 h-full cursor-pointer mb-4 p-3 pb-0 flex flex-col justify-between"
@@ -218,23 +227,23 @@ function Home() {
                   <p className="font-bold">Shortlisted</p>
                   <div className="flex justify-between items-end mt-4">
                     <p className="text-6xl font-medium">
-                      {shortlistedReview?.length}
+                      {shortlistedReview?.length || 0}
                     </p>
                     <div className=" text-gray-300">
-                      <MdOutlineRemoveRedEye size={50} />
-                      {/* <img src={chatsIcon} alt="" className="w-[60px]" /> */}
+                      <MdOutlineRemoveRedEye size="30" />
+                      {/* <img src={chatsIcon} alt="" className="w-5" /> */}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="w-full flex flex-col items-center justify-center md:w-[25%] bg-primaryColor text-white border md:text-center lg:flex lg:flex-row lg:items-center lg:justify-between lg:w-auto">
+            <div className="w-full flex flex-col items-center justify-center bg-primaryColor text-white border lg:text-center lg:flex lg:flex-row lg:items-center lg:justify-between lg:w-auto">
               <div className="p-3 w-full lg:w-1/2">
                 <p className="font-bold text-center lg:text-left">Jobs Application Status</p>
                 <div className="my-5 flex flex-col items-center lg:flex-row lg:items-center lg:justify-start">
                   <div className="">
-                    <RoundChart />
+                    <RoundChart data={allApplications} />
                   </div>
                 </div>
                 <div className="flex my-3 items-center font-bold cursor-pointer hover:opacity-90 lg:justify-start">
@@ -246,9 +255,9 @@ function Home() {
               </div>
             </div>
 
-            <div className="w-full md:w-[50%] font-medium border py-3 text-sm">
+            <div className="w-full font-medium border py-3 text-sm">
               <div className="px-3 border-b">
-                <p className="font-bold my-3">Upcomming Interviews</p>
+                <p className="font-bold my-3">Upcoming Interviews</p>
               </div>
               <div className="px-3 flex border-b justify-between items-center">
                 <p className=" my-3">

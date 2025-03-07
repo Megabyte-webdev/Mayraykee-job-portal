@@ -9,15 +9,16 @@ import { onSuccess } from "../utils/notifications/OnSuccess";
 const PACKAGES_KEY = "Packahes Database";
 
 function useSubscription() {
-  const PUBLIC_KEY = import.meta.env.VITE_TEST_PUBLIC_KEY;
+ 
   const { authDetails } = useContext(AuthContext);
-  const [activePackage, setActivePackage] = useState(1);
+  const [activePackage, setActivePackage] = useState();
   const client = axiosClient(authDetails?.token);
   const [error, setError] = useState({
     message: "",
     error: "",
   });
   const [packages, setPackages] = useState([]);
+  
   const [loading, setLoading] = useState(false);
   // console.log(activePackage)
   const interviewPackages = packages.filter(
@@ -26,9 +27,9 @@ function useSubscription() {
       current.title.toLowerCase().includes("premium")
   );
   // console.log(interviePackages)
-  const isInterviewPackge = interviewPackages?.find(
+  const isInterviewPackge = (interviewPackages?.find(
     (current) => current?.id === activePackage?.package_id
-  ) ? true : false;
+  ) || authDetails?.user?.role?.match('admin') || authDetails?.user?.user_type === 'exclusive') ? true : false;
 
   const getPackages = async () => {
     setLoading(true);
@@ -85,28 +86,58 @@ function useSubscription() {
     }
   }, []);
 
-  const config = (data, handleSuccess) => {
-    const priceInKobo = Number(data.price) * 100;
-    const onClose = () => {
-      onSuccess({
-        message: "Payment Sucessful",
-        success: "Hang on, validating payment...",
-      });
-    };
+ const config = (data, handleSuccess) => {
+  const priceInKobo = Number(data.price) * 100;
 
-    return {
-      reference: new Date().getTime().toString(),
-      email: authDetails?.user?.email,
-      amount: priceInKobo,
-      publicKey: PUBLIC_KEY,
-      text: "Paystack Button Implementation",
-      onSuccess: (reference) => handleSuccess(reference, data),
-      onClose: onClose,
-    };
+  // This function is triggered when the user closes the payment modal (cancels)
+  const onClose = () => {
+    // Set an error state if the user cancels the payment
+    onFailure({
+      message: "Payment was canceled",
+      error: "Payment Cancellation Error",
+    });
+   
   };
 
+  // This function is triggered when the payment is successful but might need validation
+  const onSuccessHandler = (reference) => {
+    handleSuccess(reference, data);
+    onSuccess({
+      message: "Payment Successful",
+      success: "Hang on, validating payment...",
+    });
+  };
+
+  // This function handles any error during the payment process
+  const onError = (error) => {
+    // Set an error state when there's an issue with payment
+    setError({
+      message: error.message || "An error occurred during payment",
+      error: "Payment Error",
+    });
+
+    // Show error notification
+    onFailure({
+      message: "Payment failed",
+      error: "There was an issue with your payment. Please try again.",
+    });
+  };
+
+  return {
+    reference: new Date().getTime().toString(),
+    email: authDetails?.user?.email,
+    amount: priceInKobo,
+    publicKey: import.meta.env.VITE_LIVE_PUBLIC_KEY,
+    text: "Paystack Button Implementation",
+    onSuccess: onSuccessHandler, // Call onSuccessHandler for successful payments
+    onClose: onClose,           // Call onClose if the user cancels the payment
+    onError: onError,           // Call onError if there's an issue
+  };
+};
 
 
+
+let idx=0;
 
   useEffect(() => {
     const initVals = async () => {
@@ -122,9 +153,12 @@ function useSubscription() {
       }
      
     };
-
-    getActivePackage();
-    initVals();
+if(authDetails?.user?.role === "employer"){
+  getActivePackage();
+  initVals();
+  console.log("render of subscription",( idx+1))
+}
+  
   }, [authDetails?.user]);
 
   useEffect(() => {

@@ -67,7 +67,7 @@ export const getItemFunc = (
         },
       })
       .then((response) => {
-        console.log(response);
+        //console.log(response);
         if (dataArray) {
           apiData = response.data[dataArray];
         } else {

@@ -8,8 +8,9 @@ import UseAdminManagement from '../../../../hooks/useAdminManagement';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaArrowLeftLong } from 'react-icons/fa6';
-
+import { countries } from 'country-data';
 export default function Currency() {
+
     const [currencies, setCurrencies] = useState([]);
     const [selectedCurrencies, setSelectedCurrencies] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
@@ -21,7 +22,18 @@ export default function Currency() {
             try {
                 const data = await getCurrencies();
                 if (data) {
-                    setCurrencies(data);
+                    // Map through currencies and find the corresponding country
+                    const updatedData = data.map((currency) => {
+                        const countryEntry = Object.values(countries).find(
+                            (c) => c.alpha2 === currency.name || c.alpha3 === currency.name
+                        );
+
+                        return {
+                            ...currency,
+                            name: countryEntry ? `${countryEntry.name} (${currency.name})` : currency.name,
+                        };
+                    });
+                    setCurrencies(updatedData);
                 } else {
                     console.error("No data received");
                 }

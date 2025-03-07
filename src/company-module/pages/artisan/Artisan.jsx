@@ -5,7 +5,7 @@ import { axiosClient } from "../../../services/axios-client";
 import { AuthContext } from "../../../context/AuthContex";
 import { onFailure } from "../../../utils/notifications/OnFailure";
 import SearchComponent from "../../../components/staffs/SearchComponent";
-import { FaExclamationCircle, FaShoppingCart } from "react-icons/fa";
+import { FaExclamationCircle, FaShoppingCart, FaFileContract } from "react-icons/fa";
 import {
   MdCheck,
   MdCheckBox,
@@ -22,6 +22,7 @@ function Artisan() {
   const client = axiosClient(authDetails.token);
   const [loading, setLoading] = useState();
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState();
   const [searchResult, setSearcResult] = useState([]);
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
@@ -82,10 +83,10 @@ function Artisan() {
   const staffsToDisplay =
     searchResult.length > 0
       ? searchResult?.filter(
-          (current) =>
-            current?.staff_category === "artisan" &&
-            current?.middle_name !== null
-        )
+        (current) =>
+          current?.staff_category === "artisan" &&
+        (current?.status === "pending" || current?.status === "approved")
+      )
       : [];
 
   const getCartItems = async () => {
@@ -114,9 +115,8 @@ function Artisan() {
       setLoading(true);
 
       try {
-        const { data } = await client.get("/staff-categories/1");
-        const response = await client.get("/staff-categories/1");
-        setCategories(data.data);
+        const { data } = await client.get("/staff-categories");
+        setCategories(data.data?.filter(one=>one.name.toLowerCase().includes("artisan"))[0] || [])
       } catch (error) {
         onFailure({
           message: "Artisan Error",
@@ -134,22 +134,15 @@ function Artisan() {
   return (
     <>
       <PopUpBox isOpen={conditions}>
-        <div className="w-[90%] md:w-[40%] md:h-fit text-gray-500 p-5 items-center flex flex-col gap-4 bg-white">
+        <div className="w-[90%] md:w-[600px] h-max max-h-[400px] text-gray-500 p-5 items-center flex flex-col gap-4 bg-white">
           <MdClose
-            className="text-2xl place-self-end cursor-pointer"
+            className="flex-shrink-0 text-2xl text-red-600 place-self-end cursor-pointer"
             onClick={() => setConditions(!conditions)}
           />
-          <h1>Job Descriptions</h1>
-          <p className="text-sm">
-            This agreement acknowledges that the employer may only assign tasks
-            that are directly related to the designated role of the employee.
-            Artisan must only perform duties as outlined within the scope of
-            their specific role, whether as a housekeeper, driver, or other
-            position. Any tasks outside these roles require mutual agreement
-            between the employer and the employee. Violation of this policy may
-            result in a breach of contract or legal consequences, depending on
-            applicable labor laws..
-          </p>
+          <h1 className="text-xl font-bold">Job Descriptions</h1>
+          <div className="text-sm overflow-y-auto flex-1 prose"> 
+          <p dangerouslySetInnerHTML={{ __html: selectedCategory?.description}} />
+          </div>
 
           <FormButton
             onClick={() => {
@@ -161,9 +154,9 @@ function Artisan() {
           </FormButton>
         </div>
       </PopUpBox>
-      <div className="h-full overflow-y-auto w-full flex flex-col px-5 md:px-8 lg:px-12 py-2 gap-[15px] bg-gray-50">
-        <div className="flex w-full justify-between items-start gap-1">
-          <section className="flex flex-col gap-y-5">
+      <div className="h-full overflow-y-auto w-full flex flex-col py-2 gap-[15px] bg-gray-50">
+        <div className="flex flex-col w-full justify-between items-start gap-1">
+          <section className="flex gap-5 justify-between items-center w-full">
             <div
               id="content"
               className="flex flex-col gap-2 bg-green-100 pr-5 p-2 w-[90%] md:w-fit text-xs md:text-sm"
@@ -190,36 +183,43 @@ function Artisan() {
               </p>
             </div>
 
-            <SearchComponent
-              subCategories={categories.subcategories}
-              handleQuerySubmit={handleCondition}
-              title="Artisan's Specialized Position"
-            />
+
+            <div className="ml-auto flex md:items-center gap-5">
+              <button
+                onClick={() => navigate("/company/staff/contract-history", {
+                  state: {
+                    data: {type: "artisan" },
+                }})}
+                className="flex items-center gap-2"
+              >
+                <FaFileContract size="24" className="inline md:hidden" />
+                <span className="hidden md:inline border-primaryColor px-3 py-1 border hover:bg-primaryColor hover:text-white text-sm">Contract History</span>
+              </button>
+
+              <button className="my-5 ml-auto" onClick={navigateToCart}>
+                <p className="relative cursor-pointer flex item-center">
+                  <FaShoppingCart size="24" />{" "}
+                  <span className="absolute top-[-15px] right-0 w-max h-max px-1 rounded-full bg-red-700 text-white text-xs">
+                    {cartItems.length || 0}
+                  </span>
+                </p>
+              </button>
+            </div>
+
           </section>
 
-          <div className="flex md:items-center gap-5">
-            <button
-              onClick={() => navigate("/company/staff/contract-history")}
-              className="border-primaryColor px-3 py-1 border hover:bg-primaryColor hover:text-white"
-            >
-              Contract History
-            </button>
-
-            <button className="my-5" onClick={navigateToCart}>
-              <p className="relative cursor-pointer flex item-center">
-                <FaShoppingCart size="24" />{" "}
-                <span className="absolute top-[-15px] right-0 w-max h-max px-1 rounded-full bg-red-700 text-white text-xs">
-                  {cartItems.length || 0}
-                </span>
-              </p>
-            </button>
-          </div>
+          <SearchComponent
+            subCategories={categories.subcategories}
+            handleQuerySubmit={handleCondition}
+            title="Artisan's Specialized Position"
+            setSelectedCategory={setSelectedCategory}
+          />
         </div>
 
         {staffsToDisplay.length > 0 ? (
           <div className="flex flex-col gap-3 mt-5">
             <span className="font-semibold text-yellow-600">
-              Showing Search You Result
+            Showing You Search Result
             </span>
             <ul className="w-full grid grid-cols-responsive gap-4">
               {staffsToDisplay?.map((current) => (

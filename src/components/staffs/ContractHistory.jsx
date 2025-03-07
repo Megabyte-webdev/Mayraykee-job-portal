@@ -3,40 +3,28 @@ import { AuthContext } from "../../context/AuthContex";
 import { axiosClient } from "../../services/axios-client";
 import TableHead from "./marketplace/TableHead";
 import TableRow from "./marketplace/TableRow";
-
+import { onFailure } from "../../utils/notifications/OnFailure";
+import { useLocation } from "react-router-dom";
+import {FaArrowLeftLong} from "react-icons/fa6"
 function ContractHistory() {
   const { authDetails } = useContext(AuthContext);
   const client = axiosClient(authDetails.token);
-
+  const location = useLocation();
+  const { data } = location?.state ? location?.state : { data: null };
+  console.log(data)
   const [contractItems, setContractItems] = useState([]);
-  const [marketList, setMarketList] = useState([]);
-
-  const getMarketList = async () => {
-    try {
-      const { data } = await client.get("/domesticStaff/get-staff");
-
-      if (data.domesticStaff) {
-        setMarketList(data.domesticStaff);
-      } else {
-        setMarketList([]);
-      }
-    } catch (error) {
-      onFailure({
-        message: "soemthing went wrong",
-        error: "Error retriving carted items",
-      });
-    }
-  };
-
   const getContractItems = async () => {
+    const type=data.type;
     try {
       const { data } = await client.post("/contracts/details", {
         user_id: authDetails.user.id,
         user_type: authDetails.user.role,
       });
 
-      if (data.contracts) {
-        setContractItems(data.contracts);
+      if (data?.contracts) {
+        setContractItems(!type ? data.contracts : data.contracts?.filter(
+          (current) => current.staff_category === type
+        ));
       } else {
         setContractItems([]);
       }
@@ -53,8 +41,15 @@ function ContractHistory() {
     // getMarketList();
   }, []);
   return (
-    <div className="h-full w-full flex flex-col px-5 md:px-8 lg:px-12 py-5 gap-[15px]">
-      <span>Here is detailed track record on all your contract history.</span>
+    <div className="h-full w-full flex flex-col py-5 gap-[15px]">
+      <button
+          type="button"
+          onClick={() => window.history.back()}
+          className="w-max flex items-center gap-2 outline outline-offset-5 outline-green-500 px-4 py-2 rounded text-green-500 hover:bg-green-100"
+        >
+       <FaArrowLeftLong className="me-4 text-green-500" />Back
+        </button>
+      <span>Here is a detailed track record of all your contract history.</span>
       <TableHead>
         {contractItems.length > 0 &&
           contractItems

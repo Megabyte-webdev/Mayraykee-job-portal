@@ -7,9 +7,10 @@ import { ApplicationContext } from "../../../context/ApplicationContext";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { ChatContext } from "../../../context/ChatContext";
+import useApplicationManagement from "../../../hooks/useApplicationManagement";
 
 function Messages() {
-  const applicationUtils = useContext(ApplicationContext);
+  const applicationUtils = useApplicationManagement();
   const [selectedChat, setSelectedChat] = useState(null);
   const {
     loading,

@@ -126,6 +126,7 @@ function LoginForm() {
               value={loginDetails.password}
               onChange={onTextChange}
               required
+               placeholder="Enter your password"
               className="w-[90%] h-full placeholder:text-md text-sm md:bg-white/0 focus:outline-none text-gray-700 "
             />
             {showPassword ? (

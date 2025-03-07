@@ -4,7 +4,7 @@ import useInterviewManagement from "../hooks/useInterviewManagement";
 export const InterviewContext = createContext();
 
 export const InterviewContextProvider = ({ children }) => {
-  const { getAllInterviews, interviews } = useInterviewManagement();
+  const { getAllInterviews, interviews, getInterviewApplicant } = useInterviewManagement();
 
   useEffect(() => {
     getAllInterviews(() => {});
@@ -15,6 +15,7 @@ export const InterviewContextProvider = ({ children }) => {
       value={{
         getAllInterviews,
         interviews,
+        getInterviewApplicant
       }}
     >
       {children}

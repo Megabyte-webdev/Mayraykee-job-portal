@@ -93,9 +93,9 @@ function WorkExperience() {
             let labelText;
 
             if (currentKey === "company_name") {
-              labelText = currentKey.replace(/_/g, " ").toUpperCase() + ' / EMPLOYER\'S NAME';
+              labelText = currentKey.replace(/_/g, " ") + ' / Employer\'s Name';
             } else {
-              labelText = currentKey.replace(/_/g, " ").toUpperCase();
+              labelText = currentKey.replace(/_/g, " ");
             }
 
             const inputType =
@@ -104,7 +104,7 @@ function WorkExperience() {
                 : "text";
             return (
               <div className="flex flex-col gap-1">
-                <label>{labelText}</label>
+                <label className="capitalize font-medium">{labelText}</label>
                 <input
                   className="p-1 border focus:outline-none border-gray-900  rounded-md"
                   type={inputType}
@@ -134,13 +134,13 @@ function WorkExperience() {
                 <label className="gap-3 font-semibold text-lg">
                   ({index + 1}) Work Description
                 </label>
-                <label className="pl-6">{current["work_description"]}</label>
+                <label className="pl-6 capitalize font-medium">{current["work_description"]}</label>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="gap-3 font-semibold text-lg pl-6">
                   Reason for Leaving Previous Job
                 </label>
-                <label className="pl-6">{current["reason_for_leaving"]}</label>
+                <label className="pl-6 capitalize">{current["reason_for_leaving"]}</label>
               </div>
             </div>
           ))}

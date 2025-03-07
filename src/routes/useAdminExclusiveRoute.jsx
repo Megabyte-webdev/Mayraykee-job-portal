@@ -13,6 +13,7 @@ import AdminSideBarItem from "../admin-module/components/AdminSideBarItem";
 import AdminReducer from "../reducers/AdminReducer";
 import AdminExclusiveReducer from "../reducers/AdminExclusiveReducer";
 import { AdminExclusiveManagementContextProvider } from "../context/AdminExclusiveManagement";
+import SingleApplicant from "../company-module/pages/applicants/SingleApplicant";
 
 // Util Component
 const NavBar = lazy(() => import("../admin-module/components/NavBar"));
@@ -36,7 +37,7 @@ const JobType = lazy(() =>
 const ViewApplicant = lazy(() =>
   import("../admin-exclusive-module/pages/applicant/ViewApplicant")
 );
-
+const Interviews = lazy(() => import("../admin-exclusive-module/pages/Interviews"));
 const ViewProfile = lazy(() =>
   import("../admin-exclusive-module/pages/profile/ViewProfile")
 );
@@ -128,7 +129,7 @@ function useAdminRoute() {
                 isMenuOpen={isOpen}
               />
             )}
-            <div className="w-full h-[92%] overflow-y-auto">
+            <div className="w-full h-[92%] overflow-y-auto px-2 md:px-5 lg-px-8">
               <Routes>
                 <Route index element={<Dashboard />} />
 
@@ -139,7 +140,12 @@ function useAdminRoute() {
 
                 <Route path="job/:id" element={<JobType />} />
                 <Route path="applicant/:id" element={<ViewApplicant />} />
+                <Route
+                      path="applicants/detail/:id"
+                      element={<ViewApplicant />}
+                    />
                 <Route path="profile/:id" element={<ViewProfile />} />
+                <Route path="/interviews" element={<Interviews />} />
               </Routes>
             </div>
           </div>

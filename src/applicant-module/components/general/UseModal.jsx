@@ -16,7 +16,7 @@ function UseModal({ isOpen, setIsOpen, header, user, children }) {
                     <IoMdCloseCircle
                     size="24"
                         onClick={() => setIsOpen(false)}
-                        className="sticky top-3 self-end text-lg mb-5 cursor-pointer"
+                        className="sticky z-10 top-3 self-end text-lg text-red-600 mb-5 cursor-pointer"
                     />
                     <div className="flex flex-col gap-4 px-2">
                         <h3 className="pb-2 text-lg font-semibold text-gray-600 border-b">{header}</h3>

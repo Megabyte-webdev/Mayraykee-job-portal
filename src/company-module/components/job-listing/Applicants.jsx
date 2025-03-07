@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import ApplicantsList from "./ApplicantsList";
 import ApplicantsGrid from "./ApplicantsGrid";
 
-function Applicants({ applicants }) {
+function Applicants({ applicants, exclusive=false }) {
   const [view, setView] = useState("grid");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [filteredApplicants, setFilteredApplicants] = useState(applicants);
-
+ console.log(applicants)
   useEffect(() => {
     console.log(searchTerm)
     // Filter applicants based on the search term
@@ -71,9 +71,9 @@ function Applicants({ applicants }) {
           </button>
         </div>
       ) : view === "table" ? (
-        <ApplicantsList applicants={filteredApplicants} onSelect={setSelectedApplicant} />
+        <ApplicantsList applicants={filteredApplicants} onSelect={setSelectedApplicant} exclusive={exclusive} />
       ) : (
-        <ApplicantsGrid applicants={filteredApplicants} searchTerm={searchTerm} />
+        <ApplicantsGrid applicants={filteredApplicants} searchTerm={searchTerm} exclusive={exclusive} />
       )}
     </div>
   );

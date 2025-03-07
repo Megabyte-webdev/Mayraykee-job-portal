@@ -12,16 +12,20 @@ import { ApplicationContext } from "../../../context/ApplicationContext";
 import { useEffect } from "react";
 //import { JobContext } from "../../../context/JobContext";
 import { stages } from "../../../utils/constants";
+import { CompanyRouteContext } from "../../../context/CompanyRouteContext";
 import { generateDateRange } from "../../../utils/formmaters";
 import SubscriptionOffer from "../../../components/SubsciptionOffer";
 import useApplicationManagement from "../../../hooks/useApplicationManagement";
+import useCompanyProfile from "../../../hooks/useCompanyProfile";
 
 function Home() {
   const { authDetails } = useContext(AuthContext);
   const jobUtils = useJobManagement();
-  const { getApplicantsByEmployee, applicants } = useContext(ApplicationContext)
+  
+  const { setSideBar } = useContext(CompanyRouteContext);
+  const { getApplicantsByEmployee, applicants } = useApplicationManagement()
   const { jobList } = jobUtils;
-
+  const { details } = useCompanyProfile();
   const openJobs = useMemo(() => 
     jobList?.filter((current) => current.status === "1" || current.status === "approved"),
     [jobList]
@@ -35,17 +39,18 @@ function Home() {
     }, {});
   }, [applicants]);
 
-  const applicantToReview = useMemo(
+  /*const applicantToReview = useMemo(
     () =>
       applicants?.filter(
         (current) =>
           current.status === stages[0].name || current.status === "pending"
       ),
     [applicants]
-  );
+  );*/
 
   useEffect(() => {
     getApplicantsByEmployee();
+    setSideBar(0);
   }, []);
 
   return (
@@ -53,13 +58,13 @@ function Home() {
       <Helmet>
         <title>Company Dashboard | Home</title>
       </Helmet>
-      <div className="h-fit w-full py-5 px-2 md:px-12 gap-[15px] flex flex-col">
+      <div className="h-fit w-full py-5 gap-[15px] flex flex-col">
         <SubscriptionOffer />
-        <WelcomeMessage name={authDetails.user.name} />
-        <StatsCardWrapper applicants={applicantToReview}  />
+        <WelcomeMessage name={details?.company_name ? details?.company_name : authDetails?.user?.name} />
+        <StatsCardWrapper applicants={applicants}  />
         <JobStatsAndSummary>
           <JobStatistic applicants={applicants} byCategory={value} />
-          <div className="flex flex-col w-full md:w-[30%] px-3 h-fit md:h-full justify-between">
+          <div className="flex flex-col w-full md:w-[30%] h-fit md:h-full justify-between">
             <JobOpen data={openJobs} />
             <ApplicantSummary applicants={applicants} byCategory={value} jobs={jobUtils.jobList} />
           </div>

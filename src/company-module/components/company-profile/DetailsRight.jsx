@@ -9,15 +9,10 @@ function DetailsRight({ data }) {
       {/* Tech Stack Section */}
       <div className="flex w-full flex-col gap-[10px] border-b pb-[10px]">
         <div className="flex justify-between items-center w-full ">
-          <h2 className="font-semibold text-lg">Company Logo</h2>
+          <h2 className="font-semibold text-lg">Company Photos</h2>
         </div>
-        {/* <img
-          className="h-[80px] w-[80px] md:h-[100px] md:w-[100px] rounded-full object-cover"
-          src={data?.logo_image ? `${resourceUrl}/${data?.logo_image}` : wheelIcon}
-          alt="Profile"
-        /> */}
-
-        <ul className="w-full grid grid-cols-3 justify-between text-start  text-gray-400 text-little">
+      
+        <ul className="w-full flex flex-wrap gap-2 text-start text-gray-400 text-little max-h-28 overflow-y-auto">
           {data?.company_campaign_photos?.map((current) => (
             <li className=" flex flex-col gap-[5px] items-center p-2">
               <img src={`${resourceUrl}/${current}`} className="w-[50px] bg-gray-300 h-[50px]" />

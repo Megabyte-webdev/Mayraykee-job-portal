@@ -18,13 +18,13 @@ function StatsCardWrapper({ applicants }) {
         let value = [];
         let onClick = () => {};
         if (currentStat.id == 1) {
-          value = applicants;
+          value = applicants?.filter(item=>item.status === "pending");
           onClick = () => {
             setSideBar(2);
             navigate("/company/applicants");
           };
         } else if (currentStat.id == 2) {
-          value = interviews;
+          value = applicants?.filter(item=>item.status === "shortlist");
           onClick = () => {
             setSideBar(5);
             navigate("/company/schedule");

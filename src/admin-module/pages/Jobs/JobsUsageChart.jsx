@@ -10,17 +10,17 @@ const TrafficStages = [
   {
     label: 'Shortlisted',
     value: 20,
-    color: '#FEB019', // Custom color for Shortlisted
+    color: 'blue', // Custom color for Shortlisted
   },
   {
     label: 'Interviewed',
     value: 10,
-    color: '#008FFB', // Custom color for Interviewed
+    color: '#f7dc6f', // Custom color for Interviewed
   },
   {
     label: 'In Review',
     value: 40,
-    color: '#FF4560', // Custom color for In Review
+    color: 'orange', // Custom color for In Review
   },
 ];
 

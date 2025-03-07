@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContex";
 import { clear } from "idb-keyval";
 import StaffReducer from "../reducers/StaffReducer";
 import { AdminManagementContextProvider } from "../context/AdminManagementModule";
+import { ResourceContextProvider } from "../context/ResourceContext";
 import { AdminRouteContextProvider } from "../context/AdminRouteContext";
 import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
 import Tailwind from "primereact/passthrough/tailwind";
@@ -16,6 +17,9 @@ import EmployerCandidates from "../admin-module/pages/employers/EmployerCandidat
 import EmployerStaff from "../admin-module/pages/employers/EmployerStaff";
 import CandidateStaff from "../admin-module/pages/candidate/CandidateStaff";
 import Sectors from "../admin-module/pages/settings/Sectors/Sectors";
+import StaffSectors from "../admin-module/pages/settings/Sectors/StaffSectors";
+
+import Packages from "../admin-module/pages/settings/Sectors/Packages";
 import AddCategory from "../admin-module/pages/settings/Sectors/AddCategory";
 import Currency from "../admin-module/pages/settings/Currency/curremcy";
 import AddCurrency from "../admin-module/pages/settings/Currency/AddCurrency";
@@ -60,14 +64,15 @@ const DomesticStaff = lazy(() => import("../admin-module/pages/domesticStaff/Dom
 const AllDomesticStaff = lazy(() => import("../admin-module/pages/domesticStaff/AllDomesticStaff"));
 const DomesticStaffDetails = lazy(() => import("../admin-module/pages/domesticStaff/DomesticStaffDetails"));
 const Candidates = lazy(() => import("../admin-module/pages/candidate/Candidate"));
-const Interviews = lazy(() => import("../admin-module/pages/Interviews"));
+
 const Blogs = lazy(() => import("../admin-module/pages/blogs/ManageBlogs"));
 const CreateBlog = lazy(() => import("../admin-module/pages/blogs/CreateBlog"));
+
+const Support = lazy(() => import("../admin-module/pages/support/Support"));
 
 
 
 function useAdminRoute() {
-  const path = useLocation().pathname;
   // const [state, dispatch] = useReducer(AdminReducer, adminOptions.find((option) => option.route === path));
   const [state, dispatch] = useReducer(AdminReducer, adminOptions[0]);
   const { authDetails } = useContext(AuthContext);
@@ -75,10 +80,17 @@ function useAdminRoute() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
-  
-
   const toogleIsOpen = () => setIsOpen(!isOpen);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const matchedOption = adminOptions.find((opt) => pathname === opt?.route);
+    if (matchedOption) {
+      dispatch(matchedOption);
+    } else {
+      dispatch(adminOptions[0]);
+    }
+  }, [pathname]);
 
   const setSideBar = (index) => {
     const page = adminOptions[index];
@@ -118,8 +130,9 @@ function useAdminRoute() {
 
   return (
     <>
-      {true ? (
+      {authDetails?.user?.role === "admin" ? (
         <AdminManagementContextProvider>
+          {/* <ResourceContextProvider> */}
           <AdminRouteContextProvider setSideBar={setSideBar}>
             <main className="h-screen w-screen relative flex">
               {/* Conditionally render the sidebar */}
@@ -136,6 +149,7 @@ function useAdminRoute() {
                         data={currentOption}
                         dispatch={dispatch}
                         state={state}
+                        setIsOpen={setIsOpen}
                       />
                     ))}
                   </ul>
@@ -147,6 +161,7 @@ function useAdminRoute() {
                         data={currentOption}
                         dispatch={dispatch}
                         state={state}
+                        setIsOpen={setIsOpen}
                       />
                     ))}
                   </ul>
@@ -162,55 +177,59 @@ function useAdminRoute() {
                     isMenuOpen={isOpen}
                   />
                 )}
-                <div className="w-full h-[92%] overflow-y-auto">
+                <div className="w-full h-[92%] overflow-y-auto px-2 md:px-5 lg-px-8">
                   <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
                     <Routes>
-                      <Route path="login" element={<AdminLogin />} />
-                      <Route path="logout" element={<AdminLogout />} />
-                      <Route path="reset-pwd" element={<AdminResetPwd />} />
-                      <Route path="settings/register" element={<AdminRegistrationForm />} />
-                      <Route path="forget-pwd" element={<AdminForgotPassword />} />
-                      <Route path="change-pwd" element={<AdminChangePassword />} />
-                      <Route index element={<Dashboard />} />
-                      <Route path="employers" element={<Employers />} />
-                      <Route path="interviews" element={<Interviews />} />
-                      <Route path="employers/all" element={<AllEmployers />} />
-                      <Route path="employer/details/:id" element={<EmployerDetails />} />
-                      <Route path="employer-jobs/details/:id" element={<JobsByEmployerDetails />} />
-                      <Route path="employer/alljobs/:id" element={<AllDataJobsPostedEmployer />} />
-                      <Route path="employer/applied-jobs/:id" element={<AppliedJobs />} />
-                      <Route path="employer/:id/candidates" element={<EmployerCandidates />} />
-                      <Route path="employer/:id/staffs" element={<EmployerStaff />} />
-                      <Route path="domestic-staff" element={<DomesticStaff />} />
-                      <Route path="domestic-staff/all" element={<AllDomesticStaff />} />
-                      <Route path="domestic-staff/details/:id" element={<DomesticStaffDetails />} />
-                      <Route path="settings" element={<Settings />} />
-                      <Route path="settings/sectors" element={<Sectors />} />
-                      <Route path="settings/sectors/categories" element={<AddCategory />} />
-                      <Route path="settings/currency" element={<Currency />} />
-                      <Route path="settings/currency/add" element={<AddCurrency />} />
-                      <Route path="settings/salary" element={<Salaries />} />
-                      <Route path="settings/salary/add" element={<AddSalary />} />
-                      <Route path="settings/security" element={<Security />} />
-                      <Route path="settings/security/admins" element={<AllAdmins />} />
-                      <Route path="help-center" element={<HelpCenter />} />
-                      <Route path="artisan" element={<Artisan />} />
-                      <Route path="artisans/all" element={<AllArtisans />} />
-                      <Route path="artisan/details/:id" element={<ArtisanDetails />} />
-                      <Route path="candidates" element={<Candidates />} />
-                      <Route path="candidates/all" element={<AllCandidate />} />
-                      <Route path="candidate/details/:id" element={<CandidateDetails />} />
-                      <Route path="candidate/:id/staffs" element={<CandidateStaff />} />
-                      <Route path="job-listing" element={<JobListing />} />
-                      <Route path="jobs" element={<AllJobs />} />
-                      <Route path="job/details/:id" element={<JobDescriptionPage />} />
-                      <Route path="guarantors" element={<AllGuarantors />} />
-                      <Route path="medical-histories" element={<AllMedicalHistories />} />
                       
+                      <Route path="/reset-pwd" element={<AdminResetPwd />} />
+                      <Route path="/settings/register" element={<AdminRegistrationForm />} />
+                      <Route path="/forget-pwd" element={<AdminForgotPassword />} />
+                      <Route path="/change-pwd" element={<AdminChangePassword />} />
+                      <Route index element={<Dashboard />} />
+                      <Route path="/employers" element={<Employers />} />
 
-                      <Route path="police-reports" element={<AllPoliceReports />} />
-                      <Route path="blogs" element={<Blogs/>} />
-                      <Route path="create-blog" element={<CreateBlog/>} />
+                      <Route path="/employers/all" element={<AllEmployers />} />
+                      <Route path="/employer/details/:id" element={<EmployerDetails />} />
+                      <Route path="/employer-jobs/details/:id" element={<JobsByEmployerDetails />} />
+                      <Route path="/employer/alljobs/:id" element={<AllDataJobsPostedEmployer />} />
+                      <Route path="/employer/applied-jobs/:id" element={<AppliedJobs />} />
+                      <Route path="/employer/:id/candidates" element={<EmployerCandidates />} />
+                      <Route path="/employer/:id/staffs" element={<EmployerStaff />} />
+                      <Route path="/domestic-staff" element={<DomesticStaff />} />
+                      <Route path="/domestic-staff/all" element={<AllDomesticStaff />} />
+                      <Route path="/domestic-staff/details/:id" element={<DomesticStaffDetails />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="/settings/sectors" element={<Sectors />} />
+                      <Route path="/settings/staff-sectors" element={<StaffSectors />} />
+                      <Route path="/settings/packages" element={<Packages />} />
+
+                      <Route path="/settings/sectors/categories" element={<AddCategory />} />
+                      <Route path="/settings/currency" element={<Currency />} />
+                      <Route path="/settings/currency/add" element={<AddCurrency />} />
+                      <Route path="/settings/salary" element={<Salaries />} />
+                      <Route path="/settings/salary/add" element={<AddSalary />} />
+                      <Route path="/settings/security" element={<Security />} />
+                      <Route path="/settings/security/admins" element={<AllAdmins />} />
+                      <Route path="/help-center" element={<HelpCenter />} />
+                      <Route path="/artisan" element={<Artisan />} />
+                      <Route path="/artisans/all" element={<AllArtisans />} />
+                      <Route path="/artisan/details/:id" element={<ArtisanDetails />} />
+                      <Route path="/candidates" element={<Candidates />} />
+                      <Route path="/candidates/all" element={<AllCandidate />} />
+                      <Route path="/candidate/details/:id" element={<CandidateDetails />} />
+                      <Route path="/candidate/:id/staffs" element={<CandidateStaff />} />
+                      <Route path="/job-listing" element={<JobListing />} />
+                      <Route path="/jobs" element={<AllJobs />} />
+                      <Route path="/job/details/:id" element={<JobDescriptionPage />} />
+                      <Route path="/guarantors" element={<AllGuarantors />} />
+                      <Route path="/medical-histories" element={<AllMedicalHistories />} />
+
+
+                      <Route path="/police-reports" element={<AllPoliceReports />} />
+                      <Route path="/blogs" element={<Blogs />} />
+                      <Route path="/create-blog" element={<CreateBlog />} />
+
+                      <Route path="/support" element={<Support />} />
 
                     </Routes>
                   </PrimeReactProvider>
@@ -218,9 +237,10 @@ function useAdminRoute() {
               </div>
             </main>
           </AdminRouteContextProvider>
+          {/* </ResourceContextProvider> */}
         </AdminManagementContextProvider>
       ) : (
-        <Navigate to={"/"} replace />
+        <Navigate to={"/admin/login"} replace />
       )}
     </>
   );

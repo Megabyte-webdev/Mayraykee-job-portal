@@ -32,7 +32,7 @@ function ApplicantSummary({ applicants, byCategory, jobs }) {
               return (
                 <>
                   <div
-                  key={idx}
+                  key={jobApplicants?.id}
                     className={` list-item-parent flex h-full text-[11px] items-center gap-[5px]`}
                   >
                     <div className={`h-[10px] w-[10px] rounded-[3px] child`} />
@@ -43,7 +43,7 @@ function ApplicantSummary({ applicants, byCategory, jobs }) {
                       }}
                       className=" font-semibold hover:underline cursor-pointer"
                     >
-                      {info[0].job_title} :
+                      {info[0].job_title?.length > 15 ? `${info[0].job_title?.slice(0,15)}...`: info[0].job_title} :
                     </span>
                     <span className="text-gray-400">{info?.length}</span>
                   </div>

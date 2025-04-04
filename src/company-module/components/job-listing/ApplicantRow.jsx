@@ -1,8 +1,71 @@
 import { useNavigate } from "react-router-dom";
 import { resourceUrl } from "../../../services/axios-client";
+import StatusCard from "../applicants/StatusCard";
+import { stages } from "../../../utils/constants";
+import { AiFillClockCircle } from "react-icons/ai";
+import { MdCheckCircle } from "react-icons/md";
+import { GiVideoConference } from "react-icons/gi";
+import { IoMdCloseCircle } from "react-icons/io";
 
 function ApplicantRow({ data }) {
   const navigate = useNavigate();
+
+  const getStatusComponent = () => {
+    switch (data?.status) {
+      case stages[0].name:
+        return (
+          <StatusCard
+            name={data?.status}
+            label={stages[0].label}
+            icon={AiFillClockCircle}
+            color={"bg-orange-500 text-white"}
+            iconColor="text-white"
+          />
+        );
+      case stages[1].name:
+        return (
+          <StatusCard
+            name={data.status}
+            label={stages[1].label}
+            icon={MdCheckCircle}
+            color={"bg-blue-500 text-white"}
+            iconColor="text-white"
+          />
+        );
+      case stages[2].name:
+        return (
+          <StatusCard
+            name={data.status}
+            label={stages[2].label}
+            icon={GiVideoConference}
+            color={"bg-yellow-500 text-black"}
+            iconColor="text-blue-50"
+          />
+        );
+      case stages[3].name.split("/")[0]:
+        return (
+          <StatusCard
+            name={data.status}
+            label={data.status}
+            icon={MdCheckCircle}
+            color={"bg-[#47AA49] text-white"}
+            iconColor="text-blue-100"
+          />
+        );
+      case stages[3].name.split("/")[1]:
+        return (
+          <StatusCard
+            name={data.status}
+            label={data.status}
+            icon={IoMdCloseCircle}
+            color={"bg-[#B22234] text-white"}
+            iconColor="text-red-100"
+          />
+        );
+      default:
+        return "Not Found";
+    }
+  };
 
   const navigateToApplicantDetails = () =>
     navigate(`/company/applicants/detail/${data.id}`, { state: { data } });
@@ -26,8 +89,8 @@ function ApplicantRow({ data }) {
       {/* Status */}
       <td className="text-center py-2 px-2">
         <div className="flex justify-center items-center">
-          <button className="py-1 px-3 uppercase text-xs border border-primaryColor rounded-full font-semibold truncate">
-            {data?.status}
+          <button className="text-xs rounded-full font-semibold truncate">
+            {getStatusComponent()}
           </button>
         </div>
       </td>

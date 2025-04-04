@@ -102,11 +102,11 @@ function StaffInformation() {
           <div className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600">
             {filterProfileDetails.map((currentKey) => {
               const detail = data.staff.domestic_staff[currentKey];
-              const labelText = currentKey.replace(/_/g, " ").toUpperCase();
+              const labelText = currentKey.replace(/_/g, " ").toLowerCase();
 
               return (
                 <div className="flex flex-col gap-1">
-                  <label>{labelText}</label>
+                  <label className="capitalize">{labelText}</label>
                   <span className="font-semibold">
                     {detail ? detail : "Nothing to show"}
                   </span>

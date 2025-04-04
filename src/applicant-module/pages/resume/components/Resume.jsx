@@ -82,7 +82,7 @@ const Resume = ({ resume, setGetResumeById, authDetails, getCandidate }) => {
               
               {resume.awarding_institution && <div className="flex justify-between text-[#dbc87c] gap-2">
                 <p className="font-bold text-base">Awarding Institution:</p>
-                <p className="font-medium">{resume?.awarding_institution} {resume?.year_attended && `(${resume.year_attended} - ${resume?.year_of_graduation || 'Till present'})`}</p>
+                <p className="font-medium text-right">{resume?.awarding_institution} {resume?.year_attended && `(${resume.year_attended} - ${resume?.year_of_graduation || 'Till present'})`}</p>
               </div>}
               
               {<>
@@ -107,7 +107,7 @@ const Resume = ({ resume, setGetResumeById, authDetails, getCandidate }) => {
                 <div className="w-2/5">
                   <p className="font-bold text-base">Education:</p>
                 </div>
-                <div className="w-3/5">
+                <div className="w-3/5 text-right">
                   <p className="font-medium">
                     {resume.educational_institution}
                   </p>

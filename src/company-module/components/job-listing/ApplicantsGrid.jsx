@@ -4,7 +4,7 @@ const stages = [
   {
     id: 1,
     name: 'in-review',
-    label: 'in-review',
+    label: 'under-review',
     border_color: 'border-orange-500',
   },
   {

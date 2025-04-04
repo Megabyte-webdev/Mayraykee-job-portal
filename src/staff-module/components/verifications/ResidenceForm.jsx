@@ -6,6 +6,7 @@ import { AuthContext } from "../../../context/AuthContex";
 import { axiosClient } from "../../../services/axios-client";
 import { FormatError } from "../../../utils/formmaters";
 import { onSuccess } from "../../../utils/notifications/OnSuccess";
+import ConfirmationPopUp from "./ConfirmationPopUp"; // Import the popup
 
 const formFields = ["house_address", "close_landmark"];
 
@@ -32,6 +33,8 @@ function ResidenceForm() {
     message: "",
     error: "",
   });
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  
 
   const submitDetails = async (data) => {
     setIsLoading(true);
@@ -53,6 +56,10 @@ function ResidenceForm() {
     } finally {
       setIsLoading(false);
     }
+  };
+  const handleProceed = () => {
+    setIsPopupOpen(false);
+    handleSubmit(submitDetails)(); // Proceed with form submission
   };
 
   const residenceFields = () => {
@@ -122,7 +129,10 @@ function ResidenceForm() {
 
       {typeof currentResidence === "undefined" && !loading && (
         <form
-          onSubmit={handleSubmit(submitDetails)}
+           onSubmit={(e) => {
+            e.preventDefault();
+            setIsPopupOpen(true);
+          }}
           className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600"
         >
           <label className="flex flex-col justify-center gap-1">
@@ -214,6 +224,13 @@ function ResidenceForm() {
           <FormButton loading={isLoading}>Save Residence Details</FormButton>
         </form>
       )}
+      {/* Confirmation Popup */}
+      <ConfirmationPopUp
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onConfirm={handleProceed}
+        message="Ensure your details are correct before proceeding. If you need to make changes later, contact the admin."
+      />
     </div>
   );
 }

@@ -12,7 +12,7 @@ import AllShortlistedApplicants from "./components/AllShortlistedApplication";
 import {useLocation} from 'react-router-dom';
 const stages=[
   { label: "All", key: "all" },
-  { label: "In Review", key: "in-review" },
+  { label: "Under-Review", key: "in-review" },
   { label: "Interviewed", key: "interview" },
   { label: "Shortlisted", key: "shortlist" },
   { label: "Declined", key: "declined" },
@@ -42,7 +42,7 @@ function Application() {
       setView("all")
     }
   }, [location?.state]);
-console.log(getAllApplications)
+
   // Clear randomized list on view change
   useEffect(() => {
     setRandomizedApplications([]);

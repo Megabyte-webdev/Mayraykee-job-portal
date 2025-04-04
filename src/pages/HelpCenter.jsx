@@ -17,7 +17,7 @@ const HelpCenter = () => {
   };
 
   return (
-    <div className="font-sans">
+    <div>
       {/* Map Section */}
       <div className="relative">
         {loading && (

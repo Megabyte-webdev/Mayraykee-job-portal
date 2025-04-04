@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { axiosClient } from "../services/axios-client";
 import { set, get, del, keys, clear } from "idb-keyval";
-import { FormatError } from "../utils/formmaters";
+import { FormatError, extractErrorMessage } from "../utils/formmaters";
 import { AuthContext } from "../context/AuthContex";
 import { SubscriptionContext } from "../context/SubscriptionContext";
 import { onFailure } from "../utils/notifications/OnFailure";
@@ -11,11 +11,11 @@ export const JOB_MANAGEMENT_Key = "Job Management Database";
 export const apiURL = "https://dash.mayrahkeeafrica.com/api";
 
 function useJobManagement() {
-  const subUtils = useContext(SubscriptionContext);
-  const activePackage=subUtils?.activePackage;
+  const subUtils = useContext(SubscriptionContext); 
+  const activePackage = subUtils?.activePackage;
   const currentPackage = activePackage
-  ? subUtils?.packages?.find((pkg) => pkg.id === activePackage.package_id)
-  : {};
+    ? subUtils?.packages?.find((pkg) => pkg.id === activePackage.package_id)
+    : {};
 
   const { authDetails } = useContext(AuthContext);
   const client = axiosClient(authDetails?.token, true);
@@ -33,7 +33,7 @@ function useJobManagement() {
     email: "",
     salary_type: "",
     min_salary: 0,
-    max_salary: 10000,
+    max_salary: 0,
     experience: "",
     career_level: "",
     currency: "",
@@ -148,7 +148,7 @@ function useJobManagement() {
       "preferred_age",
     ];
 
-    const stage2Fields = ["job_title", "job_description", "experience","career_level"];
+    const stage2Fields = ["job_title", "job_description", "experience", "career_level"];
 
     let fieldsToValidate = [];
 
@@ -182,40 +182,42 @@ function useJobManagement() {
     setLoading(true);
     try {
       const validationError = validateJobDetails({ id: 2 });
-      
+
       if (validationError) {
         throw new Error(validationError);
       }
-      if (currentPackage?.number_of_jobs <= jobList?.length) {
+      if (Number(activePackage?.available_jobs) < 1) {
         throw new Error(
-          `Job limit reached. Your package allows posting up to ${currentPackage?.number_of_jobs} jobs.`
+          `Job Posting limit reached. Please Top-Up your subscription`
         );
+        return;
       }
-      const formDetails={
+      const formDetails = {
         employer_id: authDetails?.user.id,
         ...details,
       }
-       // Create a new FormData object
-       const formData = new FormData();
-        // Loop over the details object to append each key-value pair to FormData
-       // Loop over the details object to append each key-value pair to FormData
-       for (const key in formDetails) {
+      // Create a new FormData object
+      const formData = new FormData();
+      // Loop over the details object to append each key-value pair to FormData
+      // Loop over the details object to append each key-value pair to FormData
+      for (const key in formDetails) {
         if (formDetails.hasOwnProperty(key)) {
-           //If the field is 'qualification' and it's an array, handle it separately
-           if (key === "qualification" && Array.isArray(formDetails[key])) {
-             formDetails[key].forEach((qual) => {
-               formData.append("qualification[]", qual); // Append each qualification as a separate field
-             });
-           } else {
-             // For other fields, append normally
-             formData.append(key, formDetails[key]);
-           }
-         }
-       }
-      const response = await client.post(`/job`, formData );
+          //If the field is 'qualification' and it's an array, handle it separately
+          if (key === "qualification" && Array.isArray(formDetails[key])) {
+            formDetails[key].forEach((qual) => {
+              formData.append("qualification[]", qual); // Append each qualification as a separate field
+            });
+          } else {
+            // For other fields, append normally
+            formData.append(key, formDetails[key]);
+          }
+        }
+      }
+      const response = await client.post(`/job`, formData);
 
       setDetails({});
       await getJobsFromDB();
+      subUtils?.getActivePackage()
       handleSuccess();
     } catch (error) {
       const errorDetails = Object.entries(error?.response?.data?.errors || {})
@@ -235,10 +237,10 @@ function useJobManagement() {
       if (validationError) {
         throw new Error(validationError);
       }
-  
+
       // Create a new FormData object
       const formData = new FormData();
-  
+
       for (const key in details) {
         if (details.hasOwnProperty(key)) {
           // Handle the 'featured_image' field separately
@@ -258,25 +260,25 @@ function useJobManagement() {
           }
         }
       }
-      
-  
+
+
       // // Append the image if it exists (assuming it's in details.image)
       // if (details.image) {
       //   formData.append('image', details.image); // Adjust based on your actual field name
       // }
-  
+
       const response = await client.post(`${apiURL}/job`, formData);
-  
+
       setDetails({});
       await getJobsFromDB();
       handleSuccess();
     } catch (error) {
-      onFailure({ message: "Submission Failed", error: error?.response?.data?.message || error?.message });
+      onFailure({ message: "Submission Failed", error: extractErrorMessage(error) });
     } finally {
       setLoading(false);
     }
   };
-  
+
 
   const addJobForExclusive = async (handleSuccess, id) => {
     setLoading(true);
@@ -294,9 +296,9 @@ function useJobManagement() {
       setDetails({});
       await getJobsFromDB();
       handleSuccess();
-      
+
     } catch (error) {
-      onFailure({ message: "Submission Failed", error: error.message });
+      onFailure({ message: "Submission Failed", error: extractErrorMessage(error) });
     } finally {
       setLoading(false);
     }
@@ -313,7 +315,7 @@ function useJobManagement() {
       setLoading(false);
     }
   };
-  
+
 
   const deleteJob = async (handleSuccess, jobId) => {
     setLoading(true);
@@ -395,7 +397,7 @@ function useJobManagement() {
     if (authDetails?.token !== null || authDetails?.token !== undefined) {
       initValue();
     }
-  }, [authDetails?.token]);
+  }, []);
 
   return {
     loading,

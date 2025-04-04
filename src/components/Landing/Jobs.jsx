@@ -6,6 +6,7 @@ import approved from "../../assets/pngs/approved.png";
 import company from "../../assets/pngs/company-2-icon.png";
 import { ResourceContext } from "../../context/ResourceContext";
 import { IMAGE_URL } from "../../utils/base";
+import { parseHtml } from "../../utils/formmaters";
 
 // Modal Component with TailwindCSS for a polished UI/UX
 const ApplyJobModal = ({ isOpen, closeModal, navigateToRegister, navigateToLogin }) => {
@@ -149,10 +150,8 @@ const Jobs = () => {
             </section>
             <p
               className="text-gray-500 text-sm my-3"
-              dangerouslySetInnerHTML={{
-                __html: job?.job_description.slice(0, 50),
-              }}
-            ></p>
+              
+            >{parseHtml(job?.job_description.slice(0, 50))}</p>
 
             <div className="flex gap-3 mt-auto text-green-600 capitalize text-xs">
               <span className="flex items-center gap-2">

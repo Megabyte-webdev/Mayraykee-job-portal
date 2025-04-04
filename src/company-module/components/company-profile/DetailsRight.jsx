@@ -29,27 +29,27 @@ function DetailsRight({ data }) {
 
         <ul className="flex flex-col divide-y-[1px] *:pt-[5px] gap-[5px] text-gray-800 text-little font-semibold">
           <li className="flex w-full justify-between pr-[10%]">
-           <span>Company size</span>
+           <span>Company size:</span>
            <span>{data?.company_size}</span>
           </li>
 
           <li className="flex w-full justify-between pr-[10%]">
-           <span>Company Address</span>
+           <span>Company Address:</span>
            <span>{data?.address}</span>
           </li>
 
           <li className="flex w-full justify-between pr-[10%]">
-           <span>RC Number</span>
+           <span>RC Number:</span>
            <span>{data?.rc_number}</span>
           </li>
 
           <li className="flex w-full justify-between pr-[10%]">
-           <span>Sector</span>
+           <span>Sector:</span>
            <span>{data?.sector}</span>
           </li>
 
           <li className="flex w-full justify-between pr-[10%]">
-           <span>Incorperation Year</span>
+           <span>Year of Incorporation:</span>
            <span>{data?.year_of_incorporation}</span>
           </li>
 

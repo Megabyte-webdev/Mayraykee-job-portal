@@ -18,57 +18,63 @@ function ApplicateGridCard({ data }) {
   };
 //   console.log(data);
 
-  const getStatusComponent = () => {
-    switch (data?.status) {
-      case stages[0].name:
-        return (
-          <StatusCard
-            name={data?.status}
-            icon={AiFillClockCircle}
-            color={"bg-[#FFF6E9] text-red-300"}
-            iconColor="text-red-300"
-          />
-        );
-      case stages[1].name:
-        return (
-          <StatusCard
-            name={data.status}
-            icon={MdCheckCircle}
-            color={"bg-[#164CA9] text-white"}
-            iconColor="text-white"
-          />
-        );
-      case stages[2].name:
-        return (
-          <StatusCard
-            name={data.status}
-            icon={GiVideoConference}
-            color={"bg-[#FFCD68] text-black"}
-            iconColor="text-blue-50"
-          />
-        );
-      case stages[3].name.split("/")[0]:
-        return (
-          <StatusCard
-            name={data.status}
-            icon={MdCheckCircle}
-            color={"bg-[#47AA49] text-white"}
-            iconColor="text-blue-100"
-          />
-        );
-      case stages[3].name.split("/")[1]:
-        return (
-          <StatusCard
-            name={data.status}
-            icon={IoMdCloseCircle}
-            color={"bg-[#B22234] text-white"}
-            iconColor="text-red-100"
-          />
-        );
-      default:
-        return "Not Found";
-    }
-  };
+const getStatusComponent = () => {
+  switch (data?.status) {
+    case stages[0].name:
+      return (
+        <StatusCard
+          name={data?.status}
+          label={stages[0].label}
+          icon={AiFillClockCircle}
+          color={"bg-orange-500 text-white"}
+          iconColor="text-white"
+        />
+      );
+    case stages[1].name:
+      return (
+        <StatusCard
+          name={data.status}
+          label={stages[1].label}
+          icon={MdCheckCircle}
+          color={"bg-blue-500 text-white"}
+          iconColor="text-white"
+        />
+      );
+    case stages[2].name:
+      return (
+        <StatusCard
+          name={data.status}
+          label={stages[2].label}
+          icon={GiVideoConference}
+          color={"bg-yellow-500 text-black"}
+          iconColor="text-blue-50"
+        />
+      );
+    case stages[3].name.split("/")[0]:
+      return (
+        <StatusCard
+          name={data.status}
+          label={data.status}
+          icon={MdCheckCircle}
+          color={"bg-[#47AA49] text-white"}
+          iconColor="text-blue-100"
+        />
+      );
+    case stages[3].name.split("/")[1]:
+      return (
+        <StatusCard
+          name={data.status}
+          label={data.status}
+          icon={IoMdCloseCircle}
+          color={"bg-[#B22234] text-white"}
+          iconColor="text-red-100"
+        />
+      );
+    default:
+      return "Not Found";
+  }
+};
+
   return (
     <div className="flex flex-col rounded-md items-center border border-gray-400 p-5 gap-3">
       <span className="font-semibold text-green-800">{data.job_title}</span>

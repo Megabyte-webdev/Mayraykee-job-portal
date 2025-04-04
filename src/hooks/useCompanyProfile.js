@@ -3,6 +3,7 @@ import { axiosClient } from "../services/axios-client";
 import { set, get, del, keys } from "idb-keyval";
 import { FormatError } from "../utils/formmaters";
 import { AuthContext } from "../context/AuthContex";
+import { CompanyRouteContext } from "../context/CompanyRouteContext";
 import { onFailure } from "../utils/notifications/OnFailure";
 import { onSuccess } from "../utils/notifications/OnSuccess";
 
@@ -10,6 +11,9 @@ export const COMPANY_PROFILE_Key = "Company Profile Database";
 
 function useCompanyProfile() {
   const { authDetails } = useContext(AuthContext);
+  const { setGlobalDetails = () => {} } = useContext(CompanyRouteContext) ?? {};
+
+  
 
   const retrievalState = {
     init: 1,
@@ -60,6 +64,7 @@ function useCompanyProfile() {
       const response = await client.get(
         `/employer/getEmployer/${authDetails?.user.id}`
       );
+      setGlobalDetails({...response.data.details})
       if (response.data.details) {
         await set(COMPANY_PROFILE_Key, response.data.details);
         setDetails({
@@ -77,12 +82,12 @@ function useCompanyProfile() {
     }
   };
 
-  const mapToFormData = () => {
+  const mapToFormData = (data) => {
     const formData = new FormData();
     
-    Object.keys(details).forEach((current) => {
+    Object.keys(data).forEach((current) => {
       const key = current;
-      const val = details[current];
+      const val = data[current];
       
       if (val) {
         if (Array.isArray(val)) {
@@ -111,11 +116,12 @@ function useCompanyProfile() {
   };
   
 
+ 
   //Api request to update profile
-  const updateCompanyProfile = async (handleSuccess) => {
+  const updateCompanyProfile = async (newdetails, handleSuccess) => {
     setLoading(true);
     try {
-      const data = mapToFormData();
+      const data = mapToFormData(newdetails);
 
 
       const response = await client.post(
@@ -125,6 +131,7 @@ function useCompanyProfile() {
 
       //On success, save response data to index db
       setDetails({...details, ...response.data?.employer, beenRetreived: retrievalState.retrieved})
+      setGlobalDetails({...details, ...response.data?.employer})
       await set(COMPANY_PROFILE_Key, response.data?.employer);
       onSuccess({"message": "Profile Update", success:response?.message || "Successful"});
       handleSuccess();
@@ -163,6 +170,7 @@ function useCompanyProfile() {
             ...storedValue,
             beenRetreived: retrievalState.retrieved,
           });
+          setGlobalDetails({...storedValue})
         } else {
           await getProfileInfo();
         }
@@ -170,7 +178,6 @@ function useCompanyProfile() {
         FormatError(error, setError, "Index Error");
       }
     };
-
     initValue();
   }, []);
 

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
+import { formatDate } from "../../../utils/formmaters";
 function ListingRow({ data, applicants, isExclusive = false }) {
   const navigate = useNavigate();
 
@@ -14,7 +14,6 @@ function ListingRow({ data, applicants, isExclusive = false }) {
     });
   };
 
-  const formatDate = (date) => new Date(date).toLocaleDateString();
   
   return (
     <tr
@@ -24,7 +23,7 @@ function ListingRow({ data, applicants, isExclusive = false }) {
       {/* Job Title */}
       <td className="text-center py-[5px]">
         <div className="flex justify-center font-semibold items-center gap-[5px]">
-          <span>{data.job_title}</span>
+          <span>{data.job_title?.length > 20 ? `${data.job_title?.slice(0,20)}...`: data.job_title}</span>
         </div>
       </td>
 

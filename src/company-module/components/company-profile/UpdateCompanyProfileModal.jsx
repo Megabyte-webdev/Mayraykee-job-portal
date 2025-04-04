@@ -19,6 +19,7 @@ import FormButton from "../../../components/FormButton";
 import { resourceUrl } from "../../../services/axios-client";
 import Selector from "../../../components/Selector";
 import { JobContext } from "../../../context/JobContext";
+import { onFailure } from "../../../utils/notifications/OnFailure";
 export const basic_inputs = [
   {
     id: 1,
@@ -39,7 +40,7 @@ export const basic_inputs = [
   {
     id: 3,
     name: "phone_number",
-    label: "Company Phone",
+    label: "Company Phone No",
     required: true,
     type: "tel",
     placeholder: "Enter Company Phone",
@@ -83,7 +84,7 @@ export const basic_inputs = [
   {
     id: 9,
     name: "introduction_video_url",
-    label: "Intorduction video url",
+    label: "Introduction video URL",
     type: "text",
     required: false,
     placeholder: "https://www.example.com/video.mp4",
@@ -112,7 +113,7 @@ export const basic_inputs = [
   {
     id: 13,
     name: "profile_url",
-    label: "Profile Url",
+    label: "Profile URL",
     type: "text",
     required: false,
     placeholder: "https://www.example.com/profile",
@@ -148,14 +149,13 @@ function UpdateCompanyProfileModal({
   setIsOpen,
   onInit = false,
   companyHookProps,
-  plain=false
+  plain = false
 }) {
   const [displayPic, setDisplayPic] = useState("");
   const [socials, setSocials] = useState(["", "", "", ""]);
   const [companyProfile, setCompanyProfile] = useState();
   const {
     details,
-    setDetails,
     loading,
     onTextChange,
     updateCompanyProfile,
@@ -163,57 +163,65 @@ function UpdateCompanyProfileModal({
   } = companyHookProps;
   const { getSectors } = useContext(JobContext) ?? {};
 
+  const [newDetails, setNewDetails] = useState({});
   const [campaignPhotos, setCampaignPhotos] = useState([...details?.company_campaign_photos || []]);
   const [sectorList, setSectorList] = useState([]);
 
+useEffect(()=>{
+  if(isOpen){
+    setNewDetails(details)
+  }
+},[isOpen])
+  
 
-  const getCampaignPhotoURL = (e) => {
-    const { name } = e.target;
-    const files = e.target.files;
+ 
+const getCampaignPhotoURL = (e) => {
+  const { name } = e.target;
+  const files = e.target.files;
 
-    // Validate files
-    const validFiles = Array.from(files)?.filter(
-      (file) => file.type === "image/jpeg" || file.type === "image/png"
-    );
+  // Validate files
+  const validFiles = Array.from(files)?.filter(
+    (file) => file.type === "image/jpeg" || file.type === "image/png"
+  );
 
-    if (validFiles.length > 0) {
-      const updatedList = validFiles.map((file) => ({
-        url: URL.createObjectURL(file),
-        file,
-      }));
+  if (validFiles.length > 0) {
+    const updatedList = validFiles.map((file) => ({
+      url: URL.createObjectURL(file),
+      file,
+    }));
 
-      const updatedPhotos = [
-        ...(details?.company_campaign_photos || []),
-        ...updatedList,
-      ];
+    const updatedPhotos = [
+      ...(newDetails?.company_campaign_photos || []),
+      ...updatedList,
+    ];
 
-      const updatedFiles = [
-        ...(Array.isArray(details?.company_campaign_photos) ? details?.company_campaign_photos?.map((item) => item) : []),
-        ...updatedList.map((item) => item.file),
-      ];
+    const updatedFiles = [
+      ...(Array.isArray(newDetails?.company_campaign_photos) ? newDetails?.company_campaign_photos?.map((item) => item) : []),
+      ...updatedList.map((item) => item.file),
+    ];
 
-      setDetails((prevDetails) => ({
-        ...prevDetails,
-        [name]: updatedFiles,
-      }));
-      setCampaignPhotos(updatedPhotos);
+    setNewDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: updatedFiles,
+    }));
+    setCampaignPhotos(updatedPhotos);
+  } else {
+    alert("Please select a valid JPEG or PNG file.");
+  }
+};
 
-      console.log("Updated Campaign Photos:", updatedPhotos);
-    } else {
-      alert("Please select a valid JPEG or PNG file.");
-    }
-  };
+  
 
   useEffect(() => {
     const init = async () => {
       const jobSectors = await getSectors();
-      setSectorList(jobSectors || [])
+      setSectorList(jobSectors?.sort((a, b) => a?.name?.toLowerCase().localeCompare(b?.name?.toLowerCase())) || [])
     }
     init();
   }, [])
   useEffect(() => {
-    if (details?.company_campaign_photos?.length > 0) {
-      const newPhotos = details.company_campaign_photos
+    if (newDetails?.company_campaign_photos?.length > 0) {
+      const newPhotos = newDetails.company_campaign_photos
         .filter((file) => typeof file === "string" || file instanceof File) // Filter invalid entries
         .map((file) => ({
           url: typeof file === "string" ? `${resourceUrl}${file}` : URL.createObjectURL(file),
@@ -222,13 +230,13 @@ function UpdateCompanyProfileModal({
 
       setCampaignPhotos(newPhotos);
     }
-    //console.log(details)
-  }, [details]);
+    //console.log(newDetails)
+  }, [newDetails]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    updateCompanyProfile(() => {
+    updateCompanyProfile(newDetails, () => {
       setIsOpen(false);
     });
   };
@@ -251,7 +259,7 @@ function UpdateCompanyProfileModal({
     const updatedPhotos = campaignPhotos.filter((_, idx) => idx !== index);
 
     // Filter out the resourceUrl variable dynamically if present in the strings
-    setDetails((prevDetails) => ({
+    setNewDetails((prevDetails) => ({
       ...prevDetails,
       company_campaign_photos: updatedPhotos.map((photo) => {
         if (photo.file) {
@@ -270,7 +278,7 @@ function UpdateCompanyProfileModal({
   return (
     isOpen && (
       <div className={`h-full w-full text-gray-600 text-little flex justify-center items-center bg-gray-600/70 ${!plain && "fixed top-0 left-0 z-10"}`}>
-        <div className={`${plain ?"w-full h-full":"w-[90%] sm:max-w-[600px] h-[90%] rounded-[10px] border"} bg-white p-2 flex flex-col`}>
+        <div className={`${plain ? "w-full h-full" : "w-[90%] sm:max-w-[600px] h-[90%] rounded-[10px] border"} bg-white p-2 flex flex-col`}>
           {!plain && <IoMdCloseCircle
             onClick={() => setIsOpen(false)}
             className="text-lg place-self-end  cursor-pointer"
@@ -291,7 +299,7 @@ function UpdateCompanyProfileModal({
                     src={
                       displayPic
                         ? displayPic
-                        : `${resourceUrl}/${details?.logo_image}`
+                        : `${resourceUrl}/${newDetails?.logo_image}`
                     }
                   />
                   <input
@@ -300,7 +308,7 @@ function UpdateCompanyProfileModal({
                     type="file"
                     accept=".jpeg, .png, .jpg,"
                     onChange={(e) => {
-                      getImageURL(e, setDisplayPic, setDetails);
+                      getImageURL(e, setDisplayPic, setNewDetails);
                     }}
                     className="hidden"
                   />
@@ -311,7 +319,7 @@ function UpdateCompanyProfileModal({
                     <FaRegEdit />
                   </label>
                   <small className="text-xs text-gray-500">
-                File size should not exceed 1MB. </small>
+                    File size should not exceed 1MB. </small>
                 </div>
               </div>
 
@@ -320,19 +328,22 @@ function UpdateCompanyProfileModal({
                 current?.type !== "dropdown" ?
                   <BasicInput
                     data={current}
-                    details={details}
-                    onTextChange={onTextChange}
-                    key={current.id}
-                    required={current?.required}
+                    details={newDetails}
+                    onTextChange={(e) => setNewDetails({
+                      ...newDetails,
+                      [e.target.name]: e.target.value,
+                    })}
+                  key={current.id}
+                  required={current?.required}
                   /> : <label>
-                    <strong>{current.label}</strong>
-                    <Selector
-                      key={current.id}
-                      data={sectorList || []}
-                      selected={sectorList?.find(one => one.name === details?.sector) || null}
-                      setSelected={({ name }) => setDetails({ ...details, "sector": name })}
-                    />
-                  </label>
+                <strong>{current.label}</strong>
+                <Selector
+                  key={current.id}
+                  data={sectorList || []}
+                  selected={sectorList?.find(one => one.name === newDetails?.sector) || null}
+                  setSelected={({ name }) => setNewDetails({ ...details, "sector": name })}
+                />
+              </label>
               ))}
 
               {/* Company Profile Text Editor */}
@@ -342,9 +353,9 @@ function UpdateCompanyProfileModal({
                 <div className="flex flex-col gap-[3px] mb-[30px] w-full text-gray-600 justify-between ">
                   <ReactQuill
                     placeholder="Enter company details...."
-                    value={details?.company_profile}
+                    value={newDetails?.company_profile}
                     onChange={(text) =>
-                      setDetails({ ...details, company_profile: text })
+                      setNewDetails({ ...details, company_profile: text })
                     }
                   />
                 </div>
@@ -372,30 +383,30 @@ function UpdateCompanyProfileModal({
 
 
                 <section>
-                <div className="w-full min-h-[100px] flex gap-[5px] items-start border-dashed p-2 border overflow-x-auto">
-                  {campaignPhotos?.map((current, idx) => (
-                    <div
-                      key={idx}
-                      className="flex-shrink-0 relative h-[80px] w-[80px] border border-gray-300"
-                    >
-                      <img
-                        className="h-full w-full object-cover"
-                        src={current.url}
-                        alt={`Campaign ${idx}`}
-                      />
-                      <span
-                        onClick={() => handleRemovePhoto(idx)}
-                        className="absolute top-[-5px] right-[-5px] bg-red-500 font-bold text-white rounded-full w-5 h-5 flex items-center justify-center cursor-pointer"
+                  <div className="w-full min-h-[100px] flex gap-[5px] items-start border-dashed p-2 border overflow-x-auto">
+                    {campaignPhotos?.map((current, idx) => (
+                      <div
+                        key={idx}
+                        className="flex-shrink-0 relative h-[80px] w-[80px] border border-gray-300"
                       >
-                        <FaTimes size="12" />
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <small className="text-xs text-gray-500">
-                Images should not exceed 3MB. </small>
+                        <img
+                          className="h-full w-full object-cover"
+                          src={current.url}
+                          alt={`Campaign ${idx}`}
+                        />
+                        <span
+                          onClick={() => handleRemovePhoto(idx)}
+                          className="absolute top-[-5px] right-[-5px] bg-red-500 font-bold text-white rounded-full w-5 h-5 flex items-center justify-center cursor-pointer"
+                        >
+                          <FaTimes size="12" />
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <small className="text-xs text-gray-500">
+                    Images should not exceed 3MB. </small>
                 </section>
-                
+
 
               </div>
 
@@ -413,8 +424,8 @@ function UpdateCompanyProfileModal({
                       key={current?.id}
                       id={current?.id}
                       data={current}
-                      socials={details?.social_media}
-                      setSocials={setDetails}
+                      socials={newDetails?.social_media}
+                      setSocials={setNewDetails}
                     />
                   ))}
                 </div>

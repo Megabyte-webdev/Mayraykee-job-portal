@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import ViewVerifications from "../../components/verifications/ViewVerifications";
 import GuarantorForm from "../../components/verifications/GuarantorForm";
 import ResidenceForm from "../../components/verifications/ResidenceForm";
 import MedicalForm from "../../components/verifications/MedicalForm";
 import PoliceReport from "../../components/verifications/PoliceReport";
 import WorkExperience from "../../components/verifications/WorkExperience";
+import { StaffManagementContext } from "../../../context/StaffManagementModule";
 
 const options = [
   "Verification Status",
@@ -17,7 +18,9 @@ const options = [
 
 function Verifications() {
   const [option, setOption] = useState(options[0]);
-
+  const { getStaffProfile } = useContext(
+    StaffManagementContext
+  );
   const renderComponent = () => {
     switch (option) {
       case options[0]:
@@ -34,6 +37,9 @@ function Verifications() {
         return <WorkExperience />;
     }
   };
+  useEffect(()=>{
+      getStaffProfile()
+    },[])
 
   return (
     <div className="h-fit w-full py-5 px-2 md:px-12 gap-[15px] flex flex-col">

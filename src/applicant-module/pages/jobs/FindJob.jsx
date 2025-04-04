@@ -126,7 +126,7 @@ function FindJob() {
                 Select Location
                 </option>
               {State.getStatesOfCountry("NG").map((current) => (
-                <option value={current.name} id={current.name}>
+                <option key={current?.id} value={current.name} id={current.name}>
                   {current.name}
                 </option>
               ))}

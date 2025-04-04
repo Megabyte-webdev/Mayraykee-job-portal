@@ -25,23 +25,22 @@ const Settings = () => {
   };
 
   const user = authDetails?.user
-  const [active, setActive] = useState(user?.role==="employer" ? "profile": "notifications")
+  const [active, setActive] = useState("notifications")
   const handleActive = (event) => setActive(event);
   return (
     <div className="h-full text-[#25324b] w-full">
       <div className="mt-6">
         <div className="sticky top-0 flex border-b pt-4 bg-white z-50">
-          {user?.role === "employer" &&<button onClick={() => handleActive("profile")} className={`p-2 mx-3 border-green-700 ${active === "profile" ? "border-b-2 font-medium" : ""}`}>Company Profile</button>}
           <button onClick={() => handleActive("notifications")} className={`p-2 mx-3 border-green-700 ${active === "notifications" ? "border-b-2 font-medium" : ""}`}>Notifications</button>
+          {user?.role === "employer" && <button onClick={() => handleActive("profile")} className={`p-2 mx-3 border-green-700 ${active === "profile" ? "border-b-2 font-medium" : ""}`}>Company Profile</button>}
           {/* <button onClick={() => handleActive("notification")} className={`p-2 mx-3 border-green-700 ${active === "notification" ? "border-b-2 font-medium" : ""}`}>Notifications</button> */}
         </div>
         <div className="my-5 px-5">
-          {active === "profile" &&
-            <UpdateCompanyProfileModal
-              isOpen={true}
-              setIsOpen={setIsOpen}
-              plain={true}
-              companyHookProps={companyHookProps} />}
+          <UpdateCompanyProfileModal
+            isOpen={active === "profile"}
+            setIsOpen={setIsOpen}
+            plain={true}
+            companyHookProps={companyHookProps} />
           {active === "notifications" && (
             <div className="w-full py-2 flex flex-col gap-[20px]">
               <h1 className="font-semibold"> Notification Settings </h1>

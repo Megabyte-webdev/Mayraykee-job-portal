@@ -1,3 +1,5 @@
+import { formatDate } from "../../../utils/formmaters";
+
 function ApplicantProfile({ data, applicant }) {
   return (
     <div className="w-full flex flex-col items-center">
@@ -15,7 +17,7 @@ function ApplicantProfile({ data, applicant }) {
           <li className="flex flex-col">
             <span className="text-gray-800 text-sm">Date of Birth</span>
             <span className="font-semibold text-xs">
-              {applicant?.date_of_birth}
+              {formatDate(applicant?.date_of_birth)}
             </span>
           </li>
           <li className="flex flex-col">

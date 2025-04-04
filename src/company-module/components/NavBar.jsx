@@ -13,7 +13,7 @@ import { CompanyRouteContext } from "../../context/CompanyRouteContext";
 
 function NavBar({ state, toogleIsOpen, isMenuOpen }) {
   const navigate = useNavigate();
-  const { notifications, getNotifications } = useContext(NotificationContext);
+  const { notifications, getNotifications } = useContext(NotificationContext) || {};
   const [isOpen, setIsOpen] = useState(false);
   const [isSUbOpen, setIsSUbOpen] = useState(false);
   const { setSideBar } = useContext(CompanyRouteContext);

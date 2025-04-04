@@ -110,7 +110,7 @@ const Resume = () => {
             onDrop={handleDrop}
           >
             <FiUploadCloud className="w-10 h-10 text-gray-600" />
-            <span className="text-gray-600">Drag & Drop or Click to Upload</span>
+            <span className="text-gray-600">Click to Upload or Drag & Drop</span>
           </div>
 
           {/* Hidden File Input */}

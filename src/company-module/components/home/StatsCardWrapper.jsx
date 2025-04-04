@@ -5,12 +5,15 @@ import { CompanyRouteContext } from "../../../context/CompanyRouteContext";
 import { useNavigate } from "react-router-dom";
 import { JobContext } from "../../../context/JobContext";
 import { InterviewContext } from "../../../context/InterviewContext";
+import { ChatContext } from "../../../context/ChatContext";
+
 
 function StatsCardWrapper({ applicants }) {
   const { setSideBar } = useContext(CompanyRouteContext);
   const { interviews, getAllInterviews } = useContext(InterviewContext);
   const navigate = useNavigate();
-
+  const { hasNewMessage } = useContext(ChatContext);
+  
 
   return (
     <ul className="flex w-full justify-between h-[50px]">
@@ -30,6 +33,7 @@ function StatsCardWrapper({ applicants }) {
             navigate("/company/schedule");
           };
         } else{
+          value=Array.from({ length: hasNewMessage }, (_, i) => i + 1); // Convert number to array
           onClick = () => {
             setSideBar(1);
             navigate("/company/messages");

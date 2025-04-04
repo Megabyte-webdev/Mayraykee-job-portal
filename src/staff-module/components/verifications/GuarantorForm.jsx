@@ -6,6 +6,7 @@ import { AuthContext } from "../../../context/AuthContex";
 import { onFailure } from "../../../utils/notifications/OnFailure";
 import { onSuccess } from "../../../utils/notifications/OnSuccess";
 import { FormatError } from "../../../utils/formmaters";
+import ConfirmationPopUp from "./ConfirmationPopUp"; // Import the popup
 
 const formFields = [
   "surname",
@@ -36,6 +37,7 @@ function GuarantorForm() {
   const { authDetails } = useContext(AuthContext);
   const [currentGurantor, setCurrentGarantor] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const client = axiosClient(authDetails?.token);
 
   const {
@@ -60,7 +62,7 @@ function GuarantorForm() {
       console.log("Data", response.data);
       getGarantor();
       onSuccess({
-        message: "Guarantor uploaded",
+        message: "Guarantor Saved",
         success: "Submitted successfully, awaiting review",
       });
     } catch (error) {
@@ -68,6 +70,11 @@ function GuarantorForm() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleProceed = () => {
+    setIsPopupOpen(false);
+    handleSubmit(submitDetails)(); // Proceed with form submission
   };
 
   const guarantorFields = () => {
@@ -135,7 +142,10 @@ function GuarantorForm() {
 
       {typeof currentGurantor === "undefined" && !loading && (
         <form
-          onSubmit={handleSubmit(submitDetails)}
+           onSubmit={(e) => {
+            e.preventDefault();
+            setIsPopupOpen(true);
+          }}
           className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600"
         >
           <div className="flex flex-col gap-1">
@@ -188,9 +198,17 @@ function GuarantorForm() {
           </div>
 
           <div></div>
-          <FormButton loading={isLoading}>Upload Guarantor Details</FormButton>
+          <FormButton loading={isLoading}>Save Guarantor Details</FormButton>
         </form>
       )}
+
+      {/* Confirmation Popup */}
+      <ConfirmationPopUp
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onConfirm={handleProceed}
+        message="Ensure your details are correct before proceeding. If you need to make changes later, contact the admin."
+      />
     </div>
   );
 }

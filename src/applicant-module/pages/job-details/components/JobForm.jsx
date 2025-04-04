@@ -4,11 +4,12 @@ import axios from "axios";
 import { AuthContext } from '../../../../context/AuthContex'
 import { ResourceContext } from '../../../../context/ResourceContext'
 import { onSuccess } from '../../../../utils/notifications/OnSuccess';
+import { onFailure } from '../../../../utils/notifications/OnFailure';
 import { FcApproval } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { extractErrorMessage } from '../../../../utils/formmaters'
 const JobForm = ({ setIsOpen, getCandidate, job, resume, updateAllApplications }) => {
-const navigate=useNavigate();
+    const navigate = useNavigate();
     const { authDetails } = useContext(AuthContext)
 
     const [errorMsg, setErrorMsg] = useState(null)
@@ -92,16 +93,9 @@ const navigate=useNavigate();
             })
             .catch((error) => {
                 console.log(error)
-                if (error.response) {
-                    setErrorMsg(error.response.data.message)
-                    setShowMsg(true)
-                    setLoading(false);
-                } else {
-                    console.log(error)
-                    setErrorMsg(error.message)
-                    setShowMsg(true)
-                    setLoading(false);
-                }
+                onFailure({ message: "Job Application Failed!", error: extractErrorMessage(error) })
+                setLoading(false);
+
             });
     }
 
@@ -124,73 +118,73 @@ const navigate=useNavigate();
                     <div>
                         <div className="grid md:grid-cols-2 gap-3 mb-4">
                             {resume?.length > 0 ?
-                             resume?.map((item) => {
-                                const active = activeResume === item.id
-                                return (
-                                    <>
-                                        {/* <button
+                                resume?.map((item) => {
+                                    const active = activeResume === item.id
+                                    return (
+                                        <>
+                                            {/* <button
                                             onClick={() => handleActive(item.id)}
                                             key={item.id} className="p-3 rounded bg-green-300 relative">
                                             {item.title}
                                             <span className='absolute top-0'> {active && (<FcApproval />)}</span>
                                         </button> */}
-                                        <div
-                                            onClick={() => handleActive(item.id)}
-                                            key={item.id}
-                                            className={`p-4 cursor-pointer border relative rounded shadow-2xl justify-between flex-col flex ${active ? "bg-green-100" : ""}`}>
-                                            <div>
-                                                <div className="flex justify-between w-full">
-                                                    <p className="text-green-600 font-medium">{item.title}</p>
-                                                    <span className='absolute right-0 top-0'> {active && (<FcApproval size={30}/>)}</span>
-                                                </div>
-                                                <div className="details">
-                                                    <div className="flex justify-center mb-3">
-                                                        <div className='md:w-50'>
-                                                            <div className="mb-3">
-                                                                <img className='w-[100px] h-[100px] rounded-full'
-                                                                    src={`${IMAGE_URL}/${getCandidate?.details?.profile}`}
-                                                                    alt={`${getCandidate.details?.full_name} profile image`} />
+                                            <div
+                                                onClick={() => handleActive(item.id)}
+                                                key={item.id}
+                                                className={`p-4 cursor-pointer border relative rounded shadow-2xl justify-between flex-col flex ${active ? "bg-green-100" : ""}`}>
+                                                <div>
+                                                    <div className="flex justify-between w-full">
+                                                        <p className="text-green-600 font-medium">{item.title}</p>
+                                                        <span className='absolute right-0 top-0'> {active && (<FcApproval size={30} />)}</span>
+                                                    </div>
+                                                    <div className="details">
+                                                        <div className="flex justify-center mb-3">
+                                                            <div className='md:w-50'>
+                                                                <div className="mb-3">
+                                                                    <img className='w-[100px] h-[100px] rounded-full'
+                                                                        src={`${IMAGE_URL}/${getCandidate?.details?.profile}`}
+                                                                        alt={`${getCandidate.details?.full_name} profile image`} />
+                                                                </div>
+                                                                <h3 className="font-bold">{getCandidate.details?.full_name}</h3>
                                                             </div>
-                                                            <h3 className="font-bold">{getCandidate.details?.full_name}</h3>
                                                         </div>
-                                                    </div>
-                                                    <div className="grid md:grid-cols-3 gap-3 break-all">
-                                                        <div className="">
-                                                            <p className="font-bold">Address:</p>
-                                                            <p>{getCandidate.details?.address}</p>
+                                                        <div className="grid md:grid-cols-3 gap-3 break-all">
+                                                            <div className="">
+                                                                <p className="font-bold">Address:</p>
+                                                                <p>{getCandidate.details?.address}</p>
+                                                            </div>
+                                                            <div className="">
+                                                                <p className="font-bold">Phone:</p>
+                                                                <p>{getCandidate.details?.phone_number}</p>
+                                                            </div>
+                                                            <div className="">
+                                                                <p className="font-bold">Email:</p>
+                                                                <p className='break-words'>{getCandidate.details?.email}</p>
+                                                            </div>
                                                         </div>
-                                                        <div className="">
-                                                            <p className="font-bold">Phone:</p>
-                                                            <p>{getCandidate.details?.phone_number}</p>
+                                                        <div className="flex flex-wrap my-3 break-all">
+                                                            <div className="w-2/4">
+                                                                <p className="font-bold text-base">Employment</p>
+                                                                <p className="font-medium text-base">Position</p>
+                                                            </div>
+                                                            <div className="w-2/4">
+                                                                <p className="font-medium">{item.company_name}</p>
+                                                                <p className="">{item.position_held}</p>
+                                                                <p><span>{item.start_date}</span> - <span>{item.end_date}</span></p>
+                                                            </div>
                                                         </div>
-                                                        <div className="">
-                                                            <p className="font-bold">Email:</p>
-                                                            <p className='break-words'>{getCandidate.details?.email}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-wrap my-3 break-all">
-                                                        <div className="w-2/4">
-                                                            <p className="font-bold text-base">Employment</p>
-                                                            <p className="font-medium text-base">Position</p>
-                                                        </div>
-                                                        <div className="w-2/4">
-                                                            <p className="font-medium">{item.company_name}</p>
-                                                            <p className="">{item.position_held}</p>
-                                                            <p><span>{item.start_date}</span> - <span>{item.end_date}</span></p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-wrap break-all my-3">
-                                                        <div className="w-2/4">
-                                                            <p className="font-bold text-base">Education</p>
-                                                        </div>
-                                                        <div className="w-2/4">
-                                                            <p className="font-medium">{item.educational_institution}</p>
-                                                            <p><span>{item.year_of_entry}</span> - <span>{item.year_of_graduation}</span></p>
+                                                        <div className="flex flex-wrap break-all my-3">
+                                                            <div className="w-2/4">
+                                                                <p className="font-bold text-base">Education</p>
+                                                            </div>
+                                                            <div className="w-2/4">
+                                                                <p className="font-medium">{item.educational_institution}</p>
+                                                                <p><span>{item.year_of_entry}</span> - <span>{item.year_of_graduation}</span></p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {/* <div className=' w-full'>
+                                                {/* <div className=' w-full'>
                                                 {errorMsg && (
                                                     <div className="flex justify-center my-3">
                                                         <small className="text-red-700 text-center">{errorMsg}</small>
@@ -204,15 +198,15 @@ const navigate=useNavigate();
                                                     >{loading ? "Deleting" : "Delete"}</button>
                                                 </div>
                                             </div> */}
-                                        </div>
-                                    </>
-                                )
-                            }):(
-                                <div className="flex flex-col gap-2 items-center justify-center mx-auto">
-                                    <p className="text-sm tet-gray-700">Please you need to create a resume</p>
-                                    <Link to="/applicant/my-resume" className="rounde-md text-sm px-3 py-1 bg-green-600 text-white font-medium">Create Resume</Link>
-                                </div>
-                            )}
+                                            </div>
+                                        </>
+                                    )
+                                }) : (
+                                    <div className="flex flex-col gap-2 items-center justify-center mx-auto">
+                                        <p className="text-sm tet-gray-700">Please you need to create a resume</p>
+                                        <Link to="/applicant/my-resume" className="rounde-md text-sm px-3 py-1 bg-green-600 text-white font-medium">Create Resume</Link>
+                                    </div>
+                                )}
                         </div>
                         <form onSubmit={handleSubmit}>
                             <div className=" md:w-">

@@ -21,7 +21,7 @@ function ProfileHeader({ children, isOpen, setIsOpen, details }) {
       <div className="flex-shrink-0 w-full md:w-fit flex items-center justify-center relative p-4 md:my-2">
         <img
           className="h-[80px] w-[80px] rounded-full object-cover border-2"
-          src={details?.logo_image ? getImageURL(details?.logo_image) : wheelIcon}
+          src={details?.logo_image ? `${resourceUrl}/${details?.logo_image}` : wheelIcon}
           alt="Profile"
         />
       </div>
@@ -36,7 +36,7 @@ function ProfileHeader({ children, isOpen, setIsOpen, details }) {
             <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm">
               <span className="flex items-center gap-1">
                 <span>Email:</span>
-                <a href={`mailto:${details?.email}`} className="hover:underline">{details?.email}</a>
+                <a href={`mailto:${details?.email}`} className="hover:underline break-all">{details?.email}</a>
               </span>
               <hr className="hidden md:block w-px h-6 bg-gray-300" />
               <span className="flex items-center gap-1">
@@ -47,7 +47,7 @@ function ProfileHeader({ children, isOpen, setIsOpen, details }) {
 
             <span className="flex items-center gap-1 text-sm">
               <span>Profile URL:</span>
-              <a href={details?.profile_url} className="hover:underline" target="_blank" rel="noopener noreferrer">
+              <a href={details?.profile_url} className="hover:underline break-all" target="_blank" rel="noopener noreferrer">
                 {details?.profile_url}
               </a>
             </span>
@@ -63,7 +63,7 @@ function ProfileHeader({ children, isOpen, setIsOpen, details }) {
         </div>
 
         {/* Attributes Section */}
-        <ul className="flex flex-wrap w-full gap-4 p-4 border-t border-gray-200">
+        <ul className="grid grid-cols-1 md:grid-cols-2 w-full gap-4 p-4 border-t border-gray-200">
           {children}
         </ul>
       </div>

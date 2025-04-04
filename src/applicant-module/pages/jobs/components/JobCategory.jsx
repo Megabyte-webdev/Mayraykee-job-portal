@@ -11,7 +11,7 @@ const JobCategory = ({ setCategory }) => {
     useEffect(() => {
         const init = async () => {
             const jobSectors = await getSectors();
-            setSectorList(jobSectors || []);
+            setSectorList(jobSectors?.sort((a,b)=>a?.name?.toLowerCase().localeCompare(b?.name?.toLowerCase())) || []);
         };
         init();
     }, [getSectors]);

@@ -47,20 +47,31 @@ function Companies() {
   }, [getAllCompanies]);
   
 
-  const filteredData = companies.filter(({employer}) => {
-    const filteredSized = companySize ? employer?.company_size > companySize : true;
+  const filteredData = companies.filter(({ employer }) => {
+    // Function to check if employer.company_size falls within the selected companySize range
+    const filterSize = (companySize && employer?.company_size)
+      ? (
+          (companySize === "1-49" && employer.company_size >= 1 && employer.company_size <= 49) ||
+          (companySize === "50-249" && employer.company_size >= 50 && employer.company_size <= 249) ||
+          (companySize === "250+" && employer.company_size >= 250)
+        )
+      : true;
+  
     const filterIndustry = industry
       ? employer?.sector?.toLowerCase().includes(industry?.toLowerCase())
       : true;
+  
     const filterName = companyName
-      ? employer?.company_name.toLowerCase()?.includes(companyName?.toLowerCase())
+      ? employer?.company_name?.toLowerCase().includes(companyName?.toLowerCase())
       : true;
+  
     const filterLocation = selectedLocation
       ? employer?.location?.toLowerCase()?.includes(selectedLocation?.toLowerCase())
       : true;
-
-    return filterIndustry && filteredSized && filterName && filterLocation;
+  
+    return filterIndustry && filterSize && filterName && filterLocation;
   });
+  
 
   // console.log(companies?.filter(one=>one.employer !==null))
 
@@ -139,9 +150,9 @@ function Companies() {
                   </div>
                   <div className="flex">
                     <div className="flex mr-3">
-                      <span>Sorted by :</span>
+                      <span>Sorted by: </span>
                       <button className="flex">
-                        <span className="mr-2 font-medium items-center">
+                        <span className="mx-2 font-medium items-center">
                           Most relevant
                         </span>
                         {/* <span>

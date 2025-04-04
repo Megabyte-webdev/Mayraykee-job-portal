@@ -39,17 +39,17 @@ function useStaffRoute() {
   const navigate = useNavigate();
 
   const toogleIsOpen = () => setIsOpen(!isOpen);
-  const { pathname }=useLocation();
-  const options=[...staffOptions, ...staffUtilOptions]
+  const { pathname } = useLocation();
+  const options = [...staffOptions, ...staffUtilOptions]
   useEffect(() => {
-    const matchedOption = options.find((opt) => pathname===opt?.route);
+    const matchedOption = options.find((opt) => pathname === opt?.route);
     if (matchedOption) {
       dispatch(matchedOption);
-    }else{
-dispatch(options[0]);
+    } else {
+      dispatch(options[0]);
     }
   }, [pathname]);
-  
+
   const setSideBar = (index) => {
     const page = staffOptions[index];
     dispatch({ ...page });
@@ -120,12 +120,12 @@ dispatch(options[0]);
                     <Route index element={<Dashboard />} />
                     {/* <Route path="*" element={<NotFound />} /> */}
                     <Route path="profile" element={<Home />} />
-                    <Route path="verifications" element={withApplicationStatus(Verifications)} />
-                    <Route path="resume" element={withApplicationStatus(Resume)} />
+                    <Route path="verifications" element={<Verifications />} />
+                    <Route path="resume" element={<Resume />} />
                     <Route path="settings" element={<Settings />} />
                     <Route path="help-center" element={<HelpCenter />} />
-                                    <Route path="/blogs" element={<BlogList general={false} direct="/staff/" />} />
-                <Route path="/blogs/:id" element={<BlogRead general={false} />} />
+                    <Route path="/blogs" element={<BlogList general={false} direct="/staff/" />} />
+                    <Route path="/blogs/:id" element={<BlogRead general={false} />} />
                   </Routes>
                 </div>
               </div>

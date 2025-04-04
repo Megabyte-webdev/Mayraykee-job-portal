@@ -8,9 +8,11 @@ export const ChatContextProvider = ({ children }) => {
     loading,
     messages,
     sendMessage,
+    hasNewMessage,
     getMessages,
     setMessages,
     initFirebaseChatSession,
+    sendingMessage,
     firebaseMessaging,
   } = useChats();
   
@@ -23,7 +25,9 @@ export const ChatContextProvider = ({ children }) => {
         sendMessage,
         setMessages,
         getMessages,
+        hasNewMessage,
         initFirebaseChatSession,
+        sendingMessage,
         firebaseMessaging,
       }}
     >

@@ -30,7 +30,7 @@ function AllEmployers() {
     const employerDetails = item.employer || {};  
     
     return {
-      id: item.id,                                     
+      id: employerDetails.employer_id,                                     
       name: employerDetails.company_name,
       registered: new Date(item.created_at).toLocaleDateString('en-GB', {day: '2-digit', month:'2-digit', year:'numeric'}),
       profile: employerDetails.company_profile,

@@ -185,8 +185,15 @@ function ProfileForm({ setToMain }) {
   const [imageUrl, setImageUrl] = useState();
 
   const onSubmit = async (data) => {
-    setLoading(true);
 
+    if (!file && profileDetails?.profile_image == null) {
+      onFailure({
+        error: "Profile Image Required",
+        message: "Please upload a profile image before submitting.",
+      });
+      return
+    }
+    setLoading(true);
     // Filter out placeholder values from select fields
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(
@@ -215,8 +222,9 @@ function ProfileForm({ setToMain }) {
         error: "Failed to update",
         message: "Something went wrong",
       });
+      setLoading(false);
     }
-    setLoading(false);
+
   };
 
   // Guard clause to prevent rendering before profileDetails is loaded
@@ -224,37 +232,60 @@ function ProfileForm({ setToMain }) {
 
   const filterProfileDetails = profileDetails
     ? Object.keys(profileDetails)?.filter(
-        (currentKey) =>
-          currentKey !== "created_at" &&
-          currentKey !== "updated_at" &&
-          currentKey !== "id" &&
-          currentKey !== "staff_category" &&
-          currentKey !== "staff_category" &&
-          currentKey !== "guarantor_verification_status" &&
-          currentKey !== "residence_verification_status" &&
-          currentKey !== "medical_history_verification_status" &&
-          currentKey !== "police_report_verification_status" &&
-          currentKey !== "previous_employer_verification_status" &&
-          currentKey !== "family_verification_status" &&
-          currentKey !== "contact_information" &&
-          currentKey !== "subcategory" &&
-          currentKey !== "resume" &&
-          currentKey !== "availability_status" &&
-          currentKey !== "employment_type"
-      )
+      (currentKey) =>
+        currentKey !== "created_at" &&
+        currentKey !== "updated_at" &&
+        currentKey !== "id" &&
+        currentKey !== "staff_category" &&
+        currentKey !== "staff_category" &&
+        currentKey !== "guarantor_verification_status" &&
+        currentKey !== "residence_verification_status" &&
+        currentKey !== "medical_history_verification_status" &&
+        currentKey !== "police_report_verification_status" &&
+        currentKey !== "previous_employer_verification_status" &&
+        currentKey !== "family_verification_status" &&
+        currentKey !== "contact_information" &&
+        currentKey !== "subcategory" &&
+        currentKey !== "resume" &&
+        currentKey !== "availability_status" &&
+        currentKey !== "employment_type"
+    )
     : [];
 
   const toogleIsOpen = () => setIsOpen(!isOpen);
 
   const handleImageChange = (event) => {
     const imageFile = event.target.files[0];
+
     if (imageFile) {
+      // Validate file type
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!allowedTypes.includes(imageFile.type)) {
+        onFailure({
+          error: "File Type Error",
+          message: "Only JPG and PNG images are allowed.",
+        });
+        return ;
+      }
+
+      // Validate file size (should not exceed 1MB)
+      if (imageFile.size > 1024 * 1024) { // 1MB limit
+        alert("File size should not exceed 1MB.");
+        onFailure({
+          error: "File Size Error",
+          message: "File size should not exceed 1MB.",
+        });
+        return;
+      }
+
       setFile(imageFile);
       const url = URL.createObjectURL(imageFile);
       console.log("url", url);
       setImageUrl(url);
     }
   };
+
+
 
   return (
     <>
@@ -333,10 +364,12 @@ function ProfileForm({ setToMain }) {
                       </label>
                       <input
                         type="file"
+                        accept="image/jpeg, image/png, image/jpg"
                         id="profile-image"
-                        onChange={(e) => handleImageChange(e)}
+                        onChange={handleImageChange}
                         className="hidden"
                       />
+
                     </>
                   ) : (
                     <div>
@@ -350,6 +383,7 @@ function ProfileForm({ setToMain }) {
                       </label>
                       <input
                         type="file"
+                        accept="image/jpeg, image/png, image/jpg"
                         id="profile-image"
                         onChange={(e) => handleImageChange(e)}
                         className="hidden"
@@ -357,6 +391,8 @@ function ProfileForm({ setToMain }) {
                     </div>
                   )}
                 </div>
+                <small className="-mt-4 text-xs text-gray-500">
+                  File size should not exceed 1MB. </small>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-5">
                   {field_sections.primary?.map((currentKey) => {
                     const detail = profileDetails[currentKey.field_name];
@@ -372,7 +408,7 @@ function ProfileForm({ setToMain }) {
                         </label>
                         {currentKey.type !== "select" ? (
                           <input
-                          required
+                            required
                             className="p-1 border focus:outline-none border-gray-900  rounded-md"
                             type={inputType}
                             defaultValue={detail}
@@ -380,7 +416,7 @@ function ProfileForm({ setToMain }) {
                           />
                         ) : (
                           <select
-                          required
+                            required
                             className="p-1 border focus:outline-none border-gray-900  rounded-md"
                             type={inputType}
                             defaultValue={detail}

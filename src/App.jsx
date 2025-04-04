@@ -48,78 +48,76 @@ function App() {
                   <JobContextProvider>
                     <InterviewContextProvider>
                       <NotificationContextProvider>
-                      <ToastContainer autoClose={2000} draggable />
+                        <ToastContainer autoClose={2000} draggable />
                         <Suspense fallback={<FallBack />}>
                           <Router>
-                            <SessionContextProvider>
-                              <Routes>
-                                <Route path="/login" element={<Login />} />
-                                <Route 
-  path="/admin/login" 
-  element={
-    <div className="px-2 md:px-5 lg:px-8">
-      <AdminLogin />
-    </div>
-  } 
-/>
-                              
-                      
-                                <Route
-                                  path="/super/admin/otp-verification"
-                                  element={<AdminOTP />}
-                                />
-
-                                {/* <Route path="/registration" element={<Registration />} /> */}
+                            <Routes>
+                              <Route path="/login" element={<Login />} />
+                              <Route
+                                path="/admin/login"
+                                element={
+                                  <div className="px-2 md:px-5 lg:px-8">
+                                    <AdminLogin />
+                                  </div>
+                                }
+                              />
 
 
-                                {/* Dashboard Routes using the dashboard hook */}
-                                {/* Other Routes can go here using thier hook e.g adminDashboardRoute */}
-                                <Route
-                                  path="/*"
-                                  element={<PublicRoutes />}
-                                />
-                                <Route
-                                  path="/applicant/*"
-                                  element={<ApplicantRoutes />}
-                                />
-                                <Route
-                                  path="/registration/*"
-                                  element={<RegistrationRoute />}
-                                />
-                                <Route
-                                  path="/company/*"
-                                  element={<CompanyRoutes />}
-                                />
-                                <Route
-                                  path="/staff/*"
-                                  element={<StaffRoutes />}
-                                />
-                                <Route
-                                  path="/admin/*"
-                                  element={<AdminRoutes />}
-                                />
+                              <Route
+                                path="/super/admin/otp-verification"
+                                element={<AdminOTP />}
+                              />
 
-                                <Route
-                                  path="/admin-exclusives/*"
-                                  element={<AdminExclusivesRoute />}
-                                />
+                              {/* <Route path="/registration" element={<Registration />} /> */}
 
-                                <Route
-                                  path="/interview-room"
-                                  element={<InterviewRoom />}
-                                />
-                                <Route
-                                  path="/forgot-password"
-                                  element={<ForgotPassword />}
-                                />
 
-                              </Routes>
-                            </SessionContextProvider>
+                              {/* Dashboard Routes using the dashboard hook */}
+                              {/* Other Routes can go here using thier hook e.g adminDashboardRoute */}
+                              <Route
+                                path="/*"
+                                element={<PublicRoutes />}
+                              />
+                              <Route
+                                path="/applicant/*"
+                                element={<ApplicantRoutes />}
+                              />
+                              <Route
+                                path="/registration/*"
+                                element={<RegistrationRoute />}
+                              />
+                              <Route
+                                path="/company/*"
+                                element={<CompanyRoutes />}
+                              />
+                              <Route
+                                path="/staff/*"
+                                element={<StaffRoutes />}
+                              />
+                              <Route
+                                path="/admin/*"
+                                element={<AdminRoutes />}
+                              />
+
+                              <Route
+                                path="/admin-exclusives/*"
+                                element={<AdminExclusivesRoute />}
+                              />
+
+                              <Route
+                                path="/interview-room"
+                                element={<InterviewRoom />}
+                              />
+                              <Route
+                                path="/forgot-password"
+                                element={<ForgotPassword />}
+                              />
+
+                            </Routes>
                           </Router>
                         </Suspense>
                       </NotificationContextProvider>
                     </InterviewContextProvider>
-                    
+
                   </JobContextProvider>
                 </ApplicationContextProvider>
               </ChatContextProvider>

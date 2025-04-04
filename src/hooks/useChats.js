@@ -9,8 +9,11 @@ function useChats() {
   const { authDetails } = useContext(AuthContext);
   const client = axiosClient(authDetails?.token, true);
   const [loading, setLoading] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState(false); // Separate loader for sending messages
   const [details, setDetails] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [hasNewMessage, setHasNewMessage] = useState(false); // Track new messages
+  
   const [error, setError] = useState({
     message: "",
     error: "",
@@ -22,18 +25,44 @@ function useChats() {
   };
 
   const sendMessage = async (message, onSuccess) => {
-    setLoading(true);
+    setSendingMessage(true);
     try {
       const { data } = await client.post("/messages/send", message);
-      getMessages(message.receiver_id, onSuccess);
+       // Call onSuccess first to clear the input immediately
+    onSuccess();
+      
+    // Then fetch updated messages
+    getMessages(message.receiver_id, () => {});
     } catch (error) {
       FormatError(error);
     } finally {
-      setLoading(false);
+      setSendingMessage(false);
     }
   };
 
- 
+  const checkUnreadMessages = async () => {
+    try {
+      const { data } = await client.get(
+        `/messages/unread/${authDetails?.user?.id}/${authDetails?.user?.role === "employer" ? "employer" : "candidate"}`
+      );
+      setHasNewMessage(data.unread_messages_count); // Ensure API returns a boolean
+    } catch (error) {
+
+    } 
+  };
+  
+  useEffect(() => {
+    if (!authDetails?.user?.id) return;
+  
+    checkUnreadMessages(); // Initial fetch
+  
+    const interval = setInterval(() => {
+      checkUnreadMessages(); // Polling every 30 seconds
+    }, 10000);
+  
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [authDetails?.user?.id]); // Runs only when user ID changes
+  
 
   const deleteJob = async (handleSuccess, jobId) => {
     setLoading(true);
@@ -81,7 +110,7 @@ function useChats() {
     let employerId;
     let candidateId;
     let messageData = {};
-    console.log(receiverId);
+    // console.log(receiverId);
     if (authDetails.user.role === "employer") {
       path = `employer-${authDetails.user.id}-candidate-${receiverId}`;
       employerId = authDetails.user.id;
@@ -96,7 +125,6 @@ function useChats() {
     set(messageRef, message);
     onValue(messageRef, (snapshot) => {
       const data = snapshot.val();
-      console.log("Message Data", data);
     });
   };
 
@@ -123,6 +151,8 @@ function useChats() {
     }
   };
 
+
+
   return {
     loading,
     messages,
@@ -132,8 +162,10 @@ function useChats() {
     sendMessage,
     deleteJob,
     getMessages,
+    hasNewMessage,
     //Firebase Integrations
     initFirebaseChatSession,
+    sendingMessage,
     firebaseMessaging,
   };
 }

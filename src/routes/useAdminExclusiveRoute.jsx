@@ -1,5 +1,5 @@
 import { lazy, useContext, useEffect, useReducer, useState } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate, Navigate } from "react-router-dom";
 import {
   adminExclusiveOptions,
   adminExclusiveUtil,
@@ -83,6 +83,7 @@ function useAdminRoute() {
 
   return (
     <>
+    {authDetails?.user?.role === "admin" ? (
       <AdminExclusiveManagementContextProvider>
         <main className="h-screen w-screen relative flex">
           {/* Conditionally render the sidebar */}
@@ -151,6 +152,9 @@ function useAdminRoute() {
           </div>
         </main>
       </AdminExclusiveManagementContextProvider>
+    ) : (
+        <Navigate to={"/admin/login"} replace />
+      )}
     </>
   );
 }

@@ -15,7 +15,6 @@ function MessageHead({current, selectedChat, setSelectedChat}) {
   } = useContext(ChatContext);
 
   const watchOnlineStatus = (currentEmployer) => {
-    console.log(current);
     const onlineStatusRef = ref(
       database,
       "online-status/" + `employer-${currentEmployer.employer_id}`

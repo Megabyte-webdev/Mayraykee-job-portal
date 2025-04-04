@@ -58,7 +58,7 @@ function CartedStaffs() {
 
   //cart items from api
   const getCartItems = async () => {
-    const type = data.type
+    const type = data?.type
     try {
       const { data } = await client.post("staff-cart/get", {
         user_id: authDetails.user.id,
@@ -336,7 +336,7 @@ function CartedStaffs() {
         )}
 
         {/* Contract Details & Market place*/}
-        <MarketPlace handleAddToCart={handleAddToCart} />
+        <MarketPlace handleAddToCart={handleAddToCart} handleRemoveCart={handleRemoveCart} cartItems={cartItems} />
       </div>
     </>
   );

@@ -6,7 +6,7 @@ import useSubscription from "../hooks/useSubscription";
 import { AuthContext } from "../context/AuthContex";
 function SubscriptionOffer() {
   const { authDetails } = useContext(AuthContext);
-  const { activePackage } = useContext(SubscriptionContext);
+  const { activePackage } = useContext(SubscriptionContext) ?? {};
   const [isOpen, setIsOpen] = useState(false);
   
   return (

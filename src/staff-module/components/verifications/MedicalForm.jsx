@@ -8,6 +8,7 @@ import { onFailure } from "../../../utils/notifications/OnFailure";
 import { AuthContext } from "../../../context/AuthContex";
 import { axiosClient, resourceUrl } from "../../../services/axios-client";
 import { toast } from "react-toastify";
+import ConfirmationPopUp from "./ConfirmationPopUp"; // Import the popup
 
 const formFields = ["hospital_name", "contact_detail"];
 
@@ -29,6 +30,7 @@ function MedicalForm() {
   });
 
   const [medicalFiles, setMedicalFiles] = useState([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const getMedicalRecords = (e) => {
     const { name } = e.target;
@@ -64,15 +66,20 @@ function MedicalForm() {
   };
 
   const submitDetails = async (data) => {
-    console.log(medicalFiles[0]);
     setIsLoading(true);
+     if (medicalFiles?.length < 1) {
+      onFailure({
+        error: "Police Report Required",
+        message: "Please upload a report before submitting.",
+      });
+      return
+    }
     try {
       const response = await client.post("/domesticStaff/medical-history", {
         ...data,
         medical_report_docs: medicalFiles[0].file,
         domestic_staff_id: authDetails.user.id,
       });
-      console.log("Data", response.data);
       getCurrentRecord();
       onSuccess({
         message: "Residence info uploaded",
@@ -83,6 +90,10 @@ function MedicalForm() {
     } finally {
       setIsLoading(false);
     }
+  };
+  const handleProceed = () => {
+    setIsPopupOpen(false);
+    handleSubmit(submitDetails)(); // Proceed with form submission
   };
 
   const recordFields = () => {
@@ -168,7 +179,10 @@ function MedicalForm() {
 
       {typeof currentRecord === "undefined" && !loading && (
         <form
-          onSubmit={handleSubmit(submitDetails)}
+          onSubmit={(e) => {
+            e.preventDefault();
+            setIsPopupOpen(true);
+          }}
           className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600"
         >
           {formFields.map((currentKey) => {
@@ -217,6 +231,13 @@ function MedicalForm() {
           <FormButton loading={isloading}>Upload Medical Details</FormButton>
         </form>
       )}
+       {/* Confirmation Popup */}
+       <ConfirmationPopUp
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onConfirm={handleProceed}
+        message="Ensure your details are correct before proceeding. If you need to make changes later, contact the admin."
+      />
     </div>
   );
 }

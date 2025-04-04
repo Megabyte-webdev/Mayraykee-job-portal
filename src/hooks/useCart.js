@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContex";
 import { axiosClient } from "../services/axios-client";
 import { onFailure } from "../utils/notifications/OnFailure";
 import { onSuccess } from "../utils/notifications/OnSuccess";
-const PUBLIC_KEY = import.meta.env.VITE_TEST_PUBLIC_KEY;
+import { extractErrorMessage } from "../utils/formmaters";
 
 function useCart() {
   const { authDetails } = useContext(AuthContext);
@@ -28,7 +28,7 @@ function useCart() {
       reference: new Date().getTime().toString(),
       email: authDetails?.user?.email,
       amount: priceInKobo,
-      publicKey: PUBLIC_KEY,
+      publicKey: import.meta.env.VITE_LIVE_PUBLIC_KEY,
       text: "Paystack Button Implementation",
       onSuccess: (reference) => handleSuccess(reference, data, getCartItems),
       onClose: onClose,
@@ -60,7 +60,7 @@ function useCart() {
     } catch (error) {
       onFailure({
         message: "Collection Failed",
-        error: "Failed to add to collection",
+        error: extractErrorMessage(error),
       });
     }
   };
@@ -80,7 +80,7 @@ function useCart() {
     } catch (error) {
       onFailure({
         message: "Collection Failed",
-        error: "Failed to add to collection",
+        error: extractErrorMessage(error),
       });
       console.log(error);
     }
@@ -101,7 +101,7 @@ function useCart() {
     } catch (error) {
       onFailure({
         message: "Cart Failed",
-        error: "Failed to remove staff from cart",
+        error: extractErrorMessage(error),
       });
     }
   };

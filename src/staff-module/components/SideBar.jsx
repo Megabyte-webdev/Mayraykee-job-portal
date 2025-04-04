@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import mainLogoTwo from "../../assets/pngs/main-logo-icon.png";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdAccountCircle } from "react-icons/md";
 import { ResourceContext } from "../../context/ResourceContext";
 import { IMAGE_URL } from "../../utils/base";
+import { StaffManagementContext } from "../../context/StaffManagementModule";
 
 function SideBar({ children, authDetails, toogleIsOpen, isMenuOpen }) {
-  const imgUrl=authDetails?.user?.profile_image
-  const [greenSectionHeight, setGreenSectionHeight] = useState(160); // Default height in pixels
   
+   const { profileDetails } = useContext(
+      StaffManagementContext
+    );
   return (
     <>
       {/* Desktop Sidebar */}
@@ -19,7 +21,7 @@ function SideBar({ children, authDetails, toogleIsOpen, isMenuOpen }) {
         <nav
           className="flex flex-col gap-[20px] divide-y-2 overflow-y-auto"
           style={{
-            maxHeight: `calc(100vh - ${greenSectionHeight + 10}px)`,
+            maxHeight: `calc(100vh - ${160 + 10}px)`,
           }}
         >
           {children[0]}
@@ -40,34 +42,34 @@ function SideBar({ children, authDetails, toogleIsOpen, isMenuOpen }) {
         </div>
 
         {/* User Info */}
-        <div className="absolute bottom-0 left-0 p-2 flex gap-[5px] items-end w-full">
+        <div className="absolute bottom-0 left-0 p-2 flex gap-[5px] items-end w-[220px]">
           <div className="flex-1 flex flex-col truncate">
             <span className="text-secondaryColor text-sm truncate">
-              {`${authDetails?.user?.first_name || "N/A"} ${
-                authDetails?.user?.surname || "N/A"
-              }`}
+              {`${profileDetails?.first_name || "N/A"} ${profileDetails?.surname || "N/A"
+                }`}
             </span>
             <span className="text-gray-300 text-[11px] truncate">
-              {authDetails?.user?.email || "N/A"}
+              {profileDetails?.email || "N/A"}
             </span>
           </div>
-          <img
-            src={
-              imgUrl
-                ? `${IMAGE_URL}/${imgUrl}`
-                : "https://via.placeholder.com/150"
-            }
-            className="h-[60px] w-[60px] rounded-full bg-secondaryColor object-cover"
-            alt="User"
-          />
+
+          <figure className="h-[60px] w-[60px] rounded-full overflow-hidden bg-secondaryColor object-cover flex items-center justify-center">
+          {!profileDetails?.profile_image ?
+            <MdAccountCircle size={45} />
+            :
+            <img
+              src={`${IMAGE_URL}/${profileDetails?.profile_image}`}
+              alt="User"
+              className="h-[60px] w-[60px] rounded-full object-cover"
+            />}
+            </figure>
         </div>
       </aside>
 
       {/* Mobile Sidebar */}
       <aside
-        className={`h-screen ${
-          isMenuOpen ? "left-0" : "left-[-100%]"
-        } w-[300px] absolute z-[999] h-screen bg-secondaryColor px-2 pb-2 flex flex-col overflow-hidden`}
+        className={`h-screen ${isMenuOpen ? "left-0" : "left-[-100%]"
+          } w-[300px] absolute z-[999] h-screen bg-secondaryColor px-2 pb-2 flex flex-col overflow-hidden`}
       >
         {/* Close Button and Logo */}
         <div className="flex items-center gap-[10px]">
@@ -103,26 +105,26 @@ function SideBar({ children, authDetails, toogleIsOpen, isMenuOpen }) {
         </div>
 
         {/* User Info */}
-        <div className="absolute bottom-0 right-3 p-2 flex gap-3 items-end">
+        <div className="absolute bottom-0 right-3 p-2 flex gap-3 items-end w-[270px]">
           <div className="flex flex-col truncate">
             <span className="text-secondaryColor text-sm truncate">
-              {`${authDetails?.user?.first_name || "N/A"} ${
-                authDetails?.user?.surname || "N/A"
-              }`}
+              {`${profileDetails?.first_name || "N/A"} ${profileDetails?.surname || "N/A"
+                }`}
             </span>
             <span className="text-gray-300 text-[11px] truncate">
-              {authDetails?.user?.email || "N/A"}
+              {profileDetails?.email || "N/A"}
             </span>
           </div>
-          <img
-            src={
-              imgUrl
-                ? `${IMAGE_URL}/${imgUrl}`
-                : "https://via.placeholder.com/150"
-            }
-            className="h-[70px] w-[70px] rounded-full bg-primaryColor object-cover"
-            alt="User"
-          />
+          <figure className="h-[60px] w-[60px] rounded-full overflow-hidden bg-secondaryColor object-cover flex items-center justify-center">
+          {!profileDetails?.profile_image ?
+            <MdAccountCircle size={45} />
+            :
+            <img
+              src={`${IMAGE_URL}/${profileDetails?.profile_image}`}
+              alt="User"
+              className="h-[60px] w-[60px] rounded-full object-cover"
+            />}
+            </figure>
         </div>
       </aside>
     </>

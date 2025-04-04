@@ -40,10 +40,8 @@ function Artisan() {
       const { data } = await client.get(
         `/domesticStaff/get-staff?staff_category=artisan&${dataToPost}`
       );
-      console.log(data);
       setSearcResult(data.domesticStaff);
     } catch (error) {
-      console.log(error);
       onFailure({
         message: "Artisan Error",
         error: "Failed to retrieve items/query is empty",
@@ -57,7 +55,6 @@ function Artisan() {
 
   const handleCondition = (data, hasCategory) => {
     if (hasCategory) {
-      console.log("Data", data);
       setConditions(true);
       setQueryParams(data);
     } else {

@@ -34,7 +34,6 @@ function DomesticStaff() {
         `/domesticStaff/get-staff?staff_category=staff&${directParams ? directParams : queryParams
         }`
       );
-      console.log(data);
       setSearcResult(data.domesticStaff);
     } catch (error) {
       onFailure({
@@ -64,7 +63,6 @@ function DomesticStaff() {
 
   const handleCondition = (data, hasCategory) => {
     if (hasCategory) {
-      console.log("Data", data);
       setConditions(true);
       setQueryParams(data);
     } else {

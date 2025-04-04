@@ -34,9 +34,9 @@ const CompanyGridCard = ({ newApplicant, company }) => {
                         <button className="mr-2 mt-2 py-1 px-2 border-green-500 rounded-full bg-white hover:bg-green-100 text-green-700 border transition-all hover:scale-105">
                             {company.sector}
                         </button>
-                        <button className="mr-2 mt-2 py-1 px-2 rounded-full bg-green-100 hover:bg-white text-green-700 border transition-all hover:scale-105">
+                        {company?.network && <button className="mr-2 mt-2 py-1 px-2 rounded-full bg-green-100 hover:bg-white text-green-700 border transition-all hover:scale-105">
                             {company.network}
-                        </button>
+                        </button>}
                     </div>
                 </div>
             </div>

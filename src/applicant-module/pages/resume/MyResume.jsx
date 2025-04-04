@@ -30,6 +30,7 @@ const MyResume = () => {
         academy_name: "",
         year_of_entry: "",
         year_of_graduation: "",
+        academy_year_of_graduation:"",
         company_name: "",
         position_held: "",
         start_date: "",
@@ -244,7 +245,7 @@ const MyResume = () => {
                                         <div className='mb-5'>
                                             <label className="block">
                                                 <span className="block font-medium text-slate-700">Year Of Graduation</span>
-                                                <input onChange={handleOnChange} type="text" value={details.year_of_graduation} name='year_attended' placeholder=' Academy Title'
+                                                <input onChange={handleOnChange} type="text" value={details.academy_year_of_graduation} name='academy_year_of_graduation' placeholder=' Academy Title'
                                                     className="mt-1 block p-2 focus:outline-none w-full border" />
                                             </label>
                                         </div>

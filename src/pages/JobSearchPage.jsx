@@ -8,6 +8,7 @@ import Footer from "../components/Landing/Footer";
 import useJobManagement from "../hooks/useJobManagement";
 import { Helmet } from "react-helmet";
 import { Link } from 'react-router-dom'
+import { parseHtml } from "../utils/formmaters";
 
 const JobSearchPage = () => {
   const { getEmployentTypes, getCurrencies, getSectors } = useJobManagement();
@@ -221,7 +222,7 @@ const JobSearchPage = () => {
                             key={job.id}
                             className="flex flex-col bg-white p-6 shadow-md rounded-md border"
                           >
-                            <h3 className="text-lg font-bold text-green-800">
+                            <h3 className="text-lg font-bold text-green-800 capitalize">
                               {job.job_title}
                             </h3>
                             <p className="text-gray-600 text-sm font-medium">
@@ -238,10 +239,7 @@ const JobSearchPage = () => {
                             <p className="flex gap-x-2">
                               <strong>Experience:</strong>{" "}
                               <span
-                                dangerouslySetInnerHTML={{
-                                  __html: job?.experience?.slice(0,60),
-                                }}
-                              ></span>
+                              >{parseHtml(job?.experience?.slice(0,60))}</span>
                             </p>
                             <p className="mb-2">
                               <strong>Application Deadline:</strong>{" "}

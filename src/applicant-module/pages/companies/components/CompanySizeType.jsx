@@ -19,49 +19,25 @@ const CompanySizeType = ({setCompanySize}) => {
                         setSelectedValue={setCompanySize}
                         values={{
                             name: "comapnySize",
-                            value: "",
-                            label: "Undo",
-                            id: "sizeNil"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setCompanySize}
-                        values={{
-                            name: "comapnySize",
-                            value: "50",
-                            label: "50-100",
-                            id: "50"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setCompanySize}
-                        values={{
-                            name: "comapnySize",
-                            value: "100",
-                            label: "101-150",
+                            value: "1-49",
+                            label: "Small",
                             id: "101"
                         }} />
                         <CustomizedCheckbox 
                         setSelectedValue={setCompanySize}
                         values={{
                             name: "comapnySize",
-                            value: "151",
-                            label: "151-250",
+                            value: "50-249",
+                            label: "Medium",
                             id: "151"
                         }} />
                         <CustomizedCheckbox 
                         setSelectedValue={setCompanySize}
                         values={{
                             name: "comapnySize",
-                            value: "251",
-                            label: "251-500",
+                            value: "250+",
+                            label: "Large",
                             id: "251"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setCompanySize}
-                        values={{
-                            name: "comapnySize",
-                            value: "501",
-                            label: "501-1000",
-                            id: "501"
                         }} />
                     </div>
                 )}

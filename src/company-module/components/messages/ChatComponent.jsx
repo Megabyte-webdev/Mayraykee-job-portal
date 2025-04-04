@@ -18,7 +18,7 @@ function ChatComponent({ selectedChat, setSelectedChat, applicationUtils }) {
   const [message, setMessage] = useState("");
 
   const { details } = useCompanyProfile();
-  const { loading, messages, sendMessage, setMessages, getMessages, firebaseMessaging } =
+  const { loading, sendingMessage, messages, sendMessage, setMessages, getMessages, firebaseMessaging } =
     useContext(ChatContext);
 
   const onSendButtonClick = () => {
@@ -178,7 +178,7 @@ function ChatComponent({ selectedChat, setSelectedChat, applicationUtils }) {
               onClick={onSendButtonClick}
               className="h-fit p-2 w-8 flex justify-center items-center bg-primaryColor text-white rounded-md"
             >
-              {loading ? (
+              {sendingMessage ? (
                 <BiLoaderCircle className="animate-spin text-white" />
               ) : (
                 <img src={sendIcon} alt="Send" title="send" className="h-[15px]" />

@@ -19,7 +19,10 @@ function LoginForm() {
   const navigate = useNavigate();
   const { loginDetails, loginUser, loading, onTextChange } = useLogin(role);
   const [showPassword, setShowPassword] = useState(false);
-  const {rememberMe, toogleRememberMe} = useContext(SessionContext)
+  const [rememberMe, setRememberMe] = useState(false);
+  const toggleRememberMe = () => {
+    setRememberMe((prev) => !prev);
+  };
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
@@ -56,46 +59,42 @@ function LoginForm() {
           Login to your Account
         </h3>
         <span className="font-meduim text-center w-[60%] md:w-[90%] text-gray-200 md:text-gray-400 text-[12px] md:text-[11px]">
-          Explore & manage job different job opportunities 
+          Explore & manage job different job opportunities
         </span>
         <div className="grid grid-cols-2 w-full md:mt-10 gap-[10px] text-sm font-semibold">
           <button
             onClick={() => setRole("candidate")}
-            className={`px-2 py-1 text-little ${
-              role === "candidate"
+            className={`px-2 py-1 text-little ${role === "candidate"
                 ? "scale-[103%] shadow-sm shadow-black md:text-primaryColor text-white  border bg-white/30 md:bg-primaryColor/30"
                 : "md:text-white text-gray-500 bg-white md:bg-primaryColor border-0"
-            }`}
+              }`}
           >
             Corporate Candidate
           </button>
           <button
             onClick={() => setRole("employer")}
-            className={`px-2 py-1 text-little ${
-              role === "employer"
+            className={`px-2 py-1 text-little ${role === "employer"
                 ? "scale-[103%] shadow-sm shadow-black md:text-lightblue text-white  border bg-lightblue/30"
                 : "md:text-white text-gray-500 bg-white md:bg-lightblue border-0"
-            }`}
+              }`}
           >
             Corporate Employer
           </button>
           <button
             onClick={() => setRole("artisan")}
-            className={`px-2 py-1 text-little ${
-              role === "artisan"
+            className={`px-2 py-1 text-little ${role === "artisan"
                 ? "scale-[103%] shadow-sm shadow-black md:text-darkblue text-white  border bg-darkblue/30"
                 : "md:text-white text-gray-500 bg-white md:bg-darkblue border-0"
-            }`}
+              }`}
           >
             Artisan
           </button>
           <button
             onClick={() => setRole("staff")}
-            className={`px-2 py-1 text-little ${
-              role === "staff"
+            className={`px-2 py-1 text-little ${role === "staff"
                 ? "scale-[103%] shadow-sm shadow-black md:text-lightorange text-white  border bg-lightorange/30"
                 : "md:text-white text-gray-500 bg-white md:bg-lightorange border-0"
-            }`}
+              }`}
           >
             Domestic Staff
           </button>
@@ -126,7 +125,7 @@ function LoginForm() {
               value={loginDetails.password}
               onChange={onTextChange}
               required
-               placeholder="Enter your password"
+              placeholder="Enter your password"
               className="w-[90%] h-full placeholder:text-md text-sm md:bg-white/0 focus:outline-none text-gray-700 "
             />
             {showPassword ? (
@@ -146,16 +145,14 @@ function LoginForm() {
             <p className="flex items-center gap-[3px]">
               {rememberMe ? (
                 <GiPlainCircle
-                  onClick={toogleRememberMe}
+                  onClick={toggleRememberMe}
                   className="text-primaryColor cursor-pointer"
                 />
               ) : (
-                <GiCircle
-                  className="cursor-pointer"
-                  onClick={toogleRememberMe}
-                />
+                <GiCircle className="cursor-pointer" onClick={toggleRememberMe} />
               )}
-              <span onClick={toogleRememberMe} className="cursor-pointer">
+
+              <span onClick={toggleRememberMe} className="cursor-pointer">
                 Remember Me
               </span>
             </p>

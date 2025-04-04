@@ -1,137 +1,61 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react';
 import CustomizedCheckbox from '../../jobs/components/CustomizedCheckbox'
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { JobContext } from '../../../../context/JobContext';
 
 const Insdustriestype = ({ setIndustry }) => {
-    const [close, setClose] = useState(false)
+    const { getSectors } = useContext(JobContext);
+    const [sectorList, setSectorList] = useState([]);
+    const [close, setClose] = useState(false);
+
+    useEffect(() => {
+        const init = async () => {
+            const jobSectors = await getSectors();
+            setSectorList(jobSectors?.sort((a,b)=>a?.name?.toLowerCase().localeCompare(b?.name?.toLowerCase())) || []);
+        };
+        init();
+    }, [getSectors]);
+
     return (
         <div>
             <div className="mb-5">
-                <div className="flex justify-between cursor-pointer" onClick={() => setClose(!close)}>
-                    <p className="font-bold">Industries</p>
-                    <button
-                        
-                    >{close ? <FaChevronUp /> : <FaChevronDown />}</button>
+                <div
+                    className="flex justify-between cursor-pointer"
+                    onClick={() => setClose(!close)}
+                >
+                    <p className="font-bold">Sector</p>
+                    <button>{close ? <FaChevronUp /> : <FaChevronDown />}</button>
                 </div>
                 {close && (
-                    <div className="">
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "",
-                            label: "Undo",
-                            id: "industryNil"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Advertising",
-                            label: "Advertising",
-                            id: "Advertising"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Tech",
-                            label: "Technology",
-                            id: "Tech"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Business",
-                            label: "Business Service",
-                            id: "business"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Block",
-                            label: "Block Chain",
-                            id: "blockChain"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Cloud",
-                            label: "Cloud",
-                            id: "Cloud"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Consumer",
-                            label: "Consumer Tech",
-                            id: "Consumer"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Education",
-                            label: "Education",
-                            id: "Education"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Fintech",
-                            label: "Fintech",
-                            id: "Fintech"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Gaming",
-                            label: "Gaming",
-                            id: "Gaming"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Food",
-                            label: "Food",
-                            id: "Food"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Health",
-                            label: "Healthcare",
-                            id: "Healthcare"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Hosting",
-                            label: "Hosting",
-                            id: "Hosting"
-                        }} />
-                        <CustomizedCheckbox 
-                        setSelectedValue={setIndustry}
-                        values={{
-                            name: "industry",
-                            value: "Media",
-                            label: "Media",
-                            id: "Media"
-                        }} />
+                    <div>
+                        {/* Undo Checkbox */}
+                        <CustomizedCheckbox
+                            setSelectedValue={setIndustry}
+                            values={{
+                                label: "Undo",
+                                value: "",
+                                id: "undoCategory",
+                                name: "sector",
+                            }}
+                        />
+                        {/* Dynamically generated checkboxes for sectors */}
+                        {sectorList.map((sector) => (
+                            <CustomizedCheckbox
+                                key={sector.id || sector.value}
+                                setSelectedValue={setIndustry}
+                                values={{
+                                    label: sector?.name,
+                                    value: sector?.name,
+                                    id: `sector-${sector.id}` ,
+                                    name: "sector",
+                                }}
+                            />
+                        ))}
                     </div>
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Insdustriestype
+export default Insdustriestype;

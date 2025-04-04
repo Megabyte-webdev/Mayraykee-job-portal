@@ -12,7 +12,7 @@ const CompanyDetails = () => {
     const job = state?.company;
     const navigate = useNavigate();
     const keywordArr = job?.search_keywords?.split(",");
-
+    console.log(job)
     const shareCompanyDetails = async () => {
     const shareText = `
 🏢 **Company Name:** ${job.company_name}
@@ -34,31 +34,23 @@ Discover more and join us today to explore opportunities.
                 text: shareText,
                 //url: `${window.location.origin}/register`,
             });
-            onSuccess({
-                message: "Sharing Successful",
-                success: "Company details shared successfully!",
-            });
         } else {
             // Fallback: copy text to clipboard
             await navigator.clipboard.writeText(shareText);
-            onSuccess({
-                message: "Sharing Successful",
-                success: "Company details copied to clipboard! Share it manually.",
-            });
         }
     } catch (error) {
-        if (error.name === "AbortError") {
-            onFailure({
-                message: "Sharing Cancelled",
-                error: "You cancelled the sharing process.",
-            });
-        } else {
-            console.error("Error sharing company details:", error);
-            onFailure({
-                message: "Sharing Error",
-                error: "An error occurred while sharing.",
-            });
-        }
+        // if (error.name === "AbortError") {
+        //     onFailure({
+        //         message: "Sharing Cancelled",
+        //         error: "You cancelled the sharing process.",
+        //     });
+        // } else {
+        //     console.error("Error sharing company details:", error);
+        //     onFailure({
+        //         message: "Sharing Error",
+        //         error: "An error occurred while sharing.",
+        //     });
+        // }
     }
 };
     
@@ -100,7 +92,7 @@ Discover more and join us today to explore opportunities.
                                 <p>{job.address}</p>
                             </div>
                             <div className="mb-6">
-                                <h4 className="font-bold mb-4">Description:</h4>
+                                <h4 className="font-bold mb-4">Company Description:</h4>
                                 <p dangerouslySetInnerHTML={{ __html: job.company_profile }} />
                             </div>
                         </div>
@@ -145,7 +137,7 @@ Discover more and join us today to explore opportunities.
                                     ))}
                                 </div>
                             </div>
-                            <div className="my-6 border-b pb-6">
+                            {keywordArr && <div className="my-6 border-b pb-6">
                                 <h4 className="font-bold mb-4">Categories</h4>
                                 <div className="flex flex-wrap gap-1 text-xs">
                                     {keywordArr?.map((each, index) => (
@@ -157,7 +149,7 @@ Discover more and join us today to explore opportunities.
                                         </button>
                                     ))}
                                 </div>
-                            </div>
+                            </div>}
                         </div>
                     </div>
                 </div>

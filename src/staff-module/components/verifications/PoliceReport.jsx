@@ -7,6 +7,7 @@ import { axiosClient, resourceUrl } from "../../../services/axios-client";
 import { FormatError, getImageURL } from "../../../utils/formmaters";
 import { onSuccess } from "../../../utils/notifications/OnSuccess";
 import { onFailure } from "../../../utils/notifications/OnFailure";
+import ConfirmationPopUp from "./ConfirmationPopUp"; // Import the popup
 
 const formFields = ["station_address"];
 
@@ -30,12 +31,21 @@ function PoliceReport() {
     message: "",
     error: "",
   });
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   const [isloading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentRecord, setCurrentRecord] = useState();
 
   const submitDetails = async (data) => {
-    setLoading(true);
+    if (!file) {
+        onFailure({
+          error: "Police Report Required",
+          message: "Please upload a report before submitting.",
+        });
+        return
+      }
+      setLoading(true);
     try {
       const response = await client.post("/domesticStaff/police-report", {
         ...data,
@@ -55,6 +65,11 @@ function PoliceReport() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleProceed = () => {
+    setIsPopupOpen(false);
+    handleSubmit(submitDetails)(); // Proceed with form submission
   };
 
   const recordFields = () => {
@@ -111,12 +126,12 @@ function PoliceReport() {
 
       {typeof currentRecord !== "undefined" && (
         <div className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600">
-          {recordFields()?.map((currentKey) => {
+          {recordFields()?.map((currentKey, idx) => {
             const value = currentRecord[currentKey];
             const labelText = currentKey.replace(/_/g, " ");
 
             return (
-              <div className="flex flex-col gap-1">
+              <div key={idx} className="flex flex-col gap-1">
                 <label className="capitalize font-medium">{labelText}</label>
                 {currentKey == "police_report_file" ? (
                   <a
@@ -136,7 +151,10 @@ function PoliceReport() {
 
       {typeof currentRecord === "undefined" && !loading && (
         <form
-          onSubmit={handleSubmit(submitDetails)}
+          onSubmit={(e) => {
+            e.preventDefault();
+            setIsPopupOpen(true);
+          }}
           className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600"
         >
           <label className="flex flex-col justify-center gap-1">
@@ -172,7 +190,6 @@ function PoliceReport() {
                   selectedCountry.isoCode,
                   e.target.value
                 );
-                console.log(cities);
                 setSelectState(State.getStateByCode(e.target.value));
                 setSelectCities(cities);
               }}
@@ -240,6 +257,14 @@ function PoliceReport() {
           <FormButton loading={isloading}>Upload Police Records</FormButton>
         </form>
       )}
+
+      {/* Confirmation Popup */}
+      <ConfirmationPopUp
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onConfirm={handleProceed}
+        message="Ensure your details are correct before proceeding. If you need to make changes later, contact the admin."
+      />
     </div>
   );
 }

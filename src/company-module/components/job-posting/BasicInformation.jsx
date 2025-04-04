@@ -25,7 +25,7 @@ const basic_inputs = [
   {
     id: 2,
     name: "preferred_age",
-    label: "Application Age Limit",
+    label: "Minimum Age Limit",
     type: "number",
     placeholder: "e.g 18",
     min: 18,
@@ -168,9 +168,8 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
       const employementListResult = await getEmployentTypes();
       const currencyResult = await getCurrencies();
       const sectors = await getSectors();
-      setJobSectorList(sectors)
+      setJobSectorList(sectors?.sort((a,b)=>a.name.toLowerCase().localeCompare(b.name.toLowerCase())))
       setEmployementList(employementListResult);
-      console.log(Country.getAllCountries())
       const currencyWithCountry=currencyResult?.map((item)=>{
         const country = Country.getAllCountries().find(c => item.name?.startsWith(c.isoCode));
         return{
@@ -178,7 +177,6 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
             name: `${item?.name} ${country ? `(${country?.name})` : ''}`,
         };
       })
-      console.log(currencyWithCountry)
       setCurrencyList(currencyWithCountry);
       if (employementListResult.length > 0) {
         setSelectedType(jobUtils.details.type
@@ -236,13 +234,13 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
       const subsector = jobUtils?.details?.subsector
         ? sector?.sub_sectors?.find(one => one?.name === jobUtils?.details?.subsector)
         : null;
-      setSelectedSubSector(subsector);
+      setSelectedSubSector(subsector?.sort((a,b)=>a.name.toLowerCase().localeCompare(b.name.toLowerCase())));
     }
   }, [jobSectorList, jobUtils?.details?.sector]);
 
   useEffect(() => {
     if (selectedSector) {
-      setSubSectorList(selectedSector?.sub_sectors || []);
+      setSubSectorList(selectedSector?.sub_sectors?.sort((a,b)=>a.name.toLowerCase().localeCompare(b.name.toLowerCase())) || []);
       const matchingSubsector = selectedSector?.sub_sectors?.find(
         (one) => one?.name === jobUtils?.details?.subsector
       );
@@ -297,7 +295,6 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
     return true;
   };
 
-  //console.log(State.getStatesOfCountry('NG'))
   return (
     <div className="flex flex-col w-full p-4 gap-4">
       {/* Basic Info */}
@@ -489,16 +486,14 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
                 <span className="mx-1">{selectedCurrency?.code}</span>
                 <input
                   type="number"
+                  min="0"
                   className="w-24 ring-0 outline-0"
                   value={jobUtils.details.min_salary || ""}
                   onChange={(e) => {
-                    const minSalary = Number(e.target.value);
-                    if (minSalary <= jobUtils.details.max_salary) {
                       jobUtils.setDetails({
                         ...jobUtils.details,
-                        min_salary: minSalary,
+                        min_salary: e.target.value,
                       });
-                    }
                   }}
                 />
               </div>
@@ -511,15 +506,13 @@ function BasicInformation({ setCurrentStep, data, jobUtils, validateAndProceed }
                 <input
                   type="number"
                   className="w-24 ring-0 outline-0"
+                  min="0"
                   value={jobUtils.details.max_salary || ""}
                   onChange={(e) => {
-                    const maxSalary = Number(e.target.value);
-                    if (maxSalary >= jobUtils.details.min_salary) {
                       jobUtils.setDetails({
                         ...jobUtils.details,
-                        max_salary: maxSalary,
+                        max_salary: e.target.value,
                       });
-                    }
                   }}
                 />
               </div>

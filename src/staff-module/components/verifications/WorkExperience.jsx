@@ -6,6 +6,7 @@ import { AuthContext } from "../../../context/AuthContex";
 import { onFailure } from "../../../utils/notifications/OnFailure";
 import { onSuccess } from "../../../utils/notifications/OnSuccess";
 import { FormatError } from "../../../utils/formmaters";
+import ConfirmationPopUp from "./ConfirmationPopUp"; // Import the popup
 
 const formFields = [
   "company_name",
@@ -23,6 +24,7 @@ function WorkExperience() {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm();
   const [loading, setLoading] = useState(false);
@@ -32,6 +34,7 @@ function WorkExperience() {
   });
   const [workExperiences, setWorkExperiences] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const submitDetails = async (data) => {
     setIsLoading(true);
@@ -44,8 +47,9 @@ function WorkExperience() {
         }
       );
       getWorkExperiences();
+      reset();
       onSuccess({
-        message: "Experience uploaded",
+        message: "Experience Saved!",
         success: "Submitted succesfully, awaiting review",
       });
     } catch (error) {
@@ -54,6 +58,12 @@ function WorkExperience() {
       setIsLoading(false);
     }
   };
+
+  const handleProceed = () => {
+    setIsPopupOpen(false);
+    handleSubmit(submitDetails)(); // Proceed with form submission
+  };
+
 
   const getWorkExperiences = async () => {
     setLoading(true);
@@ -85,7 +95,10 @@ function WorkExperience() {
 
       {
         <form
-          onSubmit={handleSubmit(submitDetails)}
+          onSubmit={(e) => {
+            e.preventDefault();
+            setIsPopupOpen(true);
+          }}
           className="grid grid-cols-2 gap-x-3 gap-y-5 p-2 w-full text-gray-600"
         >
           {formFields.map((currentKey) => {
@@ -116,7 +129,7 @@ function WorkExperience() {
             );
           })}
 
-          <FormButton loading={isLoading}>Upload Work Experience</FormButton>
+          <FormButton loading={isLoading}>Save Work Experience</FormButton>
         </form>
       }
 
@@ -146,6 +159,14 @@ function WorkExperience() {
           ))}
         </div>
       )}
+
+      {/* Confirmation Popup */}
+      <ConfirmationPopUp
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onConfirm={handleProceed}
+        message="Ensure your details are correct before proceeding. If you need to make changes later, contact the admin."
+      />
     </div>
   );
 }

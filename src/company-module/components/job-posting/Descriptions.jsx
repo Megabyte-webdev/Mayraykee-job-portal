@@ -44,7 +44,7 @@ const basic_inputs = [
   {
     id: 3,
     name: " introduction_video_url",
-    label: "Intro Video Url",
+    label: "Intro Video URL",
     type: "text",
     placeholder: "e.g https://introvideourl.com",
     prompt: "Here you add intro video url",

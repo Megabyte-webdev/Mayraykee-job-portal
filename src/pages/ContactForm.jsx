@@ -6,6 +6,7 @@ import { FaSpinner } from "react-icons/fa";
 import { onSuccess } from "../utils/notifications/OnSuccess";
 import { onFailure } from "../utils/notifications/OnFailure";
 import { BASE_URL } from "../utils/base";
+import { parseHtml } from "../utils/formmaters";
 
 const ContactForm = ({ variant = "standard" }) => {
   const client = axiosClient();
@@ -77,7 +78,7 @@ const ContactForm = ({ variant = "standard" }) => {
   // Handle form input changes with validation
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: parseHtml(value)});
     validateField(name, value);
   };
 

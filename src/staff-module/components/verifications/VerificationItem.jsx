@@ -9,8 +9,7 @@ function VerificationItem({ currentKey, profileDetails, updateTrackRecord }) {
   const { updateAvailabilityStatus, getStyling, allStatus } = useStaffUser();
   const avaliabliltyDetail = profileDetails[currentKey];
   const { authDetails } = useContext(AuthContext);
-  console.log(profileDetails)
-
+ 
   const detail =
     allStatus.find((current) => current === profileDetails[currentKey]) ||
     "Not Recorded";
@@ -62,11 +61,11 @@ function VerificationItem({ currentKey, profileDetails, updateTrackRecord }) {
         </div>
       ) : (
         <div key={currentKey} className="flex gap-1 w-full max-w-[600px] justify-between">
-          <label className="capitalize">{labelText}</label>
+          <label className="capitalize">{labelText}:</label>
           <span
             className={`${getStyling(
               detail
-            )} text-black uppercase font-semibold"`}
+            )} text-black capitalize font-semibold"`}
           >
             {detail}
           </span>

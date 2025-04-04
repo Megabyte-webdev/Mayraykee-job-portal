@@ -27,6 +27,7 @@ function ApplicantRow({ data, isExclusive = false, exclusiveData=null }) {
         return (
           <StatusCard
             name={data?.status}
+            label={stages[0].label}
             icon={AiFillClockCircle}
             color={"bg-orange-500 text-white"}
             iconColor="text-white"
@@ -36,6 +37,7 @@ function ApplicantRow({ data, isExclusive = false, exclusiveData=null }) {
         return (
           <StatusCard
             name={data.status}
+            label={stages[1].label}
             icon={MdCheckCircle}
             color={"bg-blue-500 text-white"}
             iconColor="text-white"
@@ -45,6 +47,7 @@ function ApplicantRow({ data, isExclusive = false, exclusiveData=null }) {
         return (
           <StatusCard
             name={data.status}
+            label={stages[2].label}
             icon={GiVideoConference}
             color={"bg-yellow-500 text-black"}
             iconColor="text-blue-50"
@@ -54,6 +57,7 @@ function ApplicantRow({ data, isExclusive = false, exclusiveData=null }) {
         return (
           <StatusCard
             name={data.status}
+            label={data.status}
             icon={MdCheckCircle}
             color={"bg-[#47AA49] text-white"}
             iconColor="text-blue-100"
@@ -63,6 +67,7 @@ function ApplicantRow({ data, isExclusive = false, exclusiveData=null }) {
         return (
           <StatusCard
             name={data.status}
+            label={data.status}
             icon={IoMdCloseCircle}
             color={"bg-[#B22234] text-white"}
             iconColor="text-red-100"

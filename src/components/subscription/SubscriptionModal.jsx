@@ -21,7 +21,7 @@ function SubscriptionModal({isOpen, setIsOpen}) {
             <MdClose className=" mt-[2px] font-bold text-white" />
           </button>
           <SubscriptionPlans
-            packages={subUtils.packages}
+            packages={subUtils?.packages}
             setIsOpen={setIsOpen}
           />
         </div>{" "}

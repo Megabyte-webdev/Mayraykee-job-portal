@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import mainLogoTwo from "../../assets/pngs/main-logo-icon.png";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdAccountCircle } from "react-icons/md";
 import { ResourceContext } from "../../context/ResourceContext";
 import { IMAGE_URL } from "../../utils/base";
 
@@ -56,16 +56,17 @@ function SideBar({ children, authDetails, toogleIsOpen, isMenuOpen }) {
               {authDetails?.user?.email || "N/A"}
             </span>
           </div>
-          <img
-            src={
-              candidate?.profile
-                ? `${IMAGE_URL}/${candidate.profile}`
-                : "https://via.placeholder.com/150"
-            }
-            className="h-[60px] w-[60px] rounded-full bg-secondaryColor object-cover"
-            alt="User"
-          />
-        </div>
+          <figure className="h-[60px] w-[60px] rounded-full overflow-hidden bg-secondaryColor object-cover flex items-center justify-center">
+            {!candidate?.profile ?
+              <MdAccountCircle size={45} />
+              :
+              <img
+                src={`${IMAGE_URL}/${candidate.profile}`}
+                alt="User"
+                className="h-[60px] w-[60px] rounded-full object-cover"
+              />}
+          </figure>
+          </div>
       </aside>
 
       {/* Mobile Sidebar */}
@@ -116,15 +117,17 @@ function SideBar({ children, authDetails, toogleIsOpen, isMenuOpen }) {
               {authDetails?.user?.email || "N/A"}
             </span>
           </div>
-          <img
-            src={
-              candidate?.profile
-                ? `${IMAGE_URL}/${candidate.profile}`
-                : "https://via.placeholder.com/150"
-            }
-            className="h-[60px] w-[60px] rounded-full bg-secondaryColor object-cover"
-            alt="User"
-          />
+
+          <figure className="h-[60px] w-[60px] rounded-full overflow-hidden bg-secondaryColor object-cover flex items-center justify-center">
+            {!candidate?.profile ?
+              <MdAccountCircle size={45} />
+              :
+              <img
+                src={`${IMAGE_URL}/${candidate.profile}`}
+                alt="User"
+                className="h-[60px] w-[60px] rounded-full object-cover"
+              />}
+          </figure>
         </div>
       </aside>
     </>

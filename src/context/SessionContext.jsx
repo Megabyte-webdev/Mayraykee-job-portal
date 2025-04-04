@@ -1,66 +1,63 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { clear } from "idb-keyval";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useIdleTimer } from "react-idle-timer";
 import { AuthContext } from "./AuthContex";
 
-// const SESSION_TIMEOUT = 10000; //30 minutes
-const SESSION_TIMEOUT = 1800000; //30 minutes
-
+const SESSION_TIMEOUT = 1800000; // 30 minutes
 const SESSION_KEY = "_session_condition";
 
 export const SessionContext = createContext();
 
 export const SessionContextProvider = ({ children }) => {
   const navigate = useNavigate();
+  const { authDetails } = useContext(AuthContext);
 
-  const {authDetails} = useContext(AuthContext)
-  const remeberMeSes = JSON.parse(localStorage.getItem("status"));
-  const expiryDateSes = JSON.parse(localStorage.getItem("expiry_date"));
-  const [rememberMe, setRememberMe] = useState(remeberMeSes || false);
-  const [date, setDate] = useState(expiryDateSes || null);
+  // Helper function to add days
+  const addDays = (date, days) => {
+    let result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  };
 
-  const toogleRememberMe = () => setRememberMe(!rememberMe);
+  // Retrieve session data from sessionStorage
+  const storedSession = JSON.parse(sessionStorage.getItem(SESSION_KEY)) || {};
+  const [rememberMe, setRememberMe] = useState(storedSession.status || false);
+  const [expiryDate, setExpiryDate] = useState(storedSession.expiry_date ? new Date(storedSession.expiry_date) : null);
 
+  const toggleRememberMe = () => setRememberMe(!rememberMe);
 
   const saveSession = () => {
-    if (rememberMe) {
-      localStorage.setItem(SESSION_KEY, {
-        status: rememberMe,
-        expiry_date: addDays(new Date(), 7),
-      });
-      setDate(addDays(new Date(), 7));
-    } else {
-      localStorage.setItem(
-        SESSION_KEY,
-        JSON.stringify({ status: rememberMe, expiry_date: null })
-      );
-    }
-    console.log("Triggered");
+    const sessionData = {
+      status: rememberMe,
+      expiry_date: rememberMe ? addDays(new Date(), 7) : null, // 7 days
+    };
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+    setExpiryDate(sessionData.expiry_date);
+    console.log("Session saved.");
   };
 
   const redirectAuthUser = () => {
-    
     if (!authDetails?.user?.role) return;
-    console.log("Triggered");
+    console.log("Redirecting user...");
     switch (authDetails?.user?.role) {
       case "candidate":
         return navigate("/applicant");
       case "employer":
-       navigate("/company") ;break;
+        return navigate("/company");
       case "staff":
         return navigate("/staff");
+      default:
+        return navigate("/");
     }
   };
 
   const onIdle = () => {
-    if (!rememberMe) {
-      if (date && data < new Date()) return;
-
-      localStorage.clear();
+    if (!rememberMe && expiryDate && new Date(expiryDate) < new Date()) {
+      sessionStorage.clear(); // Only clear session-related data
       clear();
       navigate("/");
-      console.log("Triggered");
+      Please("Please login again");
     }
   };
 
@@ -69,12 +66,8 @@ export const SessionContextProvider = ({ children }) => {
     onIdle,
   });
 
-  useEffect(() => {}, []);
-
   return (
-    <SessionContext.Provider
-      value={{ toogleRememberMe, rememberMe, saveSession, redirectAuthUser }}
-    >
+    <SessionContext.Provider value={{ toggleRememberMe, rememberMe, saveSession, redirectAuthUser }}>
       {children}
     </SessionContext.Provider>
   );

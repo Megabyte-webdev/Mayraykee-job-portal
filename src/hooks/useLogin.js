@@ -15,7 +15,6 @@ function useLogin(role) {
     password: "",
   });
   const { setAuthDetails } = useContext(AuthContext);
-  const {saveSession} = useContext(SessionContext)
   const {resendOtp} =useRegistration()
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
@@ -57,7 +56,6 @@ function useLogin(role) {
 
       }
       onSuccess();
-      saveSession()
     } catch (e) {
       console.log(e)
       // Format and display the error immediately

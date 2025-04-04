@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { resourceUrl } from "../../../services/axios-client";
 import { ApplicationContext } from "../../../context/ApplicationContext";
-
+import Modal from '../../../components/modal/Modal'
 const stages = [
   {
     name: "In-Review",
@@ -24,6 +24,7 @@ const stages = [
 function Resume({ data, applicant }) {
   const [loading, setLoading] = useState(true); // Default loading to true
   const [resume, setResume] = useState();
+  const [enLarge, setEnLarge] = useState(false);
   const { getResume } = useContext(ApplicationContext);
 
   const bgColor = (current) => {
@@ -127,17 +128,38 @@ function Resume({ data, applicant }) {
             </ul>
           </div>
         </div>
-        <div className="flex flex-col justify-between px-10">
-          <div className="flex flex-col text-little justify-center items-start gap-[2px]">
+        {applicant?.nin_slip && <div className="flex flex-col justify-between px-10">
+          <div onClick={() => setEnLarge(true)} className="cursor-pointer flex flex-col text-little justify-center items-start gap-[2px]">
             <span className="font-semibold ">NIN</span>
             <img
-              src={`${resourceUrl}/${applicant?.nin_slip}`}
-              className="h-[100px] w-[100px] border border-dotted p-1"
+              src={`${resourceUrl}${applicant?.nin_slip}`}
+              className="h-[100px] w-[100px] object-contain border border-dotted p-1"
             />
           </div>
-        </div>
+        </div>}
+
+        {enLarge && (
+          <Modal isOpen={enLarge} closeModal={() => setEnLarge(false)}>
+            <div className="flex flex-col justify-center items-center w-full h-full p-4">
+              <img
+                src={`${resourceUrl}${applicant?.nin_slip}`}
+                className="max-w-[80vw] max-h-[80vh] object-contain rounded shadow-lg"
+                alt="NIN"
+              />
+              <a
+                href={`${resourceUrl}${applicant?.nin_slip}`}
+                download
+                target="_blank"
+                className="mt-4 inline-block bg-primaryColor text-white px-4 py-2 rounded hover:bg-primaryColor/90 text-sm"
+              >
+                Download NIN Image
+              </a>
+            </div>
+          </Modal>
+        )}
+
       </>
-    ): (<p className="p-4 font-bold text-gray-600">No resume submitted</p>)
+    ) : (<p className="p-4 font-bold text-gray-600">No resume submitted</p>)
   )
 }
 

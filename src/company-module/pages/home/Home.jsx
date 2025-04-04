@@ -12,7 +12,6 @@ import { ApplicationContext } from "../../../context/ApplicationContext";
 import { useEffect } from "react";
 //import { JobContext } from "../../../context/JobContext";
 import { stages } from "../../../utils/constants";
-import { CompanyRouteContext } from "../../../context/CompanyRouteContext";
 import { generateDateRange } from "../../../utils/formmaters";
 import SubscriptionOffer from "../../../components/SubsciptionOffer";
 import useApplicationManagement from "../../../hooks/useApplicationManagement";
@@ -21,8 +20,7 @@ import useCompanyProfile from "../../../hooks/useCompanyProfile";
 function Home() {
   const { authDetails } = useContext(AuthContext);
   const jobUtils = useJobManagement();
-  
-  const { setSideBar } = useContext(CompanyRouteContext);
+
   const { getApplicantsByEmployee, applicants } = useApplicationManagement()
   const { jobList } = jobUtils;
   const { details } = useCompanyProfile();
@@ -39,18 +37,8 @@ function Home() {
     }, {});
   }, [applicants]);
 
-  /*const applicantToReview = useMemo(
-    () =>
-      applicants?.filter(
-        (current) =>
-          current.status === stages[0].name || current.status === "pending"
-      ),
-    [applicants]
-  );*/
-
   useEffect(() => {
     getApplicantsByEmployee();
-    setSideBar(0);
   }, []);
 
   return (

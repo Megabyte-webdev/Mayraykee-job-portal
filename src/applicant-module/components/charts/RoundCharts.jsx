@@ -20,7 +20,9 @@ const RoundChart = ({ data }) => {
         type: "donut",
         width: "100%",
       },
-      labels: statusOrder, // Status labels in order
+      labels: statusOrder.map((status) =>
+        status === "In-Review" ? "Under-Review" : status
+      ), // Replace "In-Review" with "Under-Review", // Status labels in order
       colors: statusColors, // Colors corresponding to statuses
       legend: {
         position: "bottom",

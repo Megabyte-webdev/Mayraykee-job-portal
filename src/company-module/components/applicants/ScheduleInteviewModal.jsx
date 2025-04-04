@@ -162,7 +162,7 @@ useEffect(()=>{
 
               {selected?.name === "online" && (
                 <div className="flex flex-col gap-[3px]">
-                  <label className="text-sm font-semibold">Meeting Id</label>
+                  <label className="text-sm font-semibold">Meeting ID</label>
                   <div className="flex justify-between border items-center p-2">
                     <span>{meetingId ? meetingId : "no-meeting-id"}</span>
                     <button
@@ -170,7 +170,7 @@ useEffect(()=>{
                       onClick={onClick}
                       className="w-fit px-2 py-1 bg-primaryColor rounded-[5px] text-white text-little font-semibold flex items-center"
                     >
-                      <span>Generate Meeting Id</span>
+                      <span>Generate Meeting ID</span>
                       {loadingMeetingId && (
                         <FaSpinner className="ml-2 animate-spin" /> // Add Tailwind's animate-spin class
                       )}

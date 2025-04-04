@@ -7,7 +7,7 @@ const CompanyCard = ({ company, newApplicant }) => {
 
   return (
     <div
-      onClick={() => { navigate("/applicant/browse-companies/id", { state: { company: company } }); scrollTo(0, 0) }}
+      onClick={() => { navigate(`/applicant/browse-companies/${company?.id}`, { state: { company: company } }); scrollTo(0, 0) }}
       className="border cursor-pointer hover:shadow-inner my-4 p-4">
       <div className="flex flex-col md:flex-row justify-between">
         <div className="flex flex-col md:flex-row">

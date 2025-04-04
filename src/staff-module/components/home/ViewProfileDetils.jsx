@@ -3,6 +3,7 @@ import { AuthContext } from "../../../context/AuthContex";
 import { axiosClient, resourceUrl } from "../../../services/axios-client";
 import { get, set } from "idb-keyval";
 import { StaffManagementContext } from "../../../context/StaffManagementModule";
+import { MdAccountCircle } from "react-icons/md";
 
 const PROFILE_DETAILS_KEY = "Staff Profile Detaials Database";
 
@@ -39,13 +40,19 @@ function ViewProfileDetails() {
         currentKey === 'marital_status'
     );
 
-    console.log(`${resourceUrl}${profileDetails?.profile_image}`)
-  return (
+ return (
     <div className="w-full flex flex-col gap-10">
       <h1 className="text-xl text-green-700 font-semibold">Your Profile Information</h1>
-      <div className="h-[100px] flex items-center overflow-hidden justify-center text-gray-500 border border-[#dee2e6] w-[100px] rounded-full">
-        <img src={`${resourceUrl}${profileDetails?.profile_image}`} className="h-full" />
-     </div>
+      <figure className="h-[100px] w-[100px] rounded-full overflow-hidden bg-secondaryColor flex items-center justify-center text-gray-500 border border-[#dee2e6]">
+        {!profileDetails?.profile_image ?
+          <MdAccountCircle size={45} />
+          :
+          <img
+            src={`${resourceUrl}${profileDetails?.profile_image}`}
+            alt="User"
+            className="h-[100px] w-[100px] rounded-full object-cover"
+          />}
+      </figure>
       {profileDetails ? (
         <>
           <div className="grid grid-cols-2 gap-x-3 gap-y-8 p-2 w-full text-gray-600 break-words">
@@ -56,12 +63,12 @@ function ViewProfileDetails() {
               return (
                 <div key={index} className="flex flex-col gap-1">
                   <label className="px-2 py-1 font-semibold  bg-gray-50 capitalize">{labelText}</label>
-                  {currentKey !== "languages_spoken" ? <p className="px-2  text-wrap">{detail ? detail : "Pending" }</p>
-                  :<div className="flex flex-wrap gap-2 px-2">
-                    {detail?.map((lang, index) => (
-<p key={index}>{lang}{index < detail.length - 1 && ', '}</p>
-))}
-                  </div>}
+                  {currentKey !== "languages_spoken" ? <p className="px-2  text-wrap">{detail ? detail : "Pending"}</p>
+                    : <div className="flex flex-wrap gap-2 px-2">
+                      {detail?.map((lang, index) => (
+                        <p key={index}>{lang}{index < detail.length - 1 && ', '}</p>
+                      ))}
+                    </div>}
                 </div>
               );
             })}

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: "Calibri", sans-serif;
+}
 
 
 /*styling for reactquill */

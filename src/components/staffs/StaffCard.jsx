@@ -15,7 +15,7 @@ import { allStatus } from "../../hooks/useStaffUser";
 
 const PUBLIC_KEY = import.meta.env.VITE_TEST_PUBLIC_KEY;
 
-function StaffCard({ data, contract = null, cartItems, getCartItems }) {
+function StaffCard({ data, contract = null, cartItems, setCartItems, getCartItems }) {
   const { register, handleSubmit } = useForm();
   const { authDetails } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,6 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
       });
       toogleOpen();
     } catch (error) {
-      console.log(error);
       onFailure({
         message: "Contract unsuccessful",
         error: "Something went wrong",
@@ -70,15 +69,14 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
       await getCartItems();
       onSuccess({
         message: "User sucessfully added",
-        success: "Domestic staff added to cart successfully",
+        success: `${data?.staff_category} added to cart successfully`,
       });
-      
+
     } catch (error) {
       onFailure({
         message: "Collection Failed",
         error: "Failed to add to collection",
       });
-      console.log(error);
     } finally {
       setCartLoading(false);
     }
@@ -92,18 +90,21 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
         user_type: authDetails.user.role,
         domestic_staff_id: data.id,
       });
+
+      // Optimistically update UI before fetching the updated cart
+      setCartItems((prev) => prev.filter(item => item.domestic_staff.id !== data?.id));
+
       await getCartItems();
       onSuccess({
         message: "User sucessfully removed",
-        success: "Domestic staff removed from cart successfully",
+        success: `${data?.staff_category} removed from cart successfully`,
       });
-      
+
     } catch (error) {
       onFailure({
         message: "Cart Failed",
         error: "Failed to remove staff from cart",
       });
-      console.log(error);
     } finally {
       setCartLoading(false);
     }
@@ -130,7 +131,6 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
   };
 
   const handleSuccess = async (reference) => {
-    console.log(reference);
     setCartLoading(true);
     try {
       const response = await client.post("/staff-cart/checkout", {
@@ -141,7 +141,7 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
       });
       onSuccess({
         message: "User sucessfully added",
-        success: "Domestic staff added to cart successfully",
+        success: `${data?.staff_category} added to cart successfully`,
       });
 
       navigate(`/company/staff/staff/${data.id}`, {
@@ -156,13 +156,12 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
       setCartLoading(false);
     }
   };
-
   const getField = (name) => {
     if (data?.domestic_staff) {
       return data?.domestic_staff[name];
-    } else if(data[name]) {
+    } else if (data[name]) {
       return data[name];
-    } else{
+    } else {
       return 'No data found'
     }
   };
@@ -337,15 +336,10 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
             </span>
           </span>
 
-          <span className="flex gap-2 items-center justify-between text-md truncate font-semibold">
+          <span className="flex gap-2 items-center justify-between text-md font-semibold">
             Langages:
             <span className="text-sm w-[60%] flex text-start font-normal text-gray-500">
-              {getField("languages_spoken") ?? getField("languages_spoken")?.map((current, idx) => (
-                <span key={idx} className="group">
-                  {current}
-                  <span className="group-last:hidden">, </span>
-                </span>
-              ))}
+              {(Array.isArray(getField("languages_spoken")) ? getField("languages_spoken") : []).join(", ")}
             </span>
           </span>
 
@@ -366,7 +360,10 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
           <span className="flex gap-2 items-center justify-between text-md truncate font-semibold">
             Years of Experience:
             <span className="text-sm w-[60%] text-start font-normal text-gray-500">
-              {getField("years_of_experience") ?? `getField("years_of_experience") Years`} 
+              {getField("years_of_experience") === "No data found"
+                ? "No data found"
+                : getField("years_of_experience") && `${getField("years_of_experience")} Year(s)`}
+
             </span>
           </span>
 
@@ -394,13 +391,13 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
 
         {!contract && (
           <div className="w-full flex flex-col gap-2">
-            {cartItems?.some((current) =>data.id === current.domestic_staff_id) ? (
+            {cartItems?.find((current) => data.id === current.domestic_staff_id) ? (
               <FormButton
                 loading={cartloading}
                 onClick={removeFromCart}
                 width="h-fit bg-red-500 border border-black text-black bg-white text-sm py-2"
               >
-                Remove from cart
+                Remove from Cart
               </FormButton>
             ) : (
               <>
@@ -409,7 +406,7 @@ function StaffCard({ data, contract = null, cartItems, getCartItems }) {
                   onClick={addToCart}
                   width="h-fit text-sm py-2 border border-black text-black bg-white"
                 >
-                  Add to Cart
+                  Proceed to Engage
                 </FormButton>
               </>
             )}

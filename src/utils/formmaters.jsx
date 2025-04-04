@@ -21,6 +21,8 @@ export const formatTime = (seconds) => {
   const remainingSeconds = seconds % 60;
   return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`; // Add leading zero for single-digit seconds
 };
+export const formatDate = (date) => new Date(date).toLocaleDateString('en-GB', {day: '2-digit', month:'2-digit', year:'numeric'})?.replaceAll('/','-');
+  
 
 export const highlightKeyword = (sentence, keyword) => {
   const regex = new RegExp(`\\b${keyword.name}\\b`, "gi");
@@ -143,6 +145,28 @@ export const getImageURL = (e, setStateFunctionUrl, setDetails) => {
     alert("Please select a valid JPEG or PNG file.");
   }
 };
+
+export const extractErrorMessage = (error) => {
+  const getString = (data) => {
+    return typeof data === "string" ? data : JSON.stringify(data);
+  };
+
+  if (error?.response?.data?.message) {
+    return getString(error.response.data.message);
+  } 
+
+  if (error?.response?.data?.error) {
+    return getString(error.response.data.error);
+  } 
+
+  if (error?.response?.error) {
+    return getString(error.response.error);
+  } 
+
+  return getString(error?.message || "An unknown error occurred");
+};
+
+
 export const getDocument = (e, setDetails) => {
   const { name } = e.target;
   const file = e.target.files[0]; //filelist is an object carrying all details of file, .files[0] collects the value from key 0 (not array), and stores it in file

@@ -372,7 +372,6 @@ const BasicInfo = ({ setIsOpen }) => {
         },
       })
       .then((response) => {
-        console.log(response);
         onSuccess({
           message: "Profile",
           success: response.data.message,
@@ -490,7 +489,7 @@ const BasicInfo = ({ setIsOpen }) => {
                   <span className="text-green-500 font-medium">
                     Click to replace
                   </span>{" "}
-                  or drag and drop
+                  or Drag and Drop
                 </p>
                 <p>PNG, JPG (max. File size 1MB)</p>
                 <input
@@ -620,7 +619,7 @@ const BasicInfo = ({ setIsOpen }) => {
                           <div className="">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Input {selectId ? selectId : ""} No:
+                                Input {selectId.toLowerCase() == "nin" ? selectId.toUpperCase() : selectId ?? ""} No:
                               </span>
                               <input
                                 type="text"
@@ -636,7 +635,7 @@ const BasicInfo = ({ setIsOpen }) => {
                           <div className="">
                             <label className="block">
                               <span className="block text-sm font-medium text-slate-700">
-                                Upload {selectId ? selectId : ""}
+                                Upload {selectId.toLowerCase() == "nin" ? selectId.toUpperCase() : selectId ?? ""}
                               </span>
                               <input
                                 type="file"

@@ -32,7 +32,6 @@ function DomesticStaff() {
         `/domesticStaff/get-staff?staff_category=staff&${directParams ? directParams : queryParams
         }`
       );
-      console.log(data);
       setSearcResult(data.domesticStaff);
     } catch (error) {
       onFailure({
@@ -62,7 +61,6 @@ function DomesticStaff() {
 
   const handleCondition = (data, hasCategory) => {
     if (hasCategory) {
-      console.log("Data", data);
       setConditions(true);
       setQueryParams(data);
     } else {
@@ -199,7 +197,7 @@ function DomesticStaff() {
             <span className="font-semibold text-yellow-600">
             Showing You Search Result
             </span>
-            <ul className="w-full grid grid-cols-responsive3 gap-2">
+            <ul className="w-full grid grid-cols-responsive gap-2">
               {staffsToDisplay?.map((current) => (
                 <StaffCard
                   key={current?.id}

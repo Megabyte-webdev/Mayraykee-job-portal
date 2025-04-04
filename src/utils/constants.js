@@ -729,18 +729,22 @@ export const company_stack_socials = [
 export const stages = [
   {
     name: "in-review",
+    label: "Under-Review",
     stage: "passed",
   },
   {
     name: "shortlist",
+    label: "Shortlisted",
     stage: "passed",
   },
   {
     name: "interview",
+    label: "Interviewed",
     stage: "current",
   },
   {
     name: "hired/declined",
+    label: "hired/declined",
     stage: null,
   },
 ];
@@ -807,3 +811,4 @@ export const ethnicGroups = [
         return `${Math.floor(days / 365)} year(s)`;
     }
 }
+

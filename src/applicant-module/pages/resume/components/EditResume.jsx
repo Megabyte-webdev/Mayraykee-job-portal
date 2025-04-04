@@ -29,6 +29,7 @@ const EditResume = ({ resume }) => {
         academy_name: resume.academy_name,
         year_of_entry: resume.year_of_entry,
         year_of_graduation: resume.year_of_graduation,
+        academy_year_of_graduation: resume.academy_year_of_graduation,
         company_name: resume.company_name,
         position_held: resume.position_held,
         start_date: resume.start_date,
@@ -150,7 +151,7 @@ const EditResume = ({ resume }) => {
                                     </div>
                                     <div className='mb-5'>
                                         <label className="block">
-                                            <span className="block font-medium text-slate-700 flex gap-1">Education (Institution) <strong className="text-red-500">*</strong></span>
+                                            <span className="font-medium text-slate-700 flex gap-1">Education (Institution) <strong className="text-red-500">*</strong></span>
                                             <input onChange={handleOnChange} type="text" required value={details.educational_institution} name='educational_institution' placeholder='Name of Educational Institution'
                                                 className="mt-1 block p-2 focus:outline-none w-full border" />
                                         </label>
@@ -158,15 +159,15 @@ const EditResume = ({ resume }) => {
 
                                     <div className='mb-5'>
                                         <label className="block">
-                                            <span className="block font-medium text-slate-700 flex gap-1">Year of Entry <strong className="text-red-500">*</strong></span>
-                                            <input onChange={handleOnChange} type="text" value={details.year_of_entry} name='year_of_entry' placeholder='e.g 2020'
+                                            <span className="font-medium text-slate-700 flex gap-1">Year of Entry <strong className="text-red-500">*</strong></span>
+                                            <input onChange={handleOnChange} type="number" value={details.year_of_entry} name='year_of_entry' placeholder='e.g 2020'
                                                 className="mt-1 block p-2 focus:outline-none w-full border" />
                                         </label>
                                     </div>
                                     <div className='mb-5'>
                                         <label className="block">
-                                            <span className="block font-medium text-slate-700 flex gap-1">Year of Graduation <strong className="text-red-500">*</strong></span>
-                                            <input onChange={handleOnChange} type="text" value={details.year_of_graduation} name='year_of_graduation' placeholder='e.g 2020'
+                                            <span className="font-medium text-slate-700 flex gap-1">Year of Graduation <strong className="text-red-500">*</strong></span>
+                                            <input onChange={handleOnChange} type="number" value={details.year_of_graduation} name='year_of_graduation' placeholder='e.g 2020'
                                                 className="mt-1 block p-2 focus:outline-none w-full border" />
                                         </label>
                                     </div>
@@ -195,7 +196,7 @@ const EditResume = ({ resume }) => {
                                     <div className='mb-5'>
                                         <label className="block">
                                             <span className="block font-medium text-slate-700">Year Of Entry</span>
-                                            <input onChange={handleOnChange} type="text" value={details.year_attended} name='year_attended' placeholder='Year Of Entry'
+                                            <input onChange={handleOnChange} type="number" value={details.year_attended} name='year_attended' placeholder='Year Of Entry'
                                                 className="mt-1 block p-2 focus:outline-none w-full border" />
                                         </label>
                                         
@@ -203,7 +204,7 @@ const EditResume = ({ resume }) => {
                                     <div className='mb-5'>
                                         <label className="block">
                                             <span className="block font-medium text-slate-700">Year Of Graduation</span>
-                                            <input onChange={handleOnChange} type="text" value={details.year_of_graduation} name='year_attended' placeholder='Year Of Graduation'
+                                            <input onChange={handleOnChange} type="number" value={details.academy_year_of_graduation} name='academy_year_of_graduation' placeholder='Year Of Graduation'
                                                 className="mt-1 block p-2 focus:outline-none w-full border" />
                                         </label>
                                         
